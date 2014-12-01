@@ -1,4 +1,4 @@
 analytics
 =========
 
-A wrapper around Google Analytics for both command-line apps and web apps.
+A Google Analytics wrapper for both command-line and web apps.
