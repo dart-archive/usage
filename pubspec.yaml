@@ -1,0 +1,16 @@
+# Copyright (c) 2014, the Dart project authors.  Please see the AUTHORS file
+# for details. All rights reserved. Use of this source code is governed by a
+# BSD-style license that can be found in the LICENSE file.
+
+name: usage
+version: 0.0.1
+description: A Google Analytics wrapper for both command-line and web apps.
+homepage: https://github.com/dart-lang/usage
+author: Dart Team <misc@dartlang.org>
+
+dependencies:
+  crypto: '>=0.9.0 <0.10.0'
+  uuid: '>=0.4.0 <0.5.0'
+
+dev_dependencies:
+  unittest: '>=0.11.0 <0.12.0'
