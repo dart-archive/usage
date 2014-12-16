@@ -8,7 +8,7 @@ apps.
 ## For web apps
 
 In order to use this library as a web app, import the `usage_html.dart` library
-and instantiate the [AnalyticsHtml] class.
+and instantiate the `AnalyticsHtml` class.
 
 ## For command-line apps
 
