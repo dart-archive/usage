@@ -2,12 +2,12 @@
 
 ## 0.0.3
 
-- replace optional positional arguments with named arguments
+- Replaced optional positional arguments with named arguments
 
 ## 0.0.2
 
-- capture a bug for `analytics.sendTiming()`
+- Fixed a bug in `analytics.sendTiming()`
  
 ## 0.0.1
 
-- initial version, created by Stagehand
+- Initial version, created by Stagehand

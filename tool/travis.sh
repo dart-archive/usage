@@ -13,7 +13,7 @@ curl http://storage.googleapis.com/dart-archive/channels/stable/release/latest/s
 unzip $DART_DIST > /dev/null
 rm $DART_DIST
 export DART_SDK="$PWD/dart-sdk"
-export PATH="$DART_SDK/bin:$PATH:~/.pub-cache/bin"
+export PATH="$DART_SDK/bin:$PATH"
 
 # Display installed versions.
 dart --version
@@ -32,7 +32,14 @@ dartanalyzer --fatal-warnings \
 dart test/all.dart
 
 # Install dart_coveralls; gather and send coverage data.
-#if [ -z "$COVERALLS" ]; then
+if [ "$COVERALLS" ]; then
+  export PATH="$PATH":"~/.pub-cache/bin"
+
+  echo
+  echo "Installing dart_coveralls"
   pub global activate dart_coveralls
+
+  echo
+  echo "Running code coverage report"
   pub global run dart_coveralls report --token $COVERALLS test/all.dart
-#fi
+fi
