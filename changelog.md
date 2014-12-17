@@ -2,7 +2,7 @@
 
 ## 0.0.2
 
-- capture a bug for for `analytics.sendTiming()`
+- capture a bug for `analytics.sendTiming()`
  
 ## 0.0.1
 
