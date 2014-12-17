@@ -13,7 +13,7 @@ curl http://storage.googleapis.com/dart-archive/channels/stable/release/latest/s
 unzip $DART_DIST > /dev/null
 rm $DART_DIST
 export DART_SDK="$PWD/dart-sdk"
-export PATH="$DART_SDK/bin:$PATH"
+export PATH="$DART_SDK/bin:$PATH:~/.pub-cache/bin"
 
 # Display installed versions.
 dart --version
