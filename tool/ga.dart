@@ -20,7 +20,7 @@ void main() {
   }).then((_) {
     return ga.sendException('foo exception, line 123:56');
   }).then((_) {
-    return ga.sendEvent('create', 'consoleapp', 'Console App');
+    return ga.sendEvent('create', 'consoleapp', label: 'Console App');
   }).then((_) {
     print('pinged ${UA}.');
   });

@@ -120,7 +120,7 @@ abstract class AnalyticsImpl implements Analytics {
     return _sendPayload('screenview', args);
   }
 
-  Future sendEvent(String category, String action, [String label, int value]) {
+  Future sendEvent(String category, String action, {String label, int value}) {
     if (!optIn) return new Future.value();
 
     Map args = {'ec': category, 'ea': action};
@@ -136,8 +136,8 @@ abstract class AnalyticsImpl implements Analytics {
     return _sendPayload('social', args);
   }
 
-  Future sendTiming(String variableName, int time, [String category,
-        String label]) {
+  Future sendTiming(String variableName, int time, {String category,
+        String label}) {
     if (!optIn) return new Future.value();
 
     Map args = {'utv': variableName, 'utt': '$time'};
@@ -146,7 +146,7 @@ abstract class AnalyticsImpl implements Analytics {
     return _sendPayload('timing', args);
   }
 
-  Future sendException(String description, [bool fatal]) {
+  Future sendException(String description, {bool fatal}) {
     if (!optIn) return new Future.value();
 
     // In order to ensure that the client of this API is not sending any PII
