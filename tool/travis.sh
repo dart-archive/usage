@@ -33,6 +33,6 @@ dart test/all.dart
 
 # Install dart_coveralls; gather and send coverage data.
 #if [ -z "$COVERALLS" ]; then
-#  pub global activate dart_coveralls
-#  pub global run dart_coveralls report --token $COVERALLS test/all.dart
+  pub global activate dart_coveralls
+  pub global run dart_coveralls report --token $COVERALLS test/all.dart
 #fi
