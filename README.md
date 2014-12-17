@@ -5,7 +5,7 @@ apps.
 
 [![Build Status](https://travis-ci.org/dart-lang/usage.svg)](https://travis-ci.org/dart-lang/usage)
 
-[![Coverage Status](https://coveralls.io/repos/dart-lang/usage/badge.png)](https://coveralls.io/r/dart-lang/usage)
+<!-- [![Coverage Status](https://img.shields.io/coveralls/dart-lang/usage.svg)](https://coveralls.io/r/dart-lang/usage) -->
 
 ## For web apps
 
