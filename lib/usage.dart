@@ -57,7 +57,7 @@ abstract class Analytics {
    * Sends an Event hit to Google Analytics. [label] specifies the event label.
    * [value] specifies the event value. Values must be non-negative.
    */
-  Future sendEvent(String category, String action, [String label, int value]);
+  Future sendEvent(String category, String action, {String label, int value});
 
   /**
    * Sends a Social hit to Google Analytics. [network] specifies the social
@@ -74,15 +74,15 @@ abstract class Analytics {
    * milliseconds). [category] specifies the category of the timing. [label]
    * specifies the label of the timing.
    */
-  Future sendTiming(String variableName, int time, [String category,
-      String label]);
+  Future sendTiming(String variableName, int time, {String category,
+      String label});
 
   /**
    * In order to avoid sending any personally identifying information, the
    * [description] field must not contain the exception message. In addition,
    * only the first 100 chars of the description will be sent.
    */
-  Future sendException(String description, [bool fatal]);
+  Future sendException(String description, {bool fatal});
 
   /**
    * Sets a session variable value. The value is persistent for the life of the
@@ -106,7 +106,7 @@ class AnalyticsMock extends Analytics {
     return _log('screenView', {'viewName': viewName});
   }
 
-  Future sendEvent(String category, String action, [String label, int value]) {
+  Future sendEvent(String category, String action, {String label, int value}) {
     return _log('event', {'category': category, 'action': action,
       'label': label, 'value': value});
   }
@@ -116,13 +116,13 @@ class AnalyticsMock extends Analytics {
       'target': target});
   }
 
-  Future sendTiming(String variableName, int time, [String category,
-      String label]) {
+  Future sendTiming(String variableName, int time, {String category,
+      String label}) {
     return _log('timing', {'variableName': variableName, 'time': time,
       'category': category, 'label': label});
   }
 
-  Future sendException(String description, [bool fatal]) {
+  Future sendException(String description, {bool fatal}) {
     return _log('exception', {'description': description, 'fatal': fatal});
   }
 
