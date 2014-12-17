@@ -125,7 +125,7 @@ abstract class AnalyticsImpl implements Analytics {
 
     Map args = {'ec': category, 'ea': action};
     if (label != null) args['el'] = label;
-    if (value != null) args['ev'] = '$value';
+    if (value != null) args['ev'] = '${value}';
     return _sendPayload('event', args);
   }
 
@@ -140,7 +140,7 @@ abstract class AnalyticsImpl implements Analytics {
         String label]) {
     if (!optIn) return new Future.value();
 
-    Map args = {'utv': variableName, 'utt': '$time'};
+    Map args = {'utv': variableName, 'utt': '${time}'};
     if (label != null) args['utl'] = label;
     if (category != null) args['utc'] = category;
     return _sendPayload('timing', args);
@@ -169,7 +169,7 @@ abstract class AnalyticsImpl implements Analytics {
     if (value == null) {
       _variableMap.remove(param);
     } else {
-      _variableMap[param] = '$value';
+      _variableMap[param] = '${value}';
     }
   }
 
