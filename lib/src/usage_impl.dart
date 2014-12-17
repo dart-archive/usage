@@ -140,7 +140,7 @@ abstract class AnalyticsImpl implements Analytics {
         String label]) {
     if (!optIn) return new Future.value();
 
-    Map args = {'utv': variableName, 'utt': time};
+    Map args = {'utv': variableName, 'utt': '$time'};
     if (label != null) args['utl'] = label;
     if (category != null) args['utc'] = category;
     return _sendPayload('timing', args);
