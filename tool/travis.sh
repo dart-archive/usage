@@ -32,14 +32,14 @@ dartanalyzer --fatal-warnings \
 dart test/all.dart
 
 # Install dart_coveralls; gather and send coverage data.
-if [ "$COVERALLS" ]; then
-  export PATH="$PATH":"~/.pub-cache/bin"
-
-  echo
-  echo "Installing dart_coveralls"
-  pub global activate dart_coveralls
-
-  echo
-  echo "Running code coverage report"
-  pub global run dart_coveralls report --token $COVERALLS test/all.dart
-fi
+#if [ "$COVERALLS" ]; then
+#  export PATH="$PATH":"~/.pub-cache/bin"
+#
+#  echo
+#  echo "Installing dart_coveralls"
+#  pub global activate dart_coveralls
+#
+#  echo
+#  echo "Running code coverage report"
+#  pub global run dart_coveralls report --token $COVERALLS test/all.dart
+#fi
