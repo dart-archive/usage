@@ -16,11 +16,12 @@ final int _MAX_EXCEPTION_LENGTH = 100;
 // Matches file:/, non-ws, /, non-ws, .dart
 final RegExp _pathRegex = new RegExp(r'file:/\S+/(\S+\.dart)');
 
-String postEncode(Map<String, String> map) {
+String postEncode(Map<String, dynamic> map) {
   // &foo=bar
-  return map.keys
-      .map((key) => "${key}=${Uri.encodeComponent(map[key])}")
-      .join('&');
+  return map.keys.map((key) {
+    String value = '${map[key]}';
+    return "${key}=${Uri.encodeComponent(value)}";
+  }).join('&');
 }
 
 /**
@@ -125,7 +126,7 @@ abstract class AnalyticsImpl implements Analytics {
 
     Map args = {'ec': category, 'ea': action};
     if (label != null) args['el'] = label;
-    if (value != null) args['ev'] = '${value}';
+    if (value != null) args['ev'] = value;
     return _sendPayload('event', args);
   }
 
@@ -140,7 +141,7 @@ abstract class AnalyticsImpl implements Analytics {
         String label}) {
     if (!optIn) return new Future.value();
 
-    Map args = {'utv': variableName, 'utt': '${time}'};
+    Map args = {'utv': variableName, 'utt': time};
     if (label != null) args['utl'] = label;
     if (category != null) args['utc'] = category;
     return _sendPayload('timing', args);
@@ -169,7 +170,7 @@ abstract class AnalyticsImpl implements Analytics {
     if (value == null) {
       _variableMap.remove(param);
     } else {
-      _variableMap[param] = '${value}';
+      _variableMap[param] = value;
     }
   }
 

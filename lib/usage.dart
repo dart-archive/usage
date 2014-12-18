@@ -93,6 +93,10 @@ abstract class Analytics {
   void setSessionValue(String param, dynamic value);
 }
 
+/**
+ * A no-op implementation of the [Analytics] class. This can be used as a
+ * stand-in for that will never ping the GA server, or as a mock in test code.
+ */
 class AnalyticsMock extends Analytics {
   String get trackingId => 'UA-0';
   final bool logCalls;
@@ -100,6 +104,10 @@ class AnalyticsMock extends Analytics {
   bool optIn = false;
   bool hasSetOptIn = true;
 
+  /**
+   * Create a new [AnalyticsMock]. If [logCalls] is true, all calls will be
+   * logged to stdout.
+   */
   AnalyticsMock([this.logCalls = false]);
 
   Future sendScreenView(String viewName) {

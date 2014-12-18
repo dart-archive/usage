@@ -14,9 +14,10 @@ import 'usage_impl.dart';
 
 String _createUserAgent() {
   // Mozilla/5.0 (iPhone; U; CPU iPhone OS 5_1_1 like Mac OS X; en)
+  // Dart/1.8.0-edge.41170 (macos; macos; macos; null)
   String os = Platform.operatingSystem;
   String locale = Platform.environment['LANG'];
-  return "Dart/${Platform.version} (${os}; ${os}; ${os}; ${locale})";
+  return "Dart/${_dartVersion()} (${os}; ${os}; ${os}; ${locale})";
 }
 
 String _userHomeDir() {
@@ -25,19 +26,27 @@ String _userHomeDir() {
   return value == null ? '.' : value;
 }
 
+String _dartVersion() {
+  String ver = Platform.version;
+  int index = ver.indexOf(' ');
+  if (index != -1) ver = ver.substring(0, index);
+  return ver;
+}
+
 class IOPostHandler extends PostHandler {
   final String _userAgent;
+  final HttpClient mockClient;
 
-  IOPostHandler() : _userAgent = _createUserAgent();
+  IOPostHandler({HttpClient this.mockClient}) : _userAgent = _createUserAgent();
 
   Future sendPost(String url, Map<String, String> parameters) {
     // Add custom parameters for OS and the Dart version.
     parameters['cd1'] = Platform.operatingSystem;
-    parameters['cd2'] = 'dart ${Platform.version}';
+    parameters['cd2'] = 'dart ${_dartVersion()}';
 
     String data = postEncode(parameters);
 
-    HttpClient client = new HttpClient();
+    HttpClient client = mockClient != null ? mockClient : new HttpClient();
     client.userAgent = _userAgent;
     return client.postUrl(Uri.parse(url)).then((HttpClientRequest req) {
       req.write(data);
