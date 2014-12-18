@@ -13,39 +13,12 @@ import '../usage.dart';
 
 final int _MAX_EXCEPTION_LENGTH = 100;
 
-// Matches file:/, non-ws, /, non-ws, .dart
-final RegExp _pathRegex = new RegExp(r'file:/\S+/(\S+\.dart)');
-
 String postEncode(Map<String, dynamic> map) {
   // &foo=bar
   return map.keys.map((key) {
     String value = '${map[key]}';
     return "${key}=${Uri.encodeComponent(value)}";
   }).join('&');
-}
-
-/**
- * Santitize a string potentially containing file paths. This will remove all
- * but the last file name in order to remove any PII that may be contained in
- * the full file path. For example, this will shorten:
- *
- *     file:///Users/foobar/tmp/error.dart
- *
- * to
- *
- *     error.dart
- */
-String sanitizeFilePaths(String stackTrace) {
-  Iterable<Match> iter = _pathRegex.allMatches(stackTrace);
-  iter = iter.toList().reversed;
-
-  for (Match match in iter) {
-    String replacement = match.group(1);
-    stackTrace = stackTrace.substring(0, match.start)
-        + replacement + stackTrace.substring(match.end);
-  }
-
-  return stackTrace;
 }
 
 /**

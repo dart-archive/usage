@@ -3,7 +3,7 @@
 `usage` is a wrapper around Google Analytics for both command-line apps and web
 apps.
 
-[![Build Status](https://travis-ci.org/dart-lang/usage.svg)](https://travis-ci.org/dart-lang/usage) 
+[![Build Status](https://travis-ci.org/dart-lang/usage.svg)](https://travis-ci.org/dart-lang/usage)
 [![Coverage Status](https://img.shields.io/coveralls/dart-lang/usage.svg)](https://coveralls.io/r/dart-lang/usage?branch=master)
 
 ## For web apps
