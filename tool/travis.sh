@@ -41,5 +41,6 @@ if [ "$REPO_TOKEN" ]; then
 
   echo
   echo "Running code coverage report"
-  pub global run dart_coveralls report --debug --retry 3 test/all.dart
+  # --debug for verbose logging
+  pub global run dart_coveralls report --retry 3 test/all.dart
 fi

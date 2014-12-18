@@ -5,6 +5,8 @@ apps.
 
 [![Build Status](https://travis-ci.org/dart-lang/usage.svg)](https://travis-ci.org/dart-lang/usage)
 
+[![Coverage Status](https://coveralls.io/repos/dart-lang/usage/badge.png?branch=master)](https://coveralls.io/r/dart-lang/usage?branch=master)
+
 ## For web apps
 
 In order to use this library as a web app, import the `usage_html.dart` library
