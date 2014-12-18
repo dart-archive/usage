@@ -9,16 +9,6 @@ import 'package:unittest/unittest.dart';
 import 'src/common.dart';
 
 void defineTests() {
-  group('hit types', () {
-    test('respects disabled', () {
-      AnalyticsImplMock mock = createMock();
-      mock.optIn = false;
-      mock.sendException('FooBar exception');
-      expect(mock.optIn, false);
-      expect(mock.mockPostHandler.sentValues, isEmpty);
-    });
-  });
-
   group('screenView', () {
     test('simple', () {
       AnalyticsImplMock mock = createMock();
@@ -78,8 +68,3 @@ void defineTests() {
     });
   });
 }
-
-AnalyticsImplMock createMock() => new AnalyticsImplMock('UA-0');
-
-void was(Map m, String type) => expect(m['t'], type);
-void has(Map m, String key) => expect(m[key], isNotNull);

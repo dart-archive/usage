@@ -6,15 +6,23 @@ library usage.common_test;
 
 import 'dart:async';
 
+import 'package:unittest/unittest.dart';
 import 'package:usage/src/usage_impl.dart';
+
+AnalyticsImplMock createMock({bool setOptIn: true}) => new AnalyticsImplMock(
+    'UA-0', setOptIn: setOptIn);
+
+void was(Map m, String type) => expect(m['t'], type);
+void has(Map m, String key) => expect(m[key], isNotNull);
+void hasnt(Map m, String key) => expect(m[key], isNull);
 
 class AnalyticsImplMock extends AnalyticsImpl {
   MockProperties get mockProperties => properties;
   MockPostHandler get mockPostHandler => postHandler;
 
-  AnalyticsImplMock(String trackingId) :
+  AnalyticsImplMock(String trackingId, {bool setOptIn: true}) :
     super(trackingId, new MockProperties(), new MockPostHandler()) {
-    optIn = true;
+    if (setOptIn) optIn = true;
   }
 
   Map<String, dynamic> get last => mockPostHandler.last;

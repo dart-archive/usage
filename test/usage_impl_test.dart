@@ -6,7 +6,8 @@ library usage.impl_test;
 
 import 'package:unittest/unittest.dart';
 import 'package:usage/src/usage_impl.dart';
-import 'package:usage/src/usage_impl_io.dart';
+
+import 'src/common.dart';
 
 void defineTests() {
   group('ThrottlingBucket', () {
@@ -21,6 +22,35 @@ void defineTests() {
         expect(bucket.removeDrop(), true);
       }
       expect(bucket.removeDrop(), false);
+    });
+  });
+
+  group('AnalyticsImpl', () {
+    test('respects disabled', () {
+      AnalyticsImplMock mock = createMock();
+      mock.optIn = false;
+      mock.sendException('FooBar exception');
+      expect(mock.optIn, false);
+      expect(mock.mockPostHandler.sentValues, isEmpty);
+    });
+
+    test('hasSetOptIn', () {
+      AnalyticsImplMock mock = createMock(setOptIn: false);
+      expect(mock.hasSetOptIn, false);
+      mock.optIn = false;
+      expect(mock.hasSetOptIn, true);
+    });
+
+    test('setSessionValue', () {
+      AnalyticsImplMock mock = createMock();
+      mock.sendScreenView('foo');
+      hasnt(mock.last, 'val');
+      mock.setSessionValue('val', 'ue');
+      mock.sendScreenView('bar');
+      has(mock.last, 'val');
+      mock.setSessionValue('val', null);
+      mock.sendScreenView('baz');
+      hasnt(mock.last, 'val');
     });
   });
 
@@ -39,19 +69,10 @@ void defineTests() {
     });
   });
 
-  group('IOPersistentProperties', () {
-    test('add', () {
-      IOPersistentProperties props = new IOPersistentProperties('foo_props');
-      props['foo'] = 'bar';
-      expect(props['foo'], 'bar');
-    });
-
-    test('remove', () {
-      IOPersistentProperties props = new IOPersistentProperties('foo_props');
-      props['foo'] = 'bar';
-      expect(props['foo'], 'bar');
-      props['foo'] = null;
-      expect(props['foo'], null);
+  group('postEncode', () {
+    test('simple', () {
+      Map map = {'foo': 'bar', 'baz': 'qux norf'};
+      expect(postEncode(map), 'foo=bar&baz=qux%20norf');
     });
   });
 }
