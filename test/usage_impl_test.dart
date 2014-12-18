@@ -48,6 +48,9 @@ void defineTests() {
       mock.setSessionValue('val', 'ue');
       mock.sendScreenView('bar');
       has(mock.last, 'val');
+      mock.setSessionValue('val', null);
+      mock.sendScreenView('baz');
+      hasnt(mock.last, 'val');
     });
   });
 
