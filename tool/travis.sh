@@ -41,5 +41,5 @@ if [ "$REPO_TOKEN" ]; then
 
   echo
   echo "Running code coverage report"
-  pub global run dart_coveralls report --debug --retry 3 test/all.dart
+  pub global run dart_coveralls report --token $REPO_TOKEN --debug --retry 3 test/all.dart
 fi
