@@ -26,6 +26,9 @@ library usage;
 
 import 'dart:async';
 
+// Matches file:/, non-ws, /, non-ws, .dart
+final RegExp _pathRegex = new RegExp(r'file:/\S+/(\S+\.dart)');
+
 /**
  * An interface to a Google Analytics session. [AnalyticsHtml] and [AnalyticsIO]
  * are concrete implementations of this interface. [AnalyticsMock] can be used
@@ -143,4 +146,37 @@ class AnalyticsMock extends Analytics {
 
     return new Future.value();
   }
+}
+
+/**
+ * Santitize a stacktrace. This will shorten file paths in order to remove any
+ * PII that may be contained in the full file path. For example, this will
+ * shorten `file:///Users/foobar/tmp/error.dart` to `error.dart`.
+ *
+ * If [shorten] is `true`, this method will also attempt to compress the text
+ * of the stacktrace. GA has a 100 char limit on the text that can be sent for
+ * an exception. This will try and make those first 100 chars contain
+ * information useful to debugging the issue.
+ */
+String sanitizeStacktrace(dynamic st, {bool shorten: true}) {
+  String str = '${st}';
+
+  Iterable<Match> iter = _pathRegex.allMatches(str);
+  iter = iter.toList().reversed;
+
+  for (Match match in iter) {
+    String replacement = match.group(1);
+    str = str.substring(0, match.start)
+        + replacement + str.substring(match.end);
+  }
+
+  if (shorten) {
+    // Shorten the stacktrace up a bit.
+    str = str
+        .replaceAll('(package:', '(')
+        .replaceAll('(dart:', '(')
+        .replaceAll(new RegExp(r'\s+'), ' ');
+  }
+
+  return str;
 }

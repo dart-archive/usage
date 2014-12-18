@@ -54,21 +54,6 @@ void defineTests() {
     });
   });
 
-  group('sanitizeFilePaths', () {
-    test('replace file', () {
-      expect(sanitizeFilePaths(
-          '(file:///Users/foo/tmp/error.dart:3:13)'),
-          '(error.dart:3:13)');
-    });
-
-    test('replace files', () {
-      expect(sanitizeFilePaths(
-          'foo (file:///Users/foo/tmp/error.dart:3:13)\n'
-          'bar (file:///Users/foo/tmp/error.dart:3:13)'),
-          'foo (error.dart:3:13)\nbar (error.dart:3:13)');
-    });
-  });
-
   group('postEncode', () {
     test('simple', () {
       Map map = {'foo': 'bar', 'baz': 'qux norf'};
