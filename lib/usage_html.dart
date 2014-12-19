@@ -47,7 +47,13 @@ class _PostHandler extends PostHandler {
     parameters['vp'] = '${viewportWidth}x$viewportHeight';
 
     String data = postEncode(parameters);
-    return HttpRequest.request(url, method: 'POST', sendData: data);
+    return HttpRequest.request(
+        url,
+        method: 'POST',
+        sendData: data).catchError((e) {
+      // Catch errors that can happen during a request, but that we can't do
+      // anything about, e.g. a missing internet conenction.
+    });
   }
 }
 

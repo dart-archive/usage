@@ -2,6 +2,8 @@
 
 ## 0.0.5
 
+- Catch errors during pings to Google Analytics, for example in case of a 
+  missing internet connection
 - Track additional browser data such as screen size and language
 
 ## 0.0.4
