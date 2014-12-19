@@ -35,7 +35,13 @@ class AnalyticsHtml extends AnalyticsImpl {
 class _PostHandler extends PostHandler {
   Future sendPost(String url, Map<String, String> parameters) {
     String data = postEncode(parameters);
-    return HttpRequest.request(url, method: 'POST', sendData: data);
+    return HttpRequest.request(
+        url,
+        method: 'POST',
+        sendData: data).catchError((e) {
+      // Catch errors that can happen during a request, but that we can't do
+      // anything about, e.g. a missing internet conenction.
+    });
   }
 }
 

@@ -1,5 +1,10 @@
 # Changelog
 
+## 0.0.5
+
+- Catch errors during pings to Google Analytics, for example in case of a 
+  missing internet connection
+
 ## 0.0.4
 
 - Moved `sanitizeStacktrace` into the main library
