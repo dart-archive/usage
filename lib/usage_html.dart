@@ -29,11 +29,23 @@ class AnalyticsHtml extends AnalyticsImpl {
       new _PersistentProperties(applicationName),
       new _PostHandler(),
       applicationName: applicationName,
-      applicationVersion: applicationVersion);
+      applicationVersion: applicationVersion) {
+    int screenWidth = window.screen.width;
+    int screenHeight = window.screen.height;
+
+    setSessionValue('sr', '${screenWidth}x$screenHeight');
+    setSessionValue('sd', '${window.screen.pixelDepth}-bits');
+    setSessionValue('ul', window.navigator.language);
+  }
 }
 
 class _PostHandler extends PostHandler {
   Future sendPost(String url, Map<String, String> parameters) {
+    int viewportWidth = document.documentElement.clientWidth;
+    int viewportHeight = document.documentElement.clientHeight;
+
+    parameters['vp'] = '${viewportWidth}x$viewportHeight';
+
     String data = postEncode(parameters);
     return HttpRequest.request(
         url,
