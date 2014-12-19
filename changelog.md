@@ -2,7 +2,7 @@
 
 ## 0.0.5
 
-- Track additional browser data as screen size and language
+- Track additional browser data such as screen size and language
 
 ## 0.0.4
 
