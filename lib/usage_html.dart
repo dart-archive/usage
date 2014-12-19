@@ -34,6 +34,16 @@ class AnalyticsHtml extends AnalyticsImpl {
 
 class _PostHandler extends PostHandler {
   Future sendPost(String url, Map<String, String> parameters) {
+    int screenWidth = window.screen.width;
+    int screenHeight = window.screen.height;
+    int clientWidth = document.documentElement.clientWidth;
+    int clientHeight = document.documentElement.clientHeight;
+
+    parameters['sr'] = '${screenWidth}x$screenHeight';
+    parameters['vp'] = '${clientWidth}x$clientHeight';
+    parameters['sd'] = '${window.screen.pixelDepth}-bits';
+    parameters['ul'] = window.navigator.language;
+
     String data = postEncode(parameters);
     return HttpRequest.request(url, method: 'POST', sendData: data);
   }
