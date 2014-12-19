@@ -3,7 +3,7 @@
 ## 0.0.5
 
 - Catch errors during pings to Google Analytics, for example in case of a 
-  missing internet conenction
+  missing internet connection
 
 ## 0.0.4
 
