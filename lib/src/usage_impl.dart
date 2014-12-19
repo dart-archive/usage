@@ -201,6 +201,10 @@ abstract class PersistentProperties {
  * A utility class to perform HTTP POSTs. An [AnalyticsImpl] instance expects to
  * have one of these injected into it. There are default implementations for
  * `dart:io` and `dart:html` clients.
+ *
+ * The POST information should be sent on a best-effort basis. The `Future` from
+ * [sendPost] should complete when the operation is finished, but failures to
+ * send the information should be silent.
  */
 abstract class PostHandler {
   Future sendPost(String url, Map<String, String> parameters);
