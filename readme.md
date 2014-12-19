@@ -42,6 +42,28 @@ In the future, in order to make this easier to do for CLI clients, we may roll
 some of this functionality into the library. I.e., provide something like a
 `waitForLastPing(Duration timeout)` method on the CLI client.
 
+## Using the API
+
+Import the package (in this example we use the `dart:io` version):
+
+    import 'package:usage/usage_io.dart';
+
+And call some analytics code:
+
+```
+final String UA = ...;
+
+Analytics ga = new AnalyticsIO(UA, 'ga_test', '1.0');
+ga.optIn = true;
+
+ga.sendScreenView('home');
+ga.sendException('foo exception');
+
+ga.sendScreenView('files');
+ga.sendTiming('writeTime', 100);
+ga.sendTiming('readTime', 20);
+```
+
 ## Other info
 
 For both classes, you need to provide a Google Analytics tracking ID, the
