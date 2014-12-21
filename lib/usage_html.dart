@@ -11,11 +11,10 @@
  */
 library usage_html;
 
-import 'dart:async';
-import 'dart:convert' show JSON;
 import 'dart:html';
 
 import 'src/usage_impl.dart';
+import 'src/usage_impl_html.dart';
 
 export 'usage.dart';
 
@@ -26,8 +25,8 @@ class AnalyticsHtml extends AnalyticsImpl {
   AnalyticsHtml(String trackingId, String applicationName, String applicationVersion) :
     super(
       trackingId,
-      new _PersistentProperties(applicationName),
-      new _PostHandler(),
+      new HtmlPersistentProperties(applicationName),
+      new HtmlPostHandler(),
       applicationName: applicationName,
       applicationVersion: applicationVersion) {
     int screenWidth = window.screen.width;
@@ -36,45 +35,5 @@ class AnalyticsHtml extends AnalyticsImpl {
     setSessionValue('sr', '${screenWidth}x$screenHeight');
     setSessionValue('sd', '${window.screen.pixelDepth}-bits');
     setSessionValue('ul', window.navigator.language);
-  }
-}
-
-class _PostHandler extends PostHandler {
-  Future sendPost(String url, Map<String, String> parameters) {
-    int viewportWidth = document.documentElement.clientWidth;
-    int viewportHeight = document.documentElement.clientHeight;
-
-    parameters['vp'] = '${viewportWidth}x$viewportHeight';
-
-    String data = postEncode(parameters);
-    return HttpRequest.request(
-        url,
-        method: 'POST',
-        sendData: data).catchError((e) {
-      // Catch errors that can happen during a request, but that we can't do
-      // anything about, e.g. a missing internet conenction.
-    });
-  }
-}
-
-class _PersistentProperties extends PersistentProperties {
-  Map _map;
-
-  _PersistentProperties(String name) : super(name) {
-    String str = window.localStorage[name];
-    if (str == null || str.isEmpty) str = '{}';
-    _map = JSON.decode(str);
-  }
-
-  dynamic operator[](String key) => _map[key];
-
-  void operator[]=(String key, dynamic value) {
-    if (value == null) {
-      _map.remove(key);
-    } else {
-      _map[key] = value;
-    }
-
-    window.localStorage[name] = JSON.encode(_map);
   }
 }
