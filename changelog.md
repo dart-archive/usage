@@ -6,7 +6,7 @@
   missing internet connection
 - Track additional browser data, such as screen size and language
 - Added tests for `usage` running in a dart:html context
--
+- Changed to a custom implementation of UUID; saved ~376k in compiled JS size
 
 ## 0.0.4
 
