@@ -31,6 +31,9 @@ dartanalyzer --fatal-warnings \
 # Run the tests.
 dart test/all.dart
 
+# Measure the size of the compiled JS, for the dart:html version of the library.
+dart tool/grind.dart build
+
 # Install dart_coveralls; gather and send coverage data.
 if [ "$REPO_TOKEN" ]; then
   export PATH="$PATH":"~/.pub-cache/bin"

@@ -22,3 +22,6 @@ dartanalyzer --fatal-warnings \
 
 # Run the tests.
 dart test/all.dart
+
+# Measure the size of the compiled JS, for the dart:html version of the library.
+dart tool/grind.dart build

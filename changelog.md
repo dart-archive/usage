@@ -4,7 +4,9 @@
 
 - Catch errors during pings to Google Analytics, for example in case of a
   missing internet connection
-- Track additional browser data such as screen size and language
+- Track additional browser data, such as screen size and language
+- Added tests for `usage` running in a dart:html context
+-
 
 ## 0.0.4
 
