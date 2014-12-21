@@ -13,6 +13,7 @@ import 'package:unittest/unittest.dart';
 import 'hit_types_test.dart' as hit_types_test;
 import 'usage_test.dart' as usage_test;
 import 'usage_impl_test.dart' as usage_impl_test;
+import 'uuid_test.dart' as uuid_test;
 
 // TODO: get the tests running in content_shell
 
@@ -24,6 +25,7 @@ void main() {
   hit_types_test.defineTests();
   usage_test.defineTests();
   usage_impl_test.defineTests();
+  uuid_test.defineTests();
 
   // Define some web specfic tests.
   defineWebTests();
