@@ -44,7 +44,4 @@ void clean(GrinderContext context) {
   deleteEntity(BUILD_DIR, context);
 }
 
-String _printSize(File file) {
-  int size = file.lengthSync();
-  return '${(size + 1023) ~/ 1024}k';
-}
+String _printSize(File file) => '${(file.lengthSync() + 1023) ~/ 1024}k';
