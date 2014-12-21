@@ -7,8 +7,7 @@ library usage_impl;
 import 'dart:async';
 import 'dart:math' as math;
 
-import 'package:uuid/uuid.dart';
-
+import 'uuid.dart';
 import '../usage.dart';
 
 final int _MAX_EXCEPTION_LENGTH = 100;
@@ -154,7 +153,7 @@ abstract class AnalyticsImpl implements Analytics {
 
   void _initClientId() {
     if (_clientId == null) {
-      properties['clientId'] = new Uuid().v4();
+      properties['clientId'] = new Uuid().generateV4();
     }
   }
 
