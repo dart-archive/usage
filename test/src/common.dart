@@ -9,8 +9,8 @@ import 'dart:async';
 import 'package:unittest/unittest.dart';
 import 'package:usage/src/usage_impl.dart';
 
-AnalyticsImplMock createMock({bool setOptIn: true}) => new AnalyticsImplMock(
-    'UA-0', setOptIn: setOptIn);
+AnalyticsImplMock createMock({bool setOptIn: true}) =>
+    new AnalyticsImplMock('UA-0', setOptIn: setOptIn);
 
 void was(Map m, String type) => expect(m['t'], type);
 void has(Map m, String key) => expect(m[key], isNotNull);
@@ -21,7 +21,8 @@ class AnalyticsImplMock extends AnalyticsImpl {
   MockPostHandler get mockPostHandler => postHandler;
 
   AnalyticsImplMock(String trackingId, {bool setOptIn: true}) :
-    super(trackingId, new MockProperties(), new MockPostHandler()) {
+      super(trackingId, new MockProperties(), new MockPostHandler(),
+      applicationName: 'Test App', applicationVersion: '0.1') {
     if (setOptIn) optIn = true;
   }
 
