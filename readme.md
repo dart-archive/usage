@@ -30,9 +30,11 @@ pings on a best effort basis, but prefer to let the tool exit reasonably
 quickly. Something like:
 
 ```
-void _exitApp([Future someAnalyticsFuture]) {
-  Future f = someAnalyticsFuture == null ? new Future.value() : someAnalyticsFuture;
-  f.timeout(new Duration(milliseconds: 500), onTimeout: () => null).then((_) {
+void _exitApp([Future analyticsFuture]) {
+  Future f = analyticsFuture == null ?
+      new Future.value() : analyticsFuture;
+  Duration d = new Duration(milliseconds: 500);
+  f.timeout(d, onTimeout: () => null).then((_) {
     io.exit(0);
   };
 }
