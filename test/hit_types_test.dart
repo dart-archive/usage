@@ -27,6 +27,17 @@ void defineTests() {
       has(mock.last, 'ec');
       has(mock.last, 'ea');
     });
+
+    test('optional args', () {
+      AnalyticsImplMock mock = createMock();
+      mock.sendEvent('files', 'save', label: 'File Save', value: 23);
+      expect(mock.mockPostHandler.sentValues, isNot(isEmpty));
+      was(mock.last, 'event');
+      has(mock.last, 'ec');
+      has(mock.last, 'ea');
+      has(mock.last, 'el');
+      has(mock.last, 'ev');
+    });
   });
 
   group('social', () {
@@ -50,6 +61,17 @@ void defineTests() {
       has(mock.last, 'utv');
       has(mock.last, 'utt');
     });
+
+    test('optional args', () {
+      AnalyticsImplMock mock = createMock();
+      mock.sendTiming('compile', 123, category: 'Build', label: 'Compile');
+      expect(mock.mockPostHandler.sentValues, isNot(isEmpty));
+      was(mock.last, 'timing');
+      has(mock.last, 'utv');
+      has(mock.last, 'utt');
+      has(mock.last, 'utc');
+      has(mock.last, 'utl');
+    });
   });
 
   group('exception', () {
@@ -61,10 +83,26 @@ void defineTests() {
       has(mock.last, 'exd');
     });
 
+    test('optional args', () {
+      AnalyticsImplMock mock = createMock();
+      mock.sendException('FooException', fatal: true);
+      expect(mock.mockPostHandler.sentValues, isNot(isEmpty));
+      was(mock.last, 'exception');
+      has(mock.last, 'exd');
+      has(mock.last, 'exf');
+    });
+
     test('exception file paths', () {
       AnalyticsImplMock mock = createMock();
       mock.sendException('foo bar (file:///Users/foobar/tmp/error.dart:3:13)');
       expect(mock.last['exd'], 'foo bar (');
+    });
+
+    test('long description trimmed', () {
+      String str = '0123456789abcdefghijklmnopqrstuvwxyz';
+      AnalyticsImplMock mock = createMock();
+      mock.sendException(str + str + str + str + str);
+      expect(mock.last['exd'].length, 100);
     });
   });
 }
