@@ -66,6 +66,24 @@ ga.sendTiming('writeTime', 100);
 ga.sendTiming('readTime', 20);
 ```
 
+## When do we send analytics data?
+
+We use an opt-in method for sending analytics information. There are essentially
+three states for when we send information:
+
+*Sending screen views* If the user has not opted in, the library will only send
+information about screen views. This allows tools to do things like version
+checks, but does not send any additional information.
+
+*Opt-in* If the user opts-in to analytics collection the library sends all
+requested analytics info. This includes screen views, events, timing
+information, and exceptions.
+
+*Opt-ing out* In order to not send analytics information, either do not call the
+analytics methods, or create and use the `AnalyticsMock` class. This provides
+an instance you can use in place of a real analytics object but each analytics
+method is a no-op.
+
 ## Other info
 
 For both classes, you need to provide a Google Analytics tracking ID, the

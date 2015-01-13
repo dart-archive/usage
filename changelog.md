@@ -3,6 +3,7 @@
 ## TODO
 - Added a web example
 - Added a utility method to time async events (`Analytics.startTimer()`)
+- Updated the readme to add information about when we send analytics info
 
 ## 0.0.5
 
