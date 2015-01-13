@@ -1,5 +1,8 @@
 # Changelog
 
+## TODO
+- Added a web example
+
 ## 0.0.5
 
 - Catch errors during pings to Google Analytics, for example in case of a
