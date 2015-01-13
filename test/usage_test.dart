@@ -15,6 +15,7 @@ void defineTests() {
       mock.sendEvent('files', 'save');
       mock.sendSocial('g+', 'plus', 'userid');
       mock.sendTiming('compile', 123);
+      mock.startTimer('compile').finish();
       mock.sendException('FooException');
       mock.setSessionValue('val', 'ue');
     });
