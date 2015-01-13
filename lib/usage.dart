@@ -85,6 +85,13 @@ abstract class Analytics {
       String label});
 
   /**
+   * Start a timer. The time won't be calculated, and the analytics information
+   * sent, until the [AnalyticsTimer.finish] method is called.
+   */
+  AnalyticsTimer startTimer(String variableName,
+      {String category, String label});
+
+  /**
    * In order to avoid sending any personally identifying information, the
    * [description] field must not contain the exception message. In addition,
    * only the first 100 chars of the description will be sent.
@@ -98,6 +105,45 @@ abstract class Analytics {
    * https://developers.google.com/analytics/devguides/collection/protocol/v1/parameters.
    */
   void setSessionValue(String param, dynamic value);
+}
+
+/**
+ * An object, returned by [Analytics.startTimer], that is used to measure an
+ * asynchronous process.
+ */
+class AnalyticsTimer {
+  final Analytics analytics;
+  final String variableName;
+  final String category;
+  final String label;
+
+  int _startMillis;
+  int _endMillis;
+
+  AnalyticsTimer(this.analytics, this.variableName,
+      {this.category, this.label}) {
+    _startMillis = new DateTime.now().millisecondsSinceEpoch;
+  }
+
+  int get currentElapsedMillis {
+    if (_endMillis == null) {
+      return new DateTime.now().millisecondsSinceEpoch - _startMillis;
+    } else {
+      return _endMillis - _startMillis;
+    }
+  }
+
+  /**
+   * Finish the timer, calculate the elapsed time, and send the information to
+   * analytics. Once this is called, any future invocations are no-ops.
+   */
+  Future finish() {
+    if (_endMillis != null) return new Future.value();
+
+    _endMillis = new DateTime.now().millisecondsSinceEpoch;
+    return analytics.sendTiming(
+        variableName, currentElapsedMillis, category: category, label: label);
+  }
 }
 
 /**
@@ -135,6 +181,12 @@ class AnalyticsMock extends Analytics {
       String label}) {
     return _log('timing', {'variableName': variableName, 'time': time,
       'category': category, 'label': label});
+  }
+
+  AnalyticsTimer startTimer(String variableName,
+      {String category, String label}) {
+    return new AnalyticsTimer(this,
+        variableName, category: category, label: label);
   }
 
   Future sendException(String description, {bool fatal}) {
