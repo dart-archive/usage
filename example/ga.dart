@@ -9,10 +9,19 @@ library usage_ga;
 
 import 'package:usage/usage_io.dart';
 
-void main() {
-  final String UA = 'UA-55029513-1';
+void main(List args) {
+  final String DEFAULT_UA = 'UA-55029513-1';
 
-  Analytics ga = new AnalyticsIO(UA, 'ga_test', '1.0');
+  if (args.isEmpty) {
+    print('usage: dart ga <GA tracking ID>');
+    print('pinging default UA value (${DEFAULT_UA})');
+  } else {
+    print('pinging ${args.first}');
+  }
+
+  String ua = args.isEmpty ? DEFAULT_UA : args.first;
+
+  Analytics ga = new AnalyticsIO(ua, 'ga_test', '1.0');
   ga.optIn = true;
 
   ga.sendScreenView('home').then((_) {
@@ -24,6 +33,6 @@ void main() {
   }).then((_) {
     return ga.sendEvent('create', 'consoleapp', label: 'Console App');
   }).then((_) {
-    print('pinged ${UA}.');
+    print('pinged ${ua}');
   });
 }

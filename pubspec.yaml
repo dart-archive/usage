@@ -8,6 +8,9 @@ description: A Google Analytics wrapper for both command-line and web apps.
 homepage: https://github.com/dart-lang/usage
 author: Dart Team <misc@dartlang.org>
 
+environment:
+  sdk: '>=1.0.0 <2.0.0'
+
 dev_dependencies:
   browser: any
   grinder: any
