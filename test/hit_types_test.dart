@@ -4,6 +4,9 @@
 
 library usage.hit_types_test;
 
+import 'dart:async';
+
+import 'package:usage/usage.dart';
 import 'package:unittest/unittest.dart';
 
 import 'src/common.dart';
@@ -71,6 +74,24 @@ void defineTests() {
       has(mock.last, 'utt');
       has(mock.last, 'utc');
       has(mock.last, 'utl');
+    });
+
+    test('timer', () {
+      AnalyticsImplMock mock = createMock();
+      AnalyticsTimer timer =
+          mock.startTimer('compile', category: 'Build', label: 'Compile');
+
+      return new Future.delayed(new Duration(milliseconds: 20), () {
+        return timer.finish().then((_) {
+          expect(mock.mockPostHandler.sentValues, isNot(isEmpty));
+          was(mock.last, 'timing');
+          has(mock.last, 'utv');
+          has(mock.last, 'utt');
+          has(mock.last, 'utc');
+          has(mock.last, 'utl');
+          expect(timer.currentElapsedMillis, greaterThan(10));
+        });
+      });
     });
   });
 

@@ -119,6 +119,11 @@ abstract class AnalyticsImpl implements Analytics {
     return _sendPayload('timing', args);
   }
 
+  AnalyticsTimer startTimer(String variableName, {String category, String label}) {
+    return new AnalyticsTimer(this,
+        variableName, category: category, label: label);
+  }
+
   Future sendException(String description, {bool fatal}) {
     if (!optIn) return new Future.value();
 

@@ -2,6 +2,7 @@
 
 ## TODO
 - Added a web example
+- Added a utility method to time async events (`Analytics.startTimer()`)
 
 ## 0.0.5
 
