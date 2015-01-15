@@ -93,6 +93,9 @@ Your application should provide an opt-in option for the user. If they opt-in,
 set the `optIn` field to `true`. This setting will persist across sessions
 automatically.
 
+*Note:* This library is intended for use with the Google Analytics application /
+mobile app style tracking IDs (as opposed to the web site style tracking IDs).
+
 For more information, please see the Google Analytics Measurement Protocol
 [Policy](https://developers.google.com/analytics/devguides/collection/protocol/policy).
 
