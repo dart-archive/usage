@@ -95,3 +95,13 @@ automatically.
 
 For more information, please see the Google Analytics Measurement Protocol
 [Policy](https://developers.google.com/analytics/devguides/collection/protocol/policy).
+
+## Issues and bugs
+
+Please file reports on the
+[GitHub Issue Tracker](https://github.com/dart-lang/usage/issues).
+
+## License
+
+You can view our license
+[here](https://github.com/dart-lang/usage/blob/master/LICENSE).
