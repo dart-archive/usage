@@ -29,7 +29,7 @@ analytics methods return, and wait on them with a timeout. So, send analytics
 pings on a best effort basis, but prefer to let the tool exit reasonably
 quickly. Something like:
 
-```
+```dart
 void _exitApp([Future analyticsFuture]) {
   Future f = analyticsFuture == null ?
       new Future.value() : analyticsFuture;
@@ -52,7 +52,7 @@ Import the package (in this example we use the `dart:io` version):
 
 And call some analytics code:
 
-```
+```dart
 final String UA = ...;
 
 Analytics ga = new AnalyticsIO(UA, 'ga_test', '1.0');
