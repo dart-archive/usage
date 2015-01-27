@@ -8,13 +8,13 @@ apps.
 
 ## For web apps
 
-In order to use this library as a web app, import the `usage_html.dart` library
-and instantiate the `AnalyticsHtml` class.
+To use this library as a web app, import the `usage_html.dart` library and
+instantiate the `AnalyticsHtml` class.
 
 ## For command-line apps
 
-In order to use this library as a command-line app, import the `usage_io.dart`
-library and instantiate the `AnalyticsIO` class.
+To use this library as a command-line app, import the `usage_io.dart` library
+and instantiate the `AnalyticsIO` class.
 
 Note, for CLI apps, the usage library will send analytics pings asynchronously.
 This is useful it that it doesn't block the app generally. It does have one
