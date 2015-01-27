@@ -18,6 +18,7 @@ void defineTests() {
       mock.startTimer('compile').finish();
       mock.sendException('FooException');
       mock.setSessionValue('val', 'ue');
+      return mock.waitForLastPing();
     });
   });
 
