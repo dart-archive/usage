@@ -60,7 +60,7 @@ class ThrottlingBucket {
   }
 }
 
-abstract class AnalyticsImpl implements Analytics {
+abstract class AnalyticsImpl extends Analytics {
   static const String _GA_URL = 'https://www.google-analytics.com/collect';
 
   /// Tracking ID / Property ID.
@@ -71,6 +71,8 @@ abstract class AnalyticsImpl implements Analytics {
 
   final ThrottlingBucket _bucket = new ThrottlingBucket(20);
   final Map<String, dynamic> _variableMap = {};
+
+  final List<Future> _futures = [];
 
   AnalyticsImpl(this.trackingId, this.properties, this.postHandler,
       {String applicationName, String applicationVersion}) {
@@ -151,6 +153,16 @@ abstract class AnalyticsImpl implements Analytics {
     }
   }
 
+  Future waitForLastPing({Duration timeout}) {
+    Future f = Future.wait(_futures).catchError((e) => null);
+
+    if (timeout != null) {
+      f = f.timeout(timeout, onTimeout: () => null);
+    }
+
+    return f;
+  }
+
   /**
    * Anonymous Client ID. The value of this field should be a random UUID v4.
    */
@@ -177,10 +189,15 @@ abstract class AnalyticsImpl implements Analytics {
       args['cid'] = _clientId;
       args['t'] = hitType;
 
-      return postHandler.sendPost(_GA_URL, args);
+      return _recordFuture(postHandler.sendPost(_GA_URL, args));
     } else {
       return new Future.value();
     }
+  }
+
+  Future _recordFuture(Future f) {
+    _futures.add(f);
+    return f.whenComplete(() => _futures.remove(f));
   }
 }
 

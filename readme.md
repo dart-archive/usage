@@ -24,25 +24,16 @@ Google Analytics can cause the tool to pause for several seconds before it
 terminates. This is often undesired - gathering analytics information shouldn't
 negatively effect the tool's UX.
 
-One solution to this is to gather up all the `Future`'s that the send()
-analytics methods return, and wait on them with a timeout. So, send analytics
-pings on a best effort basis, but prefer to let the tool exit reasonably
-quickly. Something like:
+One solution to this is to use the `waitForLastPing(Duration timeout)` method
+on the analytics object. This will wait until all outstanding analytics requests
+have completed, or until the specified duration has elapsed. So, CLI apps can do
+something like:
 
 ```dart
-void _exitApp([Future analyticsFuture]) {
-  Future f = analyticsFuture == null ?
-      new Future.value() : analyticsFuture;
-  Duration d = new Duration(milliseconds: 500);
-  f.timeout(d, onTimeout: () => null).then((_) {
-    io.exit(0);
-  };
-}
+analytics.waitForLastPing(new Duration(milliseconds: 500)).then((_) {
+  exit(0);
+});
 ```
-
-In the future, in order to make this easier to do for CLI clients, we may roll
-some of this functionality into the library. I.e., provide something like a
-`waitForLastPing(Duration timeout)` method on the CLI client.
 
 ## Using the API
 
