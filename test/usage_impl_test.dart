@@ -52,6 +52,14 @@ void defineTests() {
       mock.sendScreenView('baz');
       hasnt(mock.last, 'val');
     });
+
+    test('waitForLastPing', () {
+      AnalyticsImplMock mock = createMock();
+      mock.sendScreenView('foo');
+      mock.sendScreenView('bar');
+      mock.sendScreenView('baz');
+      return mock.waitForLastPing(timeout: new Duration(milliseconds: 100));
+    });
   });
 
   group('postEncode', () {

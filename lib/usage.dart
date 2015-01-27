@@ -105,6 +105,20 @@ abstract class Analytics {
    * https://developers.google.com/analytics/devguides/collection/protocol/v1/parameters.
    */
   void setSessionValue(String param, dynamic value);
+
+  /**
+   * Wait for all of the outstanding analytics pings to complete. The returned
+   * `Future` will always complete without errors. You can pass in an optional
+   * `Duration` to specify to only wait for a certain amount of time.
+   *
+   * This method is particularly useful for command-line clients. Outstanding
+   * I/O requests will cause the VM to delay terminating the process. Generally,
+   * users won't want their CLI app to pause at the end of the process waiting
+   * for Google analytics requests to complete. This method allows CLI apps to
+   * delay for a short time waiting for GA requests to complete, and then do
+   * something like call `exit()` explicitly themselves.
+   */
+  Future waitForLastPing({Duration timeout});
 }
 
 /**
@@ -150,7 +164,7 @@ class AnalyticsTimer {
  * A no-op implementation of the [Analytics] class. This can be used as a
  * stand-in for that will never ping the GA server, or as a mock in test code.
  */
-class AnalyticsMock extends Analytics {
+class AnalyticsMock implements Analytics {
   String get trackingId => 'UA-0';
   final bool logCalls;
 
@@ -190,6 +204,8 @@ class AnalyticsMock extends Analytics {
       _log('exception', {'description': description, 'fatal': fatal});
 
   void setSessionValue(String param, dynamic value) { }
+
+  Future waitForLastPing({Duration timeout}) => new Future.value();
 
   Future _log(String hitType, Map m) {
     if (logCalls) {
