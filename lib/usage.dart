@@ -163,19 +163,16 @@ class AnalyticsMock extends Analytics {
    */
   AnalyticsMock([this.logCalls = false]);
 
-  Future sendScreenView(String viewName) {
-    return _log('screenView', {'viewName': viewName});
-  }
+  Future sendScreenView(String viewName) =>
+      _log('screenView', {'viewName': viewName});
 
   Future sendEvent(String category, String action, {String label, int value}) {
     return _log('event', {'category': category, 'action': action,
       'label': label, 'value': value});
   }
 
-  Future sendSocial(String network, String action, String target) {
-    return _log('social', {'network': network, 'action': action,
-      'target': target});
-  }
+  Future sendSocial(String network, String action, String target) =>
+      _log('social', {'network': network, 'action': action, 'target': target});
 
   Future sendTiming(String variableName, int time, {String category,
       String label}) {
@@ -189,9 +186,8 @@ class AnalyticsMock extends Analytics {
         variableName, category: category, label: label);
   }
 
-  Future sendException(String description, {bool fatal}) {
-    return _log('exception', {'description': description, 'fatal': fatal});
-  }
+  Future sendException(String description, {bool fatal}) =>
+      _log('exception', {'description': description, 'fatal': fatal});
 
   void setSessionValue(String param, dynamic value) { }
 
@@ -205,7 +201,7 @@ class AnalyticsMock extends Analytics {
 }
 
 /**
- * Santitize a stacktrace. This will shorten file paths in order to remove any
+ * Sanitize a stacktrace. This will shorten file paths in order to remove any
  * PII that may be contained in the full file path. For example, this will
  * shorten `file:///Users/foobar/tmp/error.dart` to `error.dart`.
  *

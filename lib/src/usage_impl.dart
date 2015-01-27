@@ -43,7 +43,7 @@ class ThrottlingBucket {
 
     if (drops <= 0) {
       return false;
-    } {
+    } else {
       drops--;
       return true;
     }
