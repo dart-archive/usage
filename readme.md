@@ -24,13 +24,13 @@ Google Analytics can cause the tool to pause for several seconds before it
 terminates. This is often undesired - gathering analytics information shouldn't
 negatively effect the tool's UX.
 
-One solution to this is to use the `waitForLastPing(Duration timeout)` method
+One solution to this is to use the `waitForLastPing({Duration timeout})` method
 on the analytics object. This will wait until all outstanding analytics requests
 have completed, or until the specified duration has elapsed. So, CLI apps can do
 something like:
 
 ```dart
-analytics.waitForLastPing(new Duration(milliseconds: 500)).then((_) {
+analytics.waitForLastPing(timeout: new Duration(milliseconds: 500)).then((_) {
   exit(0);
 });
 ```
@@ -39,7 +39,9 @@ analytics.waitForLastPing(new Duration(milliseconds: 500)).then((_) {
 
 Import the package (in this example we use the `dart:io` version):
 
-    import 'package:usage/usage_io.dart';
+```dart
+import 'package:usage/usage_io.dart';
+```
 
 And call some analytics code:
 
