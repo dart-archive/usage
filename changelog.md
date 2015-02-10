@@ -1,5 +1,9 @@
 # Changelog
 
+## 1.0.0
+- Rev'd to 1.0.0!
+- No other changes from the `0.0.6` release
+
 ## 0.0.6
 - Added a web example
 - Added a utility method to time async events (`Analytics.startTimer()`)
