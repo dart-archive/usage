@@ -6,8 +6,8 @@ library usage.web_test;
 
 import 'dart:async';
 
+import 'package:grinder/src/webtest.dart';
 import 'package:usage/src/usage_impl_html.dart';
-import 'package:unittest/html_config.dart';
 import 'package:unittest/unittest.dart';
 
 import 'hit_types_test.dart' as hit_types_test;
@@ -15,11 +15,9 @@ import 'usage_test.dart' as usage_test;
 import 'usage_impl_test.dart' as usage_impl_test;
 import 'uuid_test.dart' as uuid_test;
 
-// TODO: get the tests running in content_shell
-
 void main() {
   // Set up the test environment.
-  useHtmlConfiguration();
+  WebTestConfiguration.setupTestEnvironment();
 
   // Define the tests.
   hit_types_test.defineTests();

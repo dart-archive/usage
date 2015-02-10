@@ -18,6 +18,7 @@ dartanalyzer --fatal-warnings \
 dart test/all.dart
 
 # Run the UI/web tests as well.
+pub build test
 pub run grinder:test build/test/web.html
 
 # Measure the size of the compiled JS, for the dart:html version of the library.
