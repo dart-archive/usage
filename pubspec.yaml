@@ -13,5 +13,5 @@ environment:
 
 dev_dependencies:
   browser: any
-  grinder: any
+  grinder: '>=0.6.6+3 <0.7.0'
   unittest: any
