@@ -6,10 +6,12 @@ library usage.hit_types_test;
 
 import 'dart:async';
 
+import 'package:test/test.dart';
 import 'package:usage/usage.dart';
-import 'package:unittest/unittest.dart';
 
 import 'src/common.dart';
+
+main() => defineTests();
 
 void defineTests() {
   group('screenView', () {
@@ -80,8 +82,6 @@ void defineTests() {
       AnalyticsImplMock mock = createMock();
       AnalyticsTimer timer =
           mock.startTimer('compile', category: 'Build', label: 'Compile');
-
-      int time;
 
       return new Future.delayed(new Duration(milliseconds: 20), () {
         return timer.finish().then((_) {

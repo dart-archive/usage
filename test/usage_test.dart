@@ -4,8 +4,10 @@
 
 library usage.usage_test;
 
-import 'package:unittest/unittest.dart';
+import 'package:test/test.dart';
 import 'package:usage/usage.dart';
+
+main() => defineTests();
 
 void defineTests() {
   group('AnalyticsMock', () {

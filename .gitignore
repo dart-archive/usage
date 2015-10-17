@@ -1,4 +1,6 @@
 build/
+doc/api/
+.packages
 packages
 .buildlog
 pubspec.lock

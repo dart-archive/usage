@@ -6,7 +6,7 @@ library usage.common_test;
 
 import 'dart:async';
 
-import 'package:unittest/unittest.dart';
+import 'package:test/test.dart';
 import 'package:usage/src/usage_impl.dart';
 
 AnalyticsImplMock createMock({bool setOptIn: true}) =>

@@ -7,8 +7,10 @@ library usage.usage_impl_io_test;
 import 'dart:async';
 import 'dart:io';
 
-import 'package:unittest/unittest.dart';
+import 'package:test/test.dart';
 import 'package:usage/src/usage_impl_io.dart';
+
+main() => defineTests();
 
 void defineTests() {
   group('IOPostHandler', () {
