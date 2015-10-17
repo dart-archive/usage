@@ -11,8 +11,8 @@ set -e
 dartanalyzer --fatal-warnings \
   lib/usage.dart \
   lib/usage_html.dart \
-  lib/usage_io.dart
-# test/all.dart
+  lib/usage_io.dart \
+  test/all.dart
 
 # Run the tests.
 dart test/all.dart
