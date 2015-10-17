@@ -15,7 +15,7 @@ class HtmlPostHandler extends PostHandler {
 
   HtmlPostHandler({Function this.mockRequestor});
 
-  Future sendPost(String url, Map<String, String> parameters) {
+  Future sendPost(String url, Map<String, dynamic> parameters) {
     int viewportWidth = document.documentElement.clientWidth;
     int viewportHeight = document.documentElement.clientHeight;
 

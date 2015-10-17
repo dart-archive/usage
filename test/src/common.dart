@@ -42,9 +42,9 @@ class MockProperties extends PersistentProperties {
 }
 
 class MockPostHandler extends PostHandler {
-  List<Map> sentValues = [];
+  List<Map<String, dynamic>> sentValues = [];
 
-  Future sendPost(String url, Map<String, String> parameters) {
+  Future sendPost(String url, Map<String, dynamic> parameters) {
     sentValues.add(parameters);
 
     return new Future.value();
