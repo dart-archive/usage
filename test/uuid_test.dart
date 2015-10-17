@@ -4,8 +4,10 @@
 
 library usage.uuid_test;
 
-import 'package:unittest/unittest.dart';
+import 'package:test/test.dart';
 import 'package:usage/src/uuid.dart';
+
+main() => defineTests();
 
 void defineTests() {
   group('uuid', () {

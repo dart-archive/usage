@@ -7,12 +7,12 @@ library usage.web_test;
 
 import 'dart:async';
 
+import 'package:test/test.dart';
 import 'package:usage/src/usage_impl_html.dart';
-import 'package:unittest/unittest.dart';
 
 import 'hit_types_test.dart' as hit_types_test;
-import 'usage_test.dart' as usage_test;
 import 'usage_impl_test.dart' as usage_impl_test;
+import 'usage_test.dart' as usage_test;
 import 'uuid_test.dart' as uuid_test;
 
 void main() {
