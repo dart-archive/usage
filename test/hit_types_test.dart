@@ -81,8 +81,6 @@ void defineTests() {
       AnalyticsTimer timer =
           mock.startTimer('compile', category: 'Build', label: 'Compile');
 
-      int time;
-
       return new Future.delayed(new Duration(milliseconds: 20), () {
         return timer.finish().then((_) {
           expect(mock.mockPostHandler.sentValues, isNot(isEmpty));

@@ -11,15 +11,15 @@ set -e
 dartanalyzer --fatal-warnings \
   lib/usage.dart \
   lib/usage_html.dart \
-  lib/usage_io.dart \
-  test/all.dart
+  lib/usage_io.dart
+# test/all.dart
 
 # Run the tests.
 dart test/all.dart
 
 # Run the UI/web tests as well.
-pub build test
-pub run grinder:test build/test/web.html
+#pub build test
+#pub run grinder:test build/test/web.html
 
 # Measure the size of the compiled JS, for the dart:html version of the library.
 dart tool/grind.dart build

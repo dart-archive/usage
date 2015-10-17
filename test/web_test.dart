@@ -2,11 +2,11 @@
 // for details. All rights reserved. Use of this source code is governed by a
 // BSD-style license that can be found in the LICENSE file.
 
+@TestOn("browser")
 library usage.web_test;
 
 import 'dart:async';
 
-import 'package:grinder/src/webtest.dart';
 import 'package:usage/src/usage_impl_html.dart';
 import 'package:unittest/unittest.dart';
 
@@ -16,9 +16,6 @@ import 'usage_impl_test.dart' as usage_impl_test;
 import 'uuid_test.dart' as uuid_test;
 
 void main() {
-  // Set up the test environment.
-  WebTestConfiguration.setupTestEnvironment();
-
   // Define the tests.
   hit_types_test.defineTests();
   usage_test.defineTests();
