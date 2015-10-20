@@ -91,14 +91,14 @@ abstract class AnalyticsImpl extends Analytics {
   bool get hasSetOptIn => properties['optIn'] != null;
 
   Future sendScreenView(String viewName) {
-    Map args = {'cd': viewName};
+    Map<String, dynamic> args = {'cd': viewName};
     return _sendPayload('screenview', args);
   }
 
   Future sendEvent(String category, String action, {String label, int value}) {
     if (!optIn) return new Future.value();
 
-    Map args = {'ec': category, 'ea': action};
+    Map<String, dynamic> args = {'ec': category, 'ea': action};
     if (label != null) args['el'] = label;
     if (value != null) args['ev'] = value;
     return _sendPayload('event', args);
@@ -107,7 +107,7 @@ abstract class AnalyticsImpl extends Analytics {
   Future sendSocial(String network, String action, String target) {
     if (!optIn) return new Future.value();
 
-    Map args = {'sn': network, 'sa': action, 'st': target};
+    Map<String, dynamic> args = {'sn': network, 'sa': action, 'st': target};
     return _sendPayload('social', args);
   }
 
@@ -115,7 +115,7 @@ abstract class AnalyticsImpl extends Analytics {
         String label}) {
     if (!optIn) return new Future.value();
 
-    Map args = {'utv': variableName, 'utt': time};
+    Map<String, dynamic> args = {'utv': variableName, 'utt': time};
     if (label != null) args['utl'] = label;
     if (category != null) args['utc'] = category;
     return _sendPayload('timing', args);
@@ -140,7 +140,7 @@ abstract class AnalyticsImpl extends Analytics {
       description = description.substring(0, _MAX_EXCEPTION_LENGTH);
     }
 
-    Map args = {'exd': description};
+    Map<String, dynamic> args = {'exd': description};
     if (fatal != null && fatal) args['exf'] = '1';
     return _sendPayload('exception', args);
   }
@@ -176,7 +176,7 @@ abstract class AnalyticsImpl extends Analytics {
 
   // Valid values for [hitType] are: 'pageview', 'screenview', 'event',
   // 'transaction', 'item', 'social', 'exception', and 'timing'.
-  Future _sendPayload(String hitType, Map args) {
+  Future _sendPayload(String hitType, Map<String, dynamic> args) {
     if (_bucket.removeDrop()) {
       _initClientId();
 
@@ -228,5 +228,5 @@ abstract class PersistentProperties {
  * send the information should be silent.
  */
 abstract class PostHandler {
-  Future sendPost(String url, Map<String, String> parameters);
+  Future sendPost(String url, Map<String, dynamic> parameters);
 }

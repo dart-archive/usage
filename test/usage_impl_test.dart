@@ -66,7 +66,7 @@ void defineTests() {
 
   group('postEncode', () {
     test('simple', () {
-      Map map = {'foo': 'bar', 'baz': 'qux norf'};
+      Map<String, dynamic> map = {'foo': 'bar', 'baz': 'qux norf'};
       expect(postEncode(map), 'foo=bar&baz=qux%20norf');
     });
   });

@@ -1,6 +1,10 @@
 # Changelog
 
 ## 1.0.0
+- make strong mode compliant
+- update some dev package dependencies
+
+## 1.0.0
 - Rev'd to 1.0.0!
 - No other changes from the `0.0.6` release
 

@@ -17,7 +17,7 @@ void defineTests() {
     test('sendPost', () {
       var httpClient = new MockHttpClient();
       IOPostHandler postHandler = new IOPostHandler(mockClient: httpClient);
-      Map args = {'utv': 'varName', 'utt': 123};
+      Map<String, dynamic> args = {'utv': 'varName', 'utt': 123};
       return postHandler.sendPost('http://www.google.com', args).then((_) {
         expect(httpClient.sendCount, 1);
       });

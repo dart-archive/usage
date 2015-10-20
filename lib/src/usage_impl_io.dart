@@ -39,7 +39,7 @@ class IOPostHandler extends PostHandler {
 
   IOPostHandler({HttpClient this.mockClient}) : _userAgent = _createUserAgent();
 
-  Future sendPost(String url, Map<String, String> parameters) {
+  Future sendPost(String url, Map<String, dynamic> parameters) {
     // Add custom parameters for OS and the Dart version.
     parameters['cd1'] = Platform.operatingSystem;
     parameters['cd2'] = 'dart ${_dartVersion()}';
