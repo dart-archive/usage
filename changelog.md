@@ -1,6 +1,6 @@
 # Changelog
 
-## 1.0.0
+## 1.0.1
 - make strong mode compliant
 - update some dev package dependencies
 
