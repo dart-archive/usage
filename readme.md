@@ -11,9 +11,8 @@ apps.
 To use this library as a web app, import the `usage_html.dart` library and
 instantiate the `AnalyticsHtml` class.
 
-When you are creating a new property at [google analytics](https://www.google.com/analytics/) make sure to select not the website option, but the **mobile app** option:
-
-<img src="https://cloud.githubusercontent.com/assets/1035299/12050330/2c3b9276-aef4-11e5-8695-d4deab36848c.png" height="101px">
+When you are creating a new property at [google analytics](https://www.google.com/analytics/)
+make sure to select not the website option, but the **mobile app** option.
 
 ## For command-line apps
 
