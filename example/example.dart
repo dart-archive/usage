@@ -27,6 +27,7 @@ Analytics getAnalytics() {
   if (_analytics == null || _lastUa != _ua()) {
     _lastUa = _ua();
     _analytics = new AnalyticsHtml(_lastUa, 'Test app', '1.0');
+    _analytics.optIn = true;
     _analytics.sendScreenView(window.location.pathname);
   }
 
