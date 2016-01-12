@@ -32,7 +32,7 @@ void defineWebTests() {
       MockRequestor client = new MockRequestor();
       HtmlPostHandler postHandler = new HtmlPostHandler(
           mockRequestor: client.request);
-      Map args = {'utv': 'varName', 'utt': 123};
+      Map<String, dynamic> args = {'utv': 'varName', 'utt': 123};
       return postHandler.sendPost('http://www.google.com', args).then((_) {
         expect(client.sendCount, 1);
       });

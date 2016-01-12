@@ -1,5 +1,9 @@
 # Changelog
 
+## 1.1.0
+- fix two strong mode analysis issues (overrridding a field declaration with a
+  setter/getter pair)
+
 ## 1.0.1
 - make strong mode compliant
 - update some dev package dependencies
