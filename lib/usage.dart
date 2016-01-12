@@ -47,7 +47,9 @@ abstract class Analytics {
   /**
    * Whether the user has opt-ed in to additional analytics.
    */
-  bool optIn;
+  bool get optIn;
+
+  set optIn(bool value);
 
   /**
    * Whether the [optIn] value has been explicitly set (either `true` or
