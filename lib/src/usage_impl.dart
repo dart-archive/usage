@@ -61,7 +61,7 @@ class ThrottlingBucket {
 }
 
 abstract class AnalyticsImpl extends Analytics {
-  static const String _GA_URL = 'https://www.google-analytics.com/collect';
+  static const String _defaultAnalyticsUrl = 'https://www.google-analytics.com/collect';
 
   /// Tracking ID / Property ID.
   final String trackingId;
@@ -74,12 +74,22 @@ abstract class AnalyticsImpl extends Analytics {
 
   final List<Future> _futures = [];
 
-  AnalyticsImpl(this.trackingId, this.properties, this.postHandler,
-      {String applicationName, String applicationVersion}) {
+  String _url;
+
+  AnalyticsImpl(
+    this.trackingId,
+    this.properties,
+    this.postHandler, {
+    String applicationName,
+    String applicationVersion,
+    String analyticsUrl
+  }) {
     assert(trackingId != null);
 
     if (applicationName != null) setSessionValue('an', applicationName);
     if (applicationVersion != null) setSessionValue('av', applicationVersion);
+
+    _url = analyticsUrl ?? _defaultAnalyticsUrl;
   }
 
   bool get optIn => properties['optIn'] == true;
@@ -189,7 +199,7 @@ abstract class AnalyticsImpl extends Analytics {
       args['cid'] = _clientId;
       args['t'] = hitType;
 
-      return _recordFuture(postHandler.sendPost(_GA_URL, args));
+      return _recordFuture(postHandler.sendPost(_url, args));
     } else {
       return new Future.value();
     }
