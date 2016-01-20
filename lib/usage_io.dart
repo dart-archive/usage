@@ -19,13 +19,19 @@ export 'usage.dart';
 /**
  * An interface to a Google Analytics session, suitable for use in command-line
  * applications.
+ *
+ * [analyticsUrl] is an optional replacement for the default Google Analytics
+ * URL (`https://www.google-analytics.com/collect`).
  */
 class AnalyticsIO extends AnalyticsImpl {
-  AnalyticsIO(String trackingId, String applicationName, String applicationVersion) :
-    super(
-      trackingId,
-      new IOPersistentProperties(applicationName),
-      new IOPostHandler(),
-      applicationName: applicationName,
-      applicationVersion: applicationVersion);
+  AnalyticsIO(String trackingId, String applicationName, String applicationVersion, {
+    String analyticsUrl
+  }) : super(
+    trackingId,
+    new IOPersistentProperties(applicationName),
+    new IOPostHandler(),
+    applicationName: applicationName,
+    applicationVersion: applicationVersion,
+    analyticsUrl: analyticsUrl
+  );
 }
