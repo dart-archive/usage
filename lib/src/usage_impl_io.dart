@@ -39,7 +39,7 @@ class IOPostHandler extends PostHandler {
 
   IOPostHandler({HttpClient this.mockClient}) : _userAgent = _createUserAgent();
 
-  Future sendPost(String url, Map<String, dynamic> parameters) {
+  Future sendPost(String url, Map<String, dynamic> parameters) async {
     // Add custom parameters for OS and the Dart version.
     parameters['cd1'] = Platform.operatingSystem;
     parameters['cd2'] = 'dart ${_dartVersion()}';
@@ -48,15 +48,15 @@ class IOPostHandler extends PostHandler {
 
     HttpClient client = mockClient != null ? mockClient : new HttpClient();
     client.userAgent = _userAgent;
-    return client.postUrl(Uri.parse(url)).then((HttpClientRequest req) {
+    try {
+      HttpClientRequest req = await client.postUrl(Uri.parse(url));
       req.write(data);
-      return req.close();
-    }).then((HttpClientResponse response) {
+      HttpClientResponse response = await req.close();
       response.drain();
-    }).catchError((e) {
+    } catch(exception) {
       // Catch errors that can happen during a request, but that we can't do
       // anything about, e.g. a missing internet conenction.
-    });
+    }
   }
 }
 
