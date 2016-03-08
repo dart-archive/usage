@@ -9,6 +9,17 @@ import 'dart:convert' show JSON;
 import 'dart:html';
 
 import 'usage_impl.dart';
+import '../usage_html.dart';
+
+Future<Analytics> createAnalytics(String trackingId, String applicationName,
+  String applicationVersion, { String analyticsUrl }) {
+  return new Future.value(new AnalyticsHtml(
+    trackingId,
+    applicationName,
+    applicationVersion,
+    analyticsUrl: analyticsUrl
+  ));
+}
 
 class HtmlPostHandler extends PostHandler {
   final Function mockRequestor;

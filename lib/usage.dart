@@ -26,19 +26,33 @@ library usage;
 
 import 'dart:async';
 
+import 'src/usage_impl_default.dart'
+   if (dart.library.js) 'src/usage_impl_html.dart'
+   if (dart.library.io) 'src/usage_impl_io.dart'
+   as impl;
+
 // Matches file:/, non-ws, /, non-ws, .dart
 final RegExp _pathRegex = new RegExp(r'file:/\S+/(\S+\.dart)');
 
 /**
- * An interface to a Google Analytics session. [AnalyticsHtml] and [AnalyticsIO]
- * are concrete implementations of this interface. [AnalyticsMock] can be used
- * for testing or for some varients of an opt-in workflow.
+ * An interface to a Google Analytics session. You'll get the correct one
+ * for your platform by calling the [Analytics.create] static method.
+ * [AnalyticsMock] can be used for testing or for some variants of an opt-in
+ * workflow.
  *
  * The analytics information is sent on a best-effort basis. So, failures to
  * send the GA information will not result in errors from the asynchronous
  * `send` methods.
  */
 abstract class Analytics {
+  static Future<Analytics> create(
+    String trackingId,
+    String applicationName,
+    String applicationVersion, {
+    String analyticsUrl
+  }) => impl.createAnalytics(trackingId, applicationName, applicationVersion,
+    analyticsUrl: analyticsUrl);
+
   /**
    * Tracking ID / Property ID.
    */

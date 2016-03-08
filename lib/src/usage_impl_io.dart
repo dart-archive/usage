@@ -11,6 +11,17 @@ import 'dart:io';
 import 'package:path/path.dart' as path;
 
 import 'usage_impl.dart';
+import '../usage_io.dart';
+
+Future<Analytics> createAnalytics(String trackingId, String applicationName,
+  String applicationVersion, { String analyticsUrl }) {
+  return new Future.value(new AnalyticsIO(
+    trackingId,
+    applicationName,
+    applicationVersion,
+    analyticsUrl: analyticsUrl
+  ));
+}
 
 String _createUserAgent() {
   // Mozilla/5.0 (iPhone; U; CPU iPhone OS 5_1_1 like Mac OS X; en)
