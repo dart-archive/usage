@@ -28,6 +28,7 @@ import 'dart:async';
 
 import 'src/usage_impl_default.dart'
    if (dart.library.js) 'src/usage_impl_html.dart'
+   if (dart.library.ui) 'src/usage_impl_flutter.dart'
    if (dart.library.io) 'src/usage_impl_io.dart'
    as impl;
 

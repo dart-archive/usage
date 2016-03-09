@@ -60,7 +60,7 @@ class ThrottlingBucket {
   }
 }
 
-abstract class AnalyticsImpl extends Analytics {
+class AnalyticsImpl implements Analytics {
   static const String _defaultAnalyticsUrl = 'https://www.google-analytics.com/collect';
 
   /// Tracking ID / Property ID.
