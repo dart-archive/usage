@@ -9,7 +9,7 @@ homepage: https://github.com/dart-lang/usage
 author: Dart Team <misc@dartlang.org>
 
 environment:
-  sdk: '>=1.0.0 <2.0.0'
+  sdk: '>=1.15.0-dev <2.0.0'
 
 dev_dependencies:
   browser: ^0.10.0

@@ -1,0 +1,7 @@
+name: flutter_example
+description: Create a new Flutter project.
+dependencies:
+  usage:
+    path: ../..
+  flutter:
+    path: ../../../../../Users/jackson/git/flutter/packages/flutter

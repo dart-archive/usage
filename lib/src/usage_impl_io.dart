@@ -11,6 +11,17 @@ import 'dart:io';
 import 'package:path/path.dart' as path;
 
 import 'usage_impl.dart';
+import '../usage_io.dart';
+
+Future<Analytics> createAnalytics(String trackingId, String applicationName,
+  String applicationVersion, { String analyticsUrl }) {
+  return new Future.value(new AnalyticsIO(
+    trackingId,
+    applicationName,
+    applicationVersion,
+    analyticsUrl: analyticsUrl
+  ));
+}
 
 String _createUserAgent() {
   // Mozilla/5.0 (iPhone; U; CPU iPhone OS 5_1_1 like Mac OS X; en)
@@ -39,7 +50,7 @@ class IOPostHandler extends PostHandler {
 
   IOPostHandler({HttpClient this.mockClient}) : _userAgent = _createUserAgent();
 
-  Future sendPost(String url, Map<String, dynamic> parameters) {
+  Future sendPost(String url, Map<String, dynamic> parameters) async {
     // Add custom parameters for OS and the Dart version.
     parameters['cd1'] = Platform.operatingSystem;
     parameters['cd2'] = 'dart ${_dartVersion()}';
@@ -48,15 +59,15 @@ class IOPostHandler extends PostHandler {
 
     HttpClient client = mockClient != null ? mockClient : new HttpClient();
     client.userAgent = _userAgent;
-    return client.postUrl(Uri.parse(url)).then((HttpClientRequest req) {
+    try {
+      HttpClientRequest req = await client.postUrl(Uri.parse(url));
       req.write(data);
-      return req.close();
-    }).then((HttpClientResponse response) {
+      HttpClientResponse response = await req.close();
       response.drain();
-    }).catchError((e) {
+    } catch(exception) {
       // Catch errors that can happen during a request, but that we can't do
       // anything about, e.g. a missing internet conenction.
-    });
+    }
   }
 }
 
