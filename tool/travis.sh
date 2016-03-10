@@ -21,12 +21,8 @@ dart --conditional_directives -c test/all.dart
 #pub build test
 #pub run grinder:test build/test/web.html
 
-# Verify against DDC.
-#pub global activate dev_compiler
-#pub global run dev_compiler lib/usage_html.dart
-
 # Measure the size of the compiled JS, for the dart:html version of the library.
-#dart tool/grind.dart build
+dart tool/grind.dart build
 
 # Install dart_coveralls; gather and send coverage data.
 if [ "$REPO_TOKEN" ]; then

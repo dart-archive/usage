@@ -3,13 +3,13 @@
 # BSD-style license that can be found in the LICENSE file.
 
 name: usage
-version: 1.2.0
+version: 2.0.0-dev
 description: A Google Analytics wrapper for both command-line and web apps.
 homepage: https://github.com/dart-lang/usage
 author: Dart Team <misc@dartlang.org>
 
 environment:
-  sdk: '>=1.15.0-dev <2.0.0'
+  sdk: '>=1.15.0 <2.0.0'
 
 dev_dependencies:
   browser: ^0.10.0
