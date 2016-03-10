@@ -13,11 +13,14 @@ import 'package:flutter/services.dart';
 import 'package:path/path.dart' as path;
 
 import 'usage_impl.dart';
-import 'usage_impl_io.dart';
 import '../usage.dart';
 
-Future<Analytics> createAnalytics(String trackingId, String applicationName,
-  String applicationVersion, { String analyticsUrl }) async {
+Future<Analytics> createAnalytics(
+  String trackingId,
+  String applicationName,
+  String applicationVersion, {
+  String analyticsUrl
+}) async {
     String dataPath = await getFilesDir();
 
     String fileName = '.${applicationName.replaceAll(' ', '_')}';

@@ -8,7 +8,11 @@ import 'dart:async';
 
 import '../usage.dart';
 
-Future<Analytics> createAnalytics(String trackingId, String applicationName,
-  String applicationVersion, { String analyticsUrl }) {
+Future<Analytics> createAnalytics(
+  String trackingId,
+  String applicationName,
+  String applicationVersion, {
+  String analyticsUrl
+}) {
   throw new UnimplementedError();
 }

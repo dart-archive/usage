@@ -11,8 +11,12 @@ import 'dart:html';
 import 'usage_impl.dart';
 import '../usage_html.dart';
 
-Future<Analytics> createAnalytics(String trackingId, String applicationName,
-  String applicationVersion, { String analyticsUrl }) {
+Future<Analytics> createAnalytics(
+  String trackingId,
+  String applicationName,
+  String applicationVersion, {
+  String analyticsUrl
+}) {
   return new Future.value(new AnalyticsHtml(
     trackingId,
     applicationName,

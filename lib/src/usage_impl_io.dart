@@ -13,8 +13,12 @@ import 'package:path/path.dart' as path;
 import 'usage_impl.dart';
 import '../usage_io.dart';
 
-Future<Analytics> createAnalytics(String trackingId, String applicationName,
-  String applicationVersion, { String analyticsUrl }) {
+Future<Analytics> createAnalytics(
+  String trackingId,
+  String applicationName,
+  String applicationVersion, {
+  String analyticsUrl
+}) {
   return new Future.value(new AnalyticsIO(
     trackingId,
     applicationName,
