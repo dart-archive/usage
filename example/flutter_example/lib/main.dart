@@ -13,13 +13,13 @@ Future main() async {
   runApp(new MaterialApp(
     title: 'Usage Example',
     theme: new ThemeData.dark(),
-    routes: <String, RouteBuilder>{
-      '/': (RouteArguments args) => new FlutterDemo(ga)
+    routes: <String, WidgetBuilder>{
+      '/': (BuildContext context) => new FlutterDemo(ga)
     }
   ));
 }
 
-class FlutterDemo extends StatefulComponent {
+class FlutterDemo extends StatefulWidget {
   FlutterDemo(this.ga);
   Analytics ga;
   State createState() => new _FlutterDemoState();
@@ -43,8 +43,8 @@ class _FlutterDemoState extends State<FlutterDemo> {
 
   Widget build(BuildContext context) {
     return new Scaffold(
-      toolBar: new ToolBar(
-        center: new Text('Usage Example')
+      appBar: new AppBar(
+        title: new Text('Usage Example')
       ),
       body: new Column(
         children: <Widget>[
@@ -53,14 +53,14 @@ class _FlutterDemoState extends State<FlutterDemo> {
           ),
           new ListItem(
             onTap: () => _handleOptIn(!config.ga.optIn),
-            left: new Checkbox(
+            leading: new Checkbox(
               value: config.ga.optIn,
               onChanged: _handleOptIn
             ),
-            primary: new Text("Opt in to analytics")
+            title: new Text("Opt in to analytics")
           )
         ],
-        justifyContent: FlexJustifyContent.spaceAround
+        mainAxisAlignment: MainAxisAlignment.spaceAround
       ),
       floatingActionButton: new FloatingActionButton(
         child: new Icon(icon: Icons.add),
