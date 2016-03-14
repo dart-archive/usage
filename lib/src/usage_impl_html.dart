@@ -8,8 +8,8 @@ import 'dart:async';
 import 'dart:convert' show JSON;
 import 'dart:html';
 
+import '../usage.dart';
 import 'usage_impl.dart';
-import '../usage_html.dart';
 
 Future<Analytics> createAnalytics(
   String trackingId,
@@ -23,6 +23,26 @@ Future<Analytics> createAnalytics(
     applicationVersion,
     analyticsUrl: analyticsUrl
   ));
+}
+
+class AnalyticsHtml extends AnalyticsImpl {
+  AnalyticsHtml(String trackingId, String applicationName, String applicationVersion, {
+    String analyticsUrl
+  }) : super(
+      trackingId,
+      new HtmlPersistentProperties(applicationName),
+      new HtmlPostHandler(),
+      applicationName: applicationName,
+      applicationVersion: applicationVersion,
+      analyticsUrl: analyticsUrl
+  ) {
+    int screenWidth = window.screen.width;
+    int screenHeight = window.screen.height;
+
+    setSessionValue('sr', '${screenWidth}x$screenHeight');
+    setSessionValue('sd', '${window.screen.pixelDepth}-bits');
+    setSessionValue('ul', window.navigator.language);
+  }
 }
 
 class HtmlPostHandler extends PostHandler {

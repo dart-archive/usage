@@ -10,8 +10,8 @@ import 'dart:io';
 
 import 'package:path/path.dart' as path;
 
+import '../usage.dart';
 import 'usage_impl.dart';
-import '../usage_io.dart';
 
 Future<Analytics> createAnalytics(
   String trackingId,
@@ -25,6 +25,19 @@ Future<Analytics> createAnalytics(
     applicationVersion,
     analyticsUrl: analyticsUrl
   ));
+}
+
+class AnalyticsIO extends AnalyticsImpl {
+  AnalyticsIO(String trackingId, String applicationName, String applicationVersion, {
+    String analyticsUrl
+  }) : super(
+    trackingId,
+    new IOPersistentProperties(applicationName),
+    new IOPostHandler(),
+    applicationName: applicationName,
+    applicationVersion: applicationVersion,
+    analyticsUrl: analyticsUrl
+  );
 }
 
 String _createUserAgent() {

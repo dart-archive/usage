@@ -3,17 +3,15 @@
 // BSD-style license that can be found in the LICENSE file.
 
 /**
- * `usage` is a wrapper around Google Analytics for both command-line apps
- * and web apps.
+ * `usage` is a wrapper around Google Analytics for both command-line, web, and
+ * Flutter apps.
  *
- * In order to use this library as a web app, import the `analytics_html.dart`
- * library and instantiate the [AnalyticsHtml] class.
+ * In order to use this library, call the [Analytics.create] static method.
+ * You'll get either the command-line, web, or Flutter implementation based on
+ * the current platform.
  *
- * In order to use this library as a command-line app, import the
- * `analytics_io.dart` library and instantiate the [AnalyticsIO] class.
- *
- * For both classes, you need to provide a Google Analytics tracking ID, the
- * application name, and the application version.
+ * When creating a new Analytics instance, you need to provide a Google
+ * Analytics tracking ID, the application name, and the application version.
  *
  * Your application should provide an opt-in option for the user. If they
  * opt-in, set the [optIn] field to `true`. This setting will persist across
@@ -36,14 +34,14 @@ import 'src/usage_impl_default.dart'
 final RegExp _pathRegex = new RegExp(r'file:/\S+/(\S+\.dart)');
 
 /**
- * An interface to a Google Analytics session. You'll get the correct one
- * for your platform by calling the [Analytics.create] static method.
+ * An interface to a Google Analytics session. You'll get the correct one for
+ * your platform by calling the [Analytics.create] static method.
  * [AnalyticsMock] can be used for testing or for some variants of an opt-in
  * workflow.
  *
- * The analytics information is sent on a best-effort basis. So, failures to
- * send the GA information will not result in errors from the asynchronous
- * `send` methods.
+ * The analytics information is sent on a best-effort basis. Failures to send
+ * the GA information will not result in errors from the asynchronous `send`
+ * methods.
  */
 abstract class Analytics {
   static Future<Analytics> create(

@@ -7,8 +7,8 @@ library usage_impl;
 import 'dart:async';
 import 'dart:math' as math;
 
-import 'uuid.dart';
 import '../usage.dart';
+import 'uuid.dart';
 
 final int _MAX_EXCEPTION_LENGTH = 100;
 

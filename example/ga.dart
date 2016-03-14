@@ -2,14 +2,14 @@
 // for details. All rights reserved. Use of this source code is governed by a
 // BSD-style license that can be found in the LICENSE file.
 
-/**
- * A simple command-line app to hand-test the usage library.
- */
+/// A simple command-line app to hand-test the usage library.
 library usage_ga;
 
-import 'package:usage/usage_io.dart';
+import 'dart:async';
 
-void main(List args) {
+import 'package:usage/usage.dart';
+
+Future main(List args) async {
   final String DEFAULT_UA = 'UA-55029513-1';
 
   if (args.isEmpty) {
@@ -21,7 +21,7 @@ void main(List args) {
 
   String ua = args.isEmpty ? DEFAULT_UA : args.first;
 
-  Analytics ga = new AnalyticsIO(ua, 'ga_test', '1.0');
+  Analytics ga = await Analytics.create(ua, 'ga_test', '1.0');
   ga.optIn = true;
 
   ga.sendScreenView('home').then((_) {
