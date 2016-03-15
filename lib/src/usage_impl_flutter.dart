@@ -1,4 +1,4 @@
-// Copyright (c) 2014, the Dart project authors.  Please see the AUTHORS file
+// Copyright (c) 2016, the Dart project authors.  Please see the AUTHORS file
 // for details. All rights reserved. Use of this source code is governed by a
 // BSD-style license that can be found in the LICENSE file.
 
@@ -12,8 +12,8 @@ import 'package:flutter/http.dart' as http;
 import 'package:flutter/services.dart';
 import 'package:path/path.dart' as path;
 
-import 'usage_impl.dart';
 import '../usage.dart';
+import 'usage_impl.dart';
 
 Future<Analytics> createAnalytics(
   String trackingId,

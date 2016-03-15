@@ -1,10 +1,16 @@
 # Changelog
 
+## unreleased
+- added a `usage` implementation for Flutter (uses conditional directives)
+- removed `lib/usage_html.dart`; use the new Analytics.create() static method
+- removed `lib/usage_io.dart`; use the new Analytics.create() static method
+- bumped to `2.0.0` for API changes and library refactorings
+
 ## 1.2.0
 - added an optional `analyticsUrl` parameter to the usage constructors
 
 ## 1.1.0
-- fix two strong mode analysis issues (overrridding a field declaration with a
+- fix two strong mode analysis issues (overriding a field declaration with a
   setter/getter pair)
 
 ## 1.0.1
