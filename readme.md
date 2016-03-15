@@ -8,7 +8,7 @@ Flutter apps.
 
 ## Using this library
 
-In order to use this library, call the [Analytics.create] static method.
+In order to use this library, call the `Analytics.create` static method.
 You'll get either the command-line, web, or Flutter implementation based on
 the current platform.
 
