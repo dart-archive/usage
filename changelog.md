@@ -1,6 +1,6 @@
 # Changelog
 
-## unreleased
+## 2.0.0
 - added a `usage` implementation for Flutter (uses conditional directives)
 - removed `lib/usage_html.dart`; use the new Analytics.create() static method
 - removed `lib/usage_io.dart`; use the new Analytics.create() static method

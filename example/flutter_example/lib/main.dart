@@ -22,6 +22,7 @@ Future main() async {
 class FlutterDemo extends StatefulWidget {
   FlutterDemo(this.ga);
   Analytics ga;
+  @override
   State createState() => new _FlutterDemoState();
 }
 
@@ -41,6 +42,7 @@ class _FlutterDemoState extends State<FlutterDemo> {
     });
   }
 
+  @override
   Widget build(BuildContext context) {
     return new Scaffold(
       appBar: new AppBar(
