@@ -114,12 +114,27 @@ abstract class Analytics {
   Future sendException(String description, {bool fatal});
 
   /**
+   * Gets a session variable value.
+   */
+  dynamic getSessionValue(String param);
+
+  /**
    * Sets a session variable value. The value is persistent for the life of the
    * [Analytics] instance. This variable will be sent in with every analytics
    * hit. A list of valid variable names can be found here:
    * https://developers.google.com/analytics/devguides/collection/protocol/v1/parameters.
    */
   void setSessionValue(String param, dynamic value);
+
+  /**
+   * Fires events when the usage library sends any data over the network. This
+   * will not fire if analytics has been disabled or if the throttling algorithim
+   * has been engaged.
+   *
+   * This method is public to allow library clients to more easily test their
+   * analytics implementations.
+   */
+  Stream<Map<String, dynamic>> get onSend;
 
   /**
    * Wait for all of the outstanding analytics pings to complete. The returned
@@ -186,6 +201,9 @@ class AnalyticsMock implements Analytics {
   bool optIn = false;
   bool hasSetOptIn = true;
 
+  /// Events are never added to this controller for the mock implementation.
+  StreamController<Map<String, dynamic>> _sendController = new StreamController.broadcast();
+
   /**
    * Create a new [AnalyticsMock]. If [logCalls] is true, all calls will be
    * logged to stdout.
@@ -218,7 +236,11 @@ class AnalyticsMock implements Analytics {
   Future sendException(String description, {bool fatal}) =>
       _log('exception', {'description': description, 'fatal': fatal});
 
+  dynamic getSessionValue(String param) => null;
+
   void setSessionValue(String param, dynamic value) { }
+
+  Stream<Map<String, dynamic>> get onSend => _sendController.stream;
 
   Future waitForLastPing({Duration timeout}) => new Future.value();
 

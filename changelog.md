@@ -1,5 +1,10 @@
 # Changelog
 
+## 2.1.0-dev
+- added `Analytics.getSessionValue()`
+- added `Analytics.onSend`
+- added `AnalyticsImpl.sendRaw()`
+
 ## 2.0.0
 - added a `usage` implementation for Flutter (uses conditional directives)
 - removed `lib/usage_html.dart`; use the new Analytics.create() static method
