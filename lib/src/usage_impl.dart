@@ -76,6 +76,8 @@ class AnalyticsImpl implements Analytics {
 
   String _url;
 
+  StreamController<Map<String, dynamic>> _sendController = new StreamController.broadcast(sync: true);
+
   AnalyticsImpl(
     this.trackingId,
     this.properties,
@@ -155,6 +157,8 @@ class AnalyticsImpl implements Analytics {
     return _sendPayload('exception', args);
   }
 
+  dynamic getSessionValue(String param) => _variableMap[param];
+
   void setSessionValue(String param, dynamic value) {
     if (value == null) {
       _variableMap.remove(param);
@@ -162,6 +166,8 @@ class AnalyticsImpl implements Analytics {
       _variableMap[param] = value;
     }
   }
+
+  Stream<Map<String, dynamic>> get onSend => _sendController.stream;
 
   Future waitForLastPing({Duration timeout}) {
     Future f = Future.wait(_futures).catchError((e) => null);
@@ -184,8 +190,21 @@ class AnalyticsImpl implements Analytics {
     }
   }
 
-  // Valid values for [hitType] are: 'pageview', 'screenview', 'event',
-  // 'transaction', 'item', 'social', 'exception', and 'timing'.
+  /**
+   * Send raw data to analytics. Callers should generally use one of the typed
+   * methods (`sendScreenView`, `sendEvent`, ...).
+   *
+   * Valid values for [hitType] are: 'pageview', 'screenview', 'event',
+   * 'transaction', 'item', 'social', 'exception', and 'timing'.
+   */
+  Future sendRaw(String hitType, Map<String, dynamic> args) {
+    return _sendPayload(hitType, args);
+  }
+
+  /**
+   * Valid values for [hitType] are: 'pageview', 'screenview', 'event',
+   * 'transaction', 'item', 'social', 'exception', and 'timing'.
+   */
   Future _sendPayload(String hitType, Map<String, dynamic> args) {
     if (_bucket.removeDrop()) {
       _initClientId();
@@ -198,6 +217,8 @@ class AnalyticsImpl implements Analytics {
       args['tid'] = trackingId;
       args['cid'] = _clientId;
       args['t'] = hitType;
+
+      _sendController.add(args);
 
       return _recordFuture(postHandler.sendPost(_url, args));
     } else {
