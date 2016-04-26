@@ -49,7 +49,6 @@ And call some analytics code:
 final String UA = ...;
 
 Analytics ga = await Analytics.create(UA, 'ga_test', '1.0');
-ga.optIn = true;
 
 ga.sendScreenView('home');
 ga.sendException('foo exception');
@@ -61,21 +60,17 @@ ga.sendTiming('readTime', 20);
 
 ## When do we send analytics data?
 
-We use an opt-in method for sending analytics information. There are essentially
-three states for when we send information:
+You can use this library in an opt-in manner or an opt-out one. It defaults to
+opt-out - data will be sent to Google Analytics unless the user explicitly
+opts-out. The mode can be adjusted by changing the value of the
+`Analytics.analyticsOpt` field.
 
-*Sending screen views* If the user has not opted in, the library will only send
-information about screen views. This allows tools to do things like version
-checks, but does not send any additional information.
+*Opt-out* In opt-out mode, if the user does not explicitly opt-out of collecting
+analytics (`Analytics.enabled = false`), the usage library will send usage data.
 
-*Opt-in* If the user opts-in to analytics collection the library sends all
-requested analytics info. This includes screen views, events, timing
-information, and exceptions.
-
-*Opt-ing out* In order to not send analytics information, either do not call the
-analytics methods, or create and use the `AnalyticsMock` class. This provides
-an instance you can use in place of a real analytics object but each analytics
-method is a no-op.
+*Opt-in* In opt-in mode, no data will be sent until the user explicitly opt-in
+to collection (`Analytics.enabled = true`). This includes screen views, events,
+timing information, and exceptions.
 
 ## Other info
 

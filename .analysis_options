@@ -4,3 +4,4 @@ analyzer:
     enableConditionalDirectives: true
   exclude:
     - example/flutter_example/**
+    - lib/src/usage_impl_flutter.dart

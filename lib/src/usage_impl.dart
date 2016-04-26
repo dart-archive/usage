@@ -2,8 +2,6 @@
 // for details. All rights reserved. Use of this source code is governed by a
 // BSD-style license that can be found in the LICENSE file.
 
-library usage_impl;
-
 import 'dart:async';
 import 'dart:math' as math;
 
@@ -63,7 +61,9 @@ class ThrottlingBucket {
 class AnalyticsImpl implements Analytics {
   static const String _defaultAnalyticsUrl = 'https://www.google-analytics.com/collect';
 
-  /// Tracking ID / Property ID.
+  /**
+   * Tracking ID / Property ID.
+   */
   final String trackingId;
 
   final PersistentProperties properties;
@@ -73,6 +73,8 @@ class AnalyticsImpl implements Analytics {
   final Map<String, dynamic> _variableMap = {};
 
   final List<Future> _futures = [];
+
+  AnalyticsOpt analyticsOpt = AnalyticsOpt.optOut;
 
   String _url;
 
@@ -94,13 +96,31 @@ class AnalyticsImpl implements Analytics {
     _url = analyticsUrl ?? _defaultAnalyticsUrl;
   }
 
-  bool get optIn => properties['optIn'] == true;
+  bool _firstRun;
 
-  set optIn(bool value) {
-    properties['optIn'] = value;
+  bool get firstRun {
+    if (_firstRun == null) {
+      _firstRun = properties['firstRun'] == null;
+      properties['firstRun'] = false;
+    }
+
+    return _firstRun;
   }
 
-  bool get hasSetOptIn => properties['optIn'] != null;
+  /**
+   * Will analytics data be sent?
+   */
+  bool get enabled {
+    bool optIn = analyticsOpt == AnalyticsOpt.optIn;
+    return optIn ? properties['enabled'] == true : properties['enabled'] != false;
+  }
+
+  /**
+   * Enable or disable sending of analytics data.
+   */
+  set enabled(bool value) {
+    properties['enabled'] = value;
+  }
 
   Future sendScreenView(String viewName) {
     Map<String, dynamic> args = {'cd': viewName};
@@ -108,8 +128,6 @@ class AnalyticsImpl implements Analytics {
   }
 
   Future sendEvent(String category, String action, {String label, int value}) {
-    if (!optIn) return new Future.value();
-
     Map<String, dynamic> args = {'ec': category, 'ea': action};
     if (label != null) args['el'] = label;
     if (value != null) args['ev'] = value;
@@ -117,16 +135,11 @@ class AnalyticsImpl implements Analytics {
   }
 
   Future sendSocial(String network, String action, String target) {
-    if (!optIn) return new Future.value();
-
     Map<String, dynamic> args = {'sn': network, 'sa': action, 'st': target};
     return _sendPayload('social', args);
   }
 
-  Future sendTiming(String variableName, int time, {String category,
-        String label}) {
-    if (!optIn) return new Future.value();
-
+  Future sendTiming(String variableName, int time, {String category, String label}) {
     Map<String, dynamic> args = {'utv': variableName, 'utt': time};
     if (label != null) args['utl'] = label;
     if (category != null) args['utc'] = category;
@@ -139,8 +152,6 @@ class AnalyticsImpl implements Analytics {
   }
 
   Future sendException(String description, {bool fatal}) {
-    if (!optIn) return new Future.value();
-
     // In order to ensure that the client of this API is not sending any PII
     // data, we strip out any stack trace that may reference a path on the
     // user's drive (file:/...).
@@ -206,6 +217,8 @@ class AnalyticsImpl implements Analytics {
    * 'transaction', 'item', 'social', 'exception', and 'timing'.
    */
   Future _sendPayload(String hitType, Map<String, dynamic> args) {
+    if (!enabled) return new Future.value();
+
     if (_bucket.removeDrop()) {
       _initClientId();
 

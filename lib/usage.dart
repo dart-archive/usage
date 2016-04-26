@@ -49,8 +49,14 @@ abstract class Analytics {
     String applicationName,
     String applicationVersion, {
     String analyticsUrl
-  }) => impl.createAnalytics(trackingId, applicationName, applicationVersion,
-    analyticsUrl: analyticsUrl);
+  }) {
+    return impl.createAnalytics(
+      trackingId,
+      applicationName,
+      applicationVersion,
+      analyticsUrl: analyticsUrl
+    );
+  }
 
   /**
    * Tracking ID / Property ID.
@@ -58,17 +64,24 @@ abstract class Analytics {
   String get trackingId;
 
   /**
-   * Whether the user has opt-ed in to additional analytics.
+   * Is this the first time the tool has run?
    */
-  bool get optIn;
-
-  set optIn(bool value);
+  bool get firstRun;
 
   /**
-   * Whether the [optIn] value has been explicitly set (either `true` or
-   * `false`).
+   * Whether the [Analytics] instance is configured in an opt-in or opt-out manner.
    */
-  bool get hasSetOptIn;
+  AnalyticsOpt analyticsOpt = AnalyticsOpt.optOut;
+
+  /**
+   * Will analytics data be sent.
+   */
+  bool get enabled;
+
+  /**
+   * Enable or disable sending of analytics data.
+   */
+  set enabled(bool value);
 
   /**
    * Sends a screen view hit to Google Analytics.
@@ -151,6 +164,18 @@ abstract class Analytics {
   Future waitForLastPing({Duration timeout});
 }
 
+enum AnalyticsOpt {
+  /**
+   * Users must opt-in before any analytics data is sent.
+   */
+  optIn,
+
+  /**
+   * Users must opt-out for analytics data to not be sent.
+   */
+  optOut
+}
+
 /**
  * An object, returned by [Analytics.startTimer], that is used to measure an
  * asynchronous process.
@@ -198,10 +223,10 @@ class AnalyticsMock implements Analytics {
   String get trackingId => 'UA-0';
   final bool logCalls;
 
-  bool optIn = false;
-  bool hasSetOptIn = true;
 
-  /// Events are never added to this controller for the mock implementation.
+  /**
+   * Events are never added to this controller for the mock implementation.
+   */
   StreamController<Map<String, dynamic>> _sendController = new StreamController.broadcast();
 
   /**
@@ -209,6 +234,12 @@ class AnalyticsMock implements Analytics {
    * logged to stdout.
    */
   AnalyticsMock([this.logCalls = false]);
+
+  bool get firstRun => false;
+
+  AnalyticsOpt analyticsOpt = AnalyticsOpt.optOut;
+
+  bool enabled = true;
 
   Future sendScreenView(String viewName) =>
       _log('screenView', {'viewName': viewName});

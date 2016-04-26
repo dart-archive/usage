@@ -30,17 +30,17 @@ void defineTests() {
   group('AnalyticsImpl', () {
     test('respects disabled', () {
       AnalyticsImplMock mock = createMock();
-      mock.optIn = false;
+      mock.enabled = false;
       mock.sendException('FooBar exception');
-      expect(mock.optIn, false);
+      expect(mock.enabled, false);
       expect(mock.mockPostHandler.sentValues, isEmpty);
     });
 
-    test('hasSetOptIn', () {
-      AnalyticsImplMock mock = createMock(setOptIn: false);
-      expect(mock.hasSetOptIn, false);
-      mock.optIn = false;
-      expect(mock.hasSetOptIn, true);
+    test('firstRun', () {
+      AnalyticsImplMock mock = createMock();
+      expect(mock.firstRun, true);
+      mock = createMock(props: {'firstRun': false});
+      expect(mock.firstRun, false);
     });
 
     test('setSessionValue', () {

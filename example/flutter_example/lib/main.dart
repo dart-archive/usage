@@ -38,7 +38,7 @@ class _FlutterDemoState extends State<FlutterDemo> {
 
   void _handleOptIn(bool value) {
     setState(() {
-      config.ga.optIn = value;
+      config.ga.enabled = value;
     });
   }
 
@@ -54,9 +54,9 @@ class _FlutterDemoState extends State<FlutterDemo> {
             child: new Text("Button pressed $_times times.")
           ),
           new ListItem(
-            onTap: () => _handleOptIn(!config.ga.optIn),
+            onTap: () => _handleOptIn(!config.ga.enabled),
             leading: new Checkbox(
-              value: config.ga.optIn,
+              value: config.ga.enabled,
               onChanged: _handleOptIn
             ),
             title: new Text("Opt in to analytics")
