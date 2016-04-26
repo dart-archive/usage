@@ -1,5 +1,10 @@
 # Changelog
 
+## 2.2.0
+- added `Analytics.firstRun`
+- added `Analytics.enabled`
+- removed `Analytics.optIn`
+
 ## 2.1.0
 - added `Analytics.getSessionValue()`
 - added `Analytics.onSend`

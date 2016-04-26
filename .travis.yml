@@ -1,6 +1,5 @@
 language: dart
 dart:
-  - stable
   - dev
 sudo: false
 

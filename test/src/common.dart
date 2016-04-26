@@ -9,8 +9,8 @@ import 'dart:async';
 import 'package:test/test.dart';
 import 'package:usage/src/usage_impl.dart';
 
-AnalyticsImplMock createMock({bool setOptIn: true}) =>
-    new AnalyticsImplMock('UA-0', setOptIn: setOptIn);
+AnalyticsImplMock createMock({ Map<String, dynamic> props }) =>
+  new AnalyticsImplMock('UA-0', props: props);
 
 void was(Map m, String type) => expect(m['t'], type);
 void has(Map m, String key) => expect(m[key], isNotNull);
@@ -20,11 +20,13 @@ class AnalyticsImplMock extends AnalyticsImpl {
   MockProperties get mockProperties => properties;
   MockPostHandler get mockPostHandler => postHandler;
 
-  AnalyticsImplMock(String trackingId, {bool setOptIn: true}) :
-      super(trackingId, new MockProperties(), new MockPostHandler(),
-      applicationName: 'Test App', applicationVersion: '0.1') {
-    if (setOptIn) optIn = true;
-  }
+  AnalyticsImplMock(String trackingId, { Map<String, dynamic> props }) : super(
+    trackingId,
+    new MockProperties(props),
+    new MockPostHandler(),
+    applicationName: 'Test App',
+    applicationVersion: '0.1'
+  );
 
   Map<String, dynamic> get last => mockPostHandler.last;
 }
@@ -32,7 +34,9 @@ class AnalyticsImplMock extends AnalyticsImpl {
 class MockProperties extends PersistentProperties {
   Map<String, dynamic> props = {};
 
-  MockProperties() : super('mock');
+  MockProperties([Map<String, dynamic> props]) : super('mock') {
+    if (props != null) this.props.addAll(props);
+  }
 
   dynamic operator[](String key) => props[key];
 

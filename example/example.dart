@@ -26,7 +26,6 @@ Future<Analytics> getAnalytics() async {
   if (_analytics == null || _lastUa != _ua()) {
     _lastUa = _ua();
     _analytics = await Analytics.create(_lastUa, 'Test app', '1.0');
-    _analytics.optIn = true;
     _analytics.sendScreenView(window.location.pathname);
   }
 
