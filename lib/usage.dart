@@ -252,16 +252,13 @@ class AnalyticsMock implements Analytics {
   Future sendSocial(String network, String action, String target) =>
       _log('social', {'network': network, 'action': action, 'target': target});
 
-  Future sendTiming(String variableName, int time, {String category,
-      String label}) {
+  Future sendTiming(String variableName, int time, {String category, String label}) {
     return _log('timing', {'variableName': variableName, 'time': time,
       'category': category, 'label': label});
   }
 
-  AnalyticsTimer startTimer(String variableName,
-      {String category, String label}) {
-    return new AnalyticsTimer(this,
-        variableName, category: category, label: label);
+  AnalyticsTimer startTimer(String variableName, {String category, String label}) {
+    return new AnalyticsTimer(this, variableName, category: category, label: label);
   }
 
   Future sendException(String description, {bool fatal}) =>
