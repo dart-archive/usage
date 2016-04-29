@@ -1,5 +1,8 @@
 # Changelog
 
+## 2.2.0+1
+- bug fix to prevent frequently changing the settings file
+
 ## 2.2.0
 - added `Analytics.firstRun`
 - added `Analytics.enabled`

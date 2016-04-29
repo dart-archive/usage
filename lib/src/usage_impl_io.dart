@@ -93,21 +93,31 @@ class IOPersistentProperties extends PersistentProperties {
   IOPersistentProperties(String name) : super(name) {
     String fileName = '.${name.replaceAll(' ', '_')}';
     _file = new File(path.join(_userHomeDir(), fileName));
-    _file.createSync();
-    String contents = _file.readAsStringSync();
-    if (contents.isEmpty) contents = '{}';
-    _map = JSON.decode(contents);
+
+    try {
+      if (!_file.existsSync()) _file.createSync();
+      String contents = _file.readAsStringSync();
+      if (contents.isEmpty) contents = '{}';
+      _map = JSON.decode(contents);
+    } catch (_) {
+      _map = {};
+    }
   }
 
   dynamic operator[](String key) => _map[key];
 
   void operator[]=(String key, dynamic value) {
+    if (value == null && !_map.containsKey(key)) return;
+    if (_map[key] == value) return;
+
     if (value == null) {
       _map.remove(key);
     } else {
       _map[key] = value;
     }
 
-    _file.writeAsStringSync(JSON.encode(_map) + '\n');
+    try {
+      _file.writeAsStringSync(JSON.encode(_map) + '\n');
+    } catch (_) { }
   }
 }

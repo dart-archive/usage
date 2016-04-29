@@ -101,7 +101,10 @@ class AnalyticsImpl implements Analytics {
   bool get firstRun {
     if (_firstRun == null) {
       _firstRun = properties['firstRun'] == null;
-      properties['firstRun'] = false;
+
+      if (properties['firstRun'] != false) {
+        properties['firstRun'] = false;
+      }
     }
 
     return _firstRun;
