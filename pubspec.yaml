@@ -3,7 +3,7 @@
 # BSD-style license that can be found in the LICENSE file.
 
 name: usage
-version: 2.2.0+1
+version: 2.2.1
 description: A Google Analytics wrapper for both command-line, web, and Flutter apps.
 homepage: https://github.com/dart-lang/usage
 author: Dart Team <misc@dartlang.org>

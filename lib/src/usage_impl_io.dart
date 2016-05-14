@@ -39,11 +39,19 @@ class AnalyticsIO extends AnalyticsImpl {
 }
 
 String _createUserAgent() {
-  // Mozilla/5.0 (iPhone; U; CPU iPhone OS 5_1_1 like Mac OS X; en)
-  // Dart/1.8.0-edge.41170 (macos; macos; macos; null)
-  String os = Platform.operatingSystem;
-  String locale = Platform.environment['LANG'];
-  return "Dart/${_dartVersion()} (${os}; ${os}; ${os}; ${locale})";
+  if (Platform.isMacOS) {
+    return 'Mozilla/5.0 (Macintosh; Intel Mac OS X)';
+  } else if (Platform.isMacOS) {
+    return 'Mozilla/5.0 (Windows; Windows)';
+  } else if (Platform.isLinux) {
+    return 'Mozilla/5.0 (Linux; Linux)';
+  } else {
+    // Mozilla/5.0 (iPhone; U; CPU iPhone OS 5_1_1 like Mac OS X; en)
+    // Dart/1.8.0-edge.41170 (macos; macos; macos; null)
+    String os = Platform.operatingSystem;
+    String locale = Platform.environment['LANG'];
+    return "Dart/${_dartVersion()} (${os}; ${os}; ${os}; ${locale})";
+  }
 }
 
 String _userHomeDir() {

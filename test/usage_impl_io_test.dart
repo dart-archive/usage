@@ -68,7 +68,7 @@ class MockHttpClientRequest implements HttpClientRequest {
 class MockHttpClientResponse implements HttpClientResponse {
   final MockHttpClient client;
   MockHttpClientResponse(this.client);
-  Future drain([var futureValue]) {
+  Future/*<E>*/ drain/*<E>*/([/*=E*/ futureValue]) {
     client.sendCount++;
     return new Future.value();
   }

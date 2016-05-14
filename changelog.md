@@ -1,5 +1,8 @@
 # Changelog
 
+## 2.2.1
+- improve the user agent string for the CLI client
+
 ## 2.2.0+1
 - bug fix to prevent frequently changing the settings file
 
