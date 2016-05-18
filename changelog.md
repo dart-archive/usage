@@ -1,5 +1,8 @@
 # Changelog
 
+## 2.2.2
+- adjust the Flutter usage client to Flutter API changes
+
 ## 2.2.1
 - improve the user agent string for the CLI client
 
