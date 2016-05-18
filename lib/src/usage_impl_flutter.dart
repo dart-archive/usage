@@ -19,10 +19,10 @@ Future<Analytics> createAnalytics(
   String applicationVersion, {
   String analyticsUrl
 }) async {
-    String dataPath = await getFilesDir();
+    Directory dataDirectory = await PathProvider.getTemporaryDirectory();
 
     String fileName = '.${applicationName.replaceAll(' ', '_')}';
-    File file = new File(path.join(dataPath, fileName));
+    File file = new File(path.join(dataDirectory.path, fileName));
     await file.create();
     String contents = await file.readAsString();
     if (contents.isEmpty) contents = '{}';
