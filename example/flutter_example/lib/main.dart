@@ -15,7 +15,7 @@ Future main() async {
     theme: new ThemeData.dark(),
     routes: <String, WidgetBuilder>{
       '/': (BuildContext context) => new FlutterDemo(ga)
-    }
+    },
   ));
 }
 
@@ -46,28 +46,28 @@ class _FlutterDemoState extends State<FlutterDemo> {
   Widget build(BuildContext context) {
     return new Scaffold(
       appBar: new AppBar(
-        title: new Text('Usage Example')
+        title: new Text('Usage Example'),
       ),
       body: new Column(
         children: <Widget>[
           new Center(
-            child: new Text("Button pressed $_times times.")
+            child: new Text("Button pressed $_times times."),
           ),
           new ListItem(
             onTap: () => _handleOptIn(!config.ga.enabled),
             leading: new Checkbox(
               value: config.ga.enabled,
-              onChanged: _handleOptIn
+              onChanged: _handleOptIn,
             ),
-            title: new Text("Opt in to analytics")
-          )
+            title: new Text("Opt in to analytics"),
+          ),
         ],
-        mainAxisAlignment: MainAxisAlignment.spaceAround
+        mainAxisAlignment: MainAxisAlignment.spaceAround,
       ),
       floatingActionButton: new FloatingActionButton(
-        child: new Icon(icon: Icons.add),
-        onPressed: _handleButtonPressed
-      )
+        child: new Icon(Icons.add),
+        onPressed: _handleButtonPressed,
+      ),
     );
   }
 }

@@ -1,7 +1,12 @@
 name: flutter_example
 description: Create a new Flutter project.
+
+environment:
+  sdk: ">=1.19.0 <2.0.0"
+  flutter: ^0.0.1
+
 dependencies:
   usage:
     path: ../..
   flutter:
-    path: ../../../flutter/packages/flutter
+    sdk: flutter
