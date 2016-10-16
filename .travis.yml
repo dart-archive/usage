@@ -1,6 +1,3 @@
 language: dart
-dart:
-  - dev
 sudo: false
-
 script: ./tool/travis.sh
