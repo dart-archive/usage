@@ -5,10 +5,9 @@
 /// A simple web app to hand-test the usage library.
 library usage_example;
 
-import 'dart:async';
 import 'dart:html';
 
-import 'package:usage/usage.dart';
+import 'package:usage/usage_html.dart';
 
 Analytics _analytics;
 String _lastUa;
@@ -22,28 +21,28 @@ void main() {
 
 String _ua() => (querySelector('#ua') as InputElement).value.trim();
 
-Future<Analytics> getAnalytics() async {
+Analytics getAnalytics() {
   if (_analytics == null || _lastUa != _ua()) {
     _lastUa = _ua();
-    _analytics = await Analytics.create(_lastUa, 'Test app', '1.0');
+    _analytics = new AnalyticsHtml(_lastUa, 'Test app', '1.0');
     _analytics.sendScreenView(window.location.pathname);
   }
 
   return _analytics;
 }
 
-Future _handleFoo() async {
-  Analytics analytics = await getAnalytics();
+void _handleFoo() {
+  Analytics analytics = getAnalytics();
   analytics.sendEvent('main', 'foo');
 }
 
-Future _handleBar() async {
-  Analytics analytics = await getAnalytics();
+void _handleBar() {
+  Analytics analytics = getAnalytics();
   analytics.sendEvent('main', 'bar');
 }
 
-Future _changePage() async {
-  Analytics analytics = await getAnalytics();
+void _changePage() {
+  Analytics analytics = getAnalytics();
   window.history.pushState(null, 'new page', '${++_count}.html');
   analytics.sendScreenView(window.location.pathname);
 }

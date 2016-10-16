@@ -1,7 +1,7 @@
 # Changelog
 
-## unreleased
-- updated the Flutter example pubspec to use the newer Flutter sdk reference style
+## 3.0.0
+- removed the use of configurable imports
 
 ## 2.2.2
 - adjust the Flutter usage client to Flutter API changes

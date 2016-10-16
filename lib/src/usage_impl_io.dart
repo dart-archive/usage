@@ -8,29 +8,23 @@ import 'dart:io';
 
 import 'package:path/path.dart' as path;
 
-import '../usage.dart';
 import 'usage_impl.dart';
 
-Future<Analytics> createAnalytics(
-  String trackingId,
-  String applicationName,
-  String applicationVersion, {
-  String analyticsUrl
-}) {
-  return new Future.value(new AnalyticsIO(
-    trackingId,
-    applicationName,
-    applicationVersion,
-    analyticsUrl: analyticsUrl
-  ));
-}
-
+/// Create a new Analytics instance.
+///
+/// `trackingId`, `applicationName`, and `applicationVersion` values should be supplied.
+/// `analyticsUrl` is optional, and lets user's substitute their own analytics URL for
+/// the default. `documentDirectory` is where the analytics settings are stored. It
+/// defaults to the user home directory. For regular `dart:io` apps this doesn't need to
+/// be supplied. For Flutter applications, you should pass in a value like
+/// `PathProvider.getApplicationDocumentsDirectory()`.
 class AnalyticsIO extends AnalyticsImpl {
   AnalyticsIO(String trackingId, String applicationName, String applicationVersion, {
-    String analyticsUrl
+    String analyticsUrl,
+    Directory documentDirectory
   }) : super(
     trackingId,
-    new IOPersistentProperties(applicationName),
+    new IOPersistentProperties(applicationName, documentDirPath: documentDirectory?.path),
     new IOPostHandler(),
     applicationName: applicationName,
     applicationVersion: applicationVersion,
@@ -41,7 +35,11 @@ class AnalyticsIO extends AnalyticsImpl {
 String _createUserAgent() {
   final String locale = getPlatformLocale() ?? '';
 
-  if (Platform.isMacOS) {
+  if (Platform.isAndroid) {
+    return 'Mozilla/5.0 (Android; Mobile; ${locale})';
+  } else if (Platform.isIOS) {
+    return 'Mozilla/5.0 (iPhone; U; CPU iPhone OS like Mac OS X; ${locale})';
+  } else if (Platform.isMacOS) {
     return 'Mozilla/5.0 (Macintosh; Intel Mac OS X; Macintosh; ${locale})';
   } else if (Platform.isWindows) {
     return 'Mozilla/5.0 (Windows; Windows; Windows; ${locale})';
@@ -94,9 +92,10 @@ class IOPersistentProperties extends PersistentProperties {
   File _file;
   Map _map;
 
-  IOPersistentProperties(String name) : super(name) {
+  IOPersistentProperties(String name, { String documentDirPath }) : super(name) {
     String fileName = '.${name.replaceAll(' ', '_')}';
-    _file = new File(path.join(_userHomeDir(), fileName));
+    documentDirPath ??= _userHomeDir();
+    _file = new File(path.join(documentDirPath, fileName));
 
     try {
       if (!_file.existsSync()) _file.createSync();
