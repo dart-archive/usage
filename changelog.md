@@ -2,6 +2,8 @@
 
 ## 3.0.0
 - removed the use of configurable imports
+- removed the Flutter specific entry-point; Flutter apps can now use the
+  regular `dart:io` entrypoint (AnalyticsIO)
 
 ## 2.2.2
 - adjust the Flutter usage client to Flutter API changes

@@ -17,7 +17,22 @@ make sure to select not the website option, but the **mobile app** option.
 
 ## For Flutter apps
 
-TODO:
+Flutter applications can use the `AnalyticsIO` version of this library. They will need
+to specify the documents directory in the constructor, in order to tell the library where
+to save the analytics preferences:
+
+```dart
+import 'package:flutter/services.dart';
+import 'package:usage/usage_io.dart';
+
+void main() {
+  final String UA = ...;
+
+  Analytics ga = new AnalyticsIO(UA, 'ga_test', '3.0',
+    documentsDirectory: PathProvider.getApplicationDocumentsDirectory());
+  ...
+}
+```
 
 ## For command-line apps
 
@@ -56,7 +71,7 @@ And call some analytics code:
 ```dart
 final String UA = ...;
 
-Analytics ga = new AnalyticsIO(UA, 'ga_test', '1.0');
+Analytics ga = new AnalyticsIO(UA, 'ga_test', '3.0');
 ga.optIn = true;
 
 ga.sendScreenView('home');
