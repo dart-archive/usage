@@ -6,7 +6,7 @@ import 'dart:async';
 import 'dart:math' as math;
 
 import '../usage.dart';
-import 'uuid.dart';
+import '../uuid/uuid.dart';
 
 final int _MAX_EXCEPTION_LENGTH = 100;
 
