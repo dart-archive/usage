@@ -39,18 +39,18 @@ class AnalyticsIO extends AnalyticsImpl {
 }
 
 String _createUserAgent() {
+  final String locale = getPlatformLocale() ?? '';
+
   if (Platform.isMacOS) {
-    return 'Mozilla/5.0 (Macintosh; Intel Mac OS X)';
-  } else if (Platform.isMacOS) {
-    return 'Mozilla/5.0 (Windows; Windows)';
+    return 'Mozilla/5.0 (Macintosh; Intel Mac OS X; Macintosh; ${locale})';
+  } else if (Platform.isWindows) {
+    return 'Mozilla/5.0 (Windows; Windows; Windows; ${locale})';
   } else if (Platform.isLinux) {
-    return 'Mozilla/5.0 (Linux; Linux)';
+    return 'Mozilla/5.0 (Linux; Linux; Linux; ${locale})';
   } else {
-    // Mozilla/5.0 (iPhone; U; CPU iPhone OS 5_1_1 like Mac OS X; en)
-    // Dart/1.8.0-edge.41170 (macos; macos; macos; null)
+    // Dart/1.8.0 (macos; macos; macos; en_US)
     String os = Platform.operatingSystem;
-    String locale = Platform.environment['LANG'];
-    return "Dart/${_dartVersion()} (${os}; ${os}; ${os}; ${locale})";
+    return "Dart/${getDartVersion()} (${os}; ${os}; ${os}; ${locale})";
   }
 }
 
@@ -60,7 +60,7 @@ String _userHomeDir() {
   return value == null ? '.' : value;
 }
 
-String _dartVersion() {
+String getDartVersion() {
   String ver = Platform.version;
   int index = ver.indexOf(' ');
   if (index != -1) ver = ver.substring(0, index);
@@ -74,10 +74,6 @@ class IOPostHandler extends PostHandler {
   IOPostHandler({HttpClient this.mockClient}) : _userAgent = _createUserAgent();
 
   Future sendPost(String url, Map<String, dynamic> parameters) async {
-    // Add custom parameters for OS and the Dart version.
-    parameters['cd1'] = Platform.operatingSystem;
-    parameters['cd2'] = 'dart ${_dartVersion()}';
-
     String data = postEncode(parameters);
 
     HttpClient client = mockClient != null ? mockClient : new HttpClient();
@@ -128,4 +124,23 @@ class IOPersistentProperties extends PersistentProperties {
       _file.writeAsStringSync(JSON.encode(_map) + '\n');
     } catch (_) { }
   }
+}
+
+/// Return the string for the platform's locale; return's `null` if the locale
+/// can't be determined.
+String getPlatformLocale() {
+  String locale = Platform.environment['LANG'];
+  if (locale == null) return null;
+
+  if (locale != null) {
+    // Convert `en_US.UTF-8` to `en_US`.
+    int index = locale.indexOf('.');
+    if (index != null) locale = locale.substring(0, index);
+
+    // Convert `en_US` to `en`.
+    index = locale.indexOf('_');
+    if (index != null) locale = locale.substring(0, index);
+  }
+
+  return locale;
 }

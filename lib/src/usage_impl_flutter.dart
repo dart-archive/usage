@@ -12,6 +12,7 @@ import 'package:path/path.dart' as path;
 
 import '../usage.dart';
 import 'usage_impl.dart';
+import 'usage_impl_io.dart';
 
 Future<Analytics> createAnalytics(
   String trackingId,
@@ -39,18 +40,17 @@ Future<Analytics> createAnalytics(
 }
 
 String _createUserAgent() {
-  // Mozilla/5.0 (iPhone; U; CPU iPhone OS 5_1_1 like Mac OS X; en)
-  // Dart/1.8.0-edge.41170 (macos; macos; macos; null)
-  String os = Platform.operatingSystem;
-  String locale = Platform.environment['LANG'];
-  return "Dart/${_dartVersion()} (${os}; ${os}; ${os}; ${locale})";
-}
+  final String locale = getPlatformLocale() ?? '';
 
-String _dartVersion() {
-  String ver = Platform.version;
-  int index = ver.indexOf(' ');
-  if (index != -1) ver = ver.substring(0, index);
-  return ver;
+  if (Platform.isAndroid) {
+    return 'Mozilla/5.0 (Android; Mobile; ${locale})';
+  } else if (Platform.isIOS) {
+    return 'Mozilla/5.0 (iPhone; U; CPU iPhone OS like Mac OS X; ${locale})';
+  } else {
+    // Dart/1.8.0 (macos; macos; macos; en_US)
+    final String os = Platform.operatingSystem;
+    return "Dart/${getDartVersion()} (${os}; ${os}; ${os}; ${locale})";
+  }
 }
 
 class FlutterPostHandler extends PostHandler {
@@ -60,10 +60,6 @@ class FlutterPostHandler extends PostHandler {
   FlutterPostHandler({HttpClient this.mockClient}) : _userAgent = _createUserAgent();
 
   Future sendPost(String url, Map<String, dynamic> parameters) {
-    // Add custom parameters for OS and the Dart version.
-    parameters['cd1'] = Platform.operatingSystem;
-    parameters['cd2'] = 'dart ${_dartVersion()}';
-
     String data = postEncode(parameters);
 
     Map<String, String> headers = <String, String>{ 'User-Agent': _userAgent };
@@ -75,6 +71,7 @@ class FlutterPostHandler extends PostHandler {
 class FlutterPersistentProperties extends PersistentProperties {
   File _file;
   Map _map;
+
   FlutterPersistentProperties(String name, this._file, this._map) : super(name);
 
   dynamic operator[](String key) => _map[key];

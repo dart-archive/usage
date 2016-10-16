@@ -39,6 +39,16 @@ void defineTests() {
       expect(props['foo'], null);
     });
   });
+
+  group('usage_impl_io', () {
+    test('getPlatformLocale', () {
+      expect(getPlatformLocale(), isNotNull);
+    });
+
+    test('getDartVersion', () {
+      expect(getDartVersion(), isNotNull);
+    });
+  });
 }
 
 class MockHttpClient implements HttpClient {

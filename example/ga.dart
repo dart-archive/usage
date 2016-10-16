@@ -21,7 +21,7 @@ Future main(List args) async {
 
   String ua = args.isEmpty ? DEFAULT_UA : args.first;
 
-  Analytics ga = await Analytics.create(ua, 'ga_test', '1.0');
+  Analytics ga = await Analytics.create(ua, 'ga_test', '3.0');
 
   ga.sendScreenView('home').then((_) {
     return ga.sendScreenView('files');

@@ -15,11 +15,7 @@ dartanalyzer --fatal-warnings \
   test/all.dart
 
 # Run the tests.
-dart --conditional_directives -c test/all.dart
-
-# Run the UI/web tests as well.
-#pub build test
-#pub run grinder:test build/test/web.html
+dart -c test/all.dart
 
 # Measure the size of the compiled JS, for the dart:html version of the library.
 dart tool/grind.dart build
