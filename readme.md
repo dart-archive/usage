@@ -18,7 +18,7 @@ make sure to select not the website option, but the **mobile app** option.
 ## For Flutter apps
 
 Flutter applications can use the `AnalyticsIO` version of this library. They will need
-to specify the documents directory in the constructor, in order to tell the library where
+to specify the documents directory in the constructor in order to tell the library where
 to save the analytics preferences:
 
 ```dart

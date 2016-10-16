@@ -5,19 +5,20 @@
 /**
  * A UUID generator library.
  */
-library usage.uuid;
+library uuid;
 
 import 'dart:math' show Random;
 
 /**
- * A UUID generator. This will generate unique IDs in the format:
+ * A UUID generator.
+ *
+ * This will generate unique IDs in the format:
  *
  *     f47ac10b-58cc-4372-a567-0e02b2c3d479
  *
  * The generated uuids are 128 bit numbers encoded in a specific string format.
- *
  * For more information, see
- * http://en.wikipedia.org/wiki/Universally_unique_identifier.
+ * [en.wikipedia.org/wiki/Universally_unique_identifier](http://en.wikipedia.org/wiki/Universally_unique_identifier).
  */
 class Uuid {
   Random _random = new Random();
