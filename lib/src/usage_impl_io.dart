@@ -8,29 +8,23 @@ import 'dart:io';
 
 import 'package:path/path.dart' as path;
 
-import '../usage.dart';
 import 'usage_impl.dart';
 
-Future<Analytics> createAnalytics(
-  String trackingId,
-  String applicationName,
-  String applicationVersion, {
-  String analyticsUrl
-}) {
-  return new Future.value(new AnalyticsIO(
-    trackingId,
-    applicationName,
-    applicationVersion,
-    analyticsUrl: analyticsUrl
-  ));
-}
-
+/// Create a new Analytics instance.
+///
+/// `trackingId`, `applicationName`, and `applicationVersion` values should be supplied.
+/// `analyticsUrl` is optional, and lets user's substitute their own analytics URL for
+/// the default. `documentDirectory` is where the analytics settings are stored. It
+/// defaults to the user home directory. For regular `dart:io` apps this doesn't need to
+/// be supplied. For Flutter applications, you should pass in a value like
+/// `PathProvider.getApplicationDocumentsDirectory()`.
 class AnalyticsIO extends AnalyticsImpl {
   AnalyticsIO(String trackingId, String applicationName, String applicationVersion, {
-    String analyticsUrl
+    String analyticsUrl,
+    Directory documentDirectory
   }) : super(
     trackingId,
-    new IOPersistentProperties(applicationName),
+    new IOPersistentProperties(applicationName, documentDirPath: documentDirectory?.path),
     new IOPostHandler(),
     applicationName: applicationName,
     applicationVersion: applicationVersion,
@@ -39,18 +33,22 @@ class AnalyticsIO extends AnalyticsImpl {
 }
 
 String _createUserAgent() {
-  if (Platform.isMacOS) {
-    return 'Mozilla/5.0 (Macintosh; Intel Mac OS X)';
+  final String locale = getPlatformLocale() ?? '';
+
+  if (Platform.isAndroid) {
+    return 'Mozilla/5.0 (Android; Mobile; ${locale})';
+  } else if (Platform.isIOS) {
+    return 'Mozilla/5.0 (iPhone; U; CPU iPhone OS like Mac OS X; ${locale})';
   } else if (Platform.isMacOS) {
-    return 'Mozilla/5.0 (Windows; Windows)';
+    return 'Mozilla/5.0 (Macintosh; Intel Mac OS X; Macintosh; ${locale})';
+  } else if (Platform.isWindows) {
+    return 'Mozilla/5.0 (Windows; Windows; Windows; ${locale})';
   } else if (Platform.isLinux) {
-    return 'Mozilla/5.0 (Linux; Linux)';
+    return 'Mozilla/5.0 (Linux; Linux; Linux; ${locale})';
   } else {
-    // Mozilla/5.0 (iPhone; U; CPU iPhone OS 5_1_1 like Mac OS X; en)
-    // Dart/1.8.0-edge.41170 (macos; macos; macos; null)
+    // Dart/1.8.0 (macos; macos; macos; en_US)
     String os = Platform.operatingSystem;
-    String locale = Platform.environment['LANG'];
-    return "Dart/${_dartVersion()} (${os}; ${os}; ${os}; ${locale})";
+    return "Dart/${getDartVersion()} (${os}; ${os}; ${os}; ${locale})";
   }
 }
 
@@ -60,7 +58,7 @@ String _userHomeDir() {
   return value == null ? '.' : value;
 }
 
-String _dartVersion() {
+String getDartVersion() {
   String ver = Platform.version;
   int index = ver.indexOf(' ');
   if (index != -1) ver = ver.substring(0, index);
@@ -74,10 +72,6 @@ class IOPostHandler extends PostHandler {
   IOPostHandler({HttpClient this.mockClient}) : _userAgent = _createUserAgent();
 
   Future sendPost(String url, Map<String, dynamic> parameters) async {
-    // Add custom parameters for OS and the Dart version.
-    parameters['cd1'] = Platform.operatingSystem;
-    parameters['cd2'] = 'dart ${_dartVersion()}';
-
     String data = postEncode(parameters);
 
     HttpClient client = mockClient != null ? mockClient : new HttpClient();
@@ -98,9 +92,10 @@ class IOPersistentProperties extends PersistentProperties {
   File _file;
   Map _map;
 
-  IOPersistentProperties(String name) : super(name) {
+  IOPersistentProperties(String name, { String documentDirPath }) : super(name) {
     String fileName = '.${name.replaceAll(' ', '_')}';
-    _file = new File(path.join(_userHomeDir(), fileName));
+    documentDirPath ??= _userHomeDir();
+    _file = new File(path.join(documentDirPath, fileName));
 
     try {
       if (!_file.existsSync()) _file.createSync();
@@ -128,4 +123,23 @@ class IOPersistentProperties extends PersistentProperties {
       _file.writeAsStringSync(JSON.encode(_map) + '\n');
     } catch (_) { }
   }
+}
+
+/// Return the string for the platform's locale; return's `null` if the locale
+/// can't be determined.
+String getPlatformLocale() {
+  String locale = Platform.environment['LANG'];
+  if (locale == null) return null;
+
+  if (locale != null) {
+    // Convert `en_US.UTF-8` to `en_US`.
+    int index = locale.indexOf('.');
+    if (index != null) locale = locale.substring(0, index);
+
+    // Convert `en_US` to `en`.
+    index = locale.indexOf('_');
+    if (index != null) locale = locale.substring(0, index);
+  }
+
+  return locale;
 }

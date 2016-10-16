@@ -6,22 +6,7 @@ import 'dart:async';
 import 'dart:convert' show JSON;
 import 'dart:html';
 
-import '../usage.dart';
 import 'usage_impl.dart';
-
-Future<Analytics> createAnalytics(
-  String trackingId,
-  String applicationName,
-  String applicationVersion, {
-  String analyticsUrl
-}) {
-  return new Future.value(new AnalyticsHtml(
-    trackingId,
-    applicationName,
-    applicationVersion,
-    analyticsUrl: analyticsUrl
-  ));
-}
 
 class AnalyticsHtml extends AnalyticsImpl {
   AnalyticsHtml(String trackingId, String applicationName, String applicationVersion, {

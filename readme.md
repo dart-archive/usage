@@ -7,16 +7,37 @@ Flutter apps.
 [![Build Status](https://travis-ci.org/dart-lang/usage.svg)](https://travis-ci.org/dart-lang/usage)
 [![Coverage Status](https://img.shields.io/coveralls/dart-lang/usage.svg)](https://coveralls.io/r/dart-lang/usage?branch=master)
 
-## Using this library
+## For web apps
 
-In order to use this library, call the `Analytics.create` static method.
-You'll get either the command-line, web, or Flutter implementation based on
-the current platform.
+To use this library as a web app, import the `usage_html.dart` library and
+instantiate the `AnalyticsHtml` class.
 
 When you are creating a new property at [google analytics](https://www.google.com/analytics/)
 make sure to select not the website option, but the **mobile app** option.
 
+## For Flutter apps
+
+Flutter applications can use the `AnalyticsIO` version of this library. They will need
+to specify the documents directory in the constructor, in order to tell the library where
+to save the analytics preferences:
+
+```dart
+import 'package:flutter/services.dart';
+import 'package:usage/usage_io.dart';
+
+void main() {
+  final String UA = ...;
+
+  Analytics ga = new AnalyticsIO(UA, 'ga_test', '3.0',
+    documentsDirectory: PathProvider.getApplicationDocumentsDirectory());
+  ...
+}
+```
+
 ## For command-line apps
+
+To use this library as a command-line app, import the `usage_io.dart` library
+and instantiate the `AnalyticsIO` class.
 
 Note, for CLI apps, the usage library will send analytics pings asynchronously.
 This is useful it that it doesn't block the app generally. It does have one
@@ -39,10 +60,10 @@ analytics.waitForLastPing(timeout: new Duration(milliseconds: 500)).then((_) {
 
 ## Using the API
 
-Import the package:
+Import the package (in this example we use the `dart:io` version):
 
 ```dart
-import 'package:usage/usage.dart';
+import 'package:usage/usage_io.dart';
 ```
 
 And call some analytics code:
@@ -50,7 +71,8 @@ And call some analytics code:
 ```dart
 final String UA = ...;
 
-Analytics ga = await Analytics.create(UA, 'ga_test', '1.0');
+Analytics ga = new AnalyticsIO(UA, 'ga_test', '3.0');
+ga.optIn = true;
 
 ga.sendScreenView('home');
 ga.sendException('foo exception');
