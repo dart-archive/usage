@@ -7,7 +7,7 @@ library usage_ga;
 
 import 'package:usage/usage_io.dart';
 
-void main(List args) {
+main(List args) async {
   final String DEFAULT_UA = 'UA-55029513-1';
 
   if (args.isEmpty) {
@@ -21,15 +21,10 @@ void main(List args) {
 
   Analytics ga = new AnalyticsIO(ua, 'ga_test', '3.0');
 
-  ga.sendScreenView('home').then((_) {
-    return ga.sendScreenView('files');
-  }).then((_) {
-    return ga.sendException('foo exception, line 123:56');
-  }).then((_) {
-    return ga.sendTiming('writeDuration', 123);
-  }).then((_) {
-    return ga.sendEvent('create', 'consoleapp', label: 'Console App');
-  }).then((_) {
-    print('pinged ${ua}');
-  });
+  await ga.sendScreenView('home');
+  await ga.sendScreenView('files');
+  await ga.sendException('foo exception, line 123:56');
+  await ga.sendTiming('writeDuration', 123);
+  await ga.sendEvent('create', 'consoleapp', label: 'Console App');
+  print('pinged ${ua}');
 }
