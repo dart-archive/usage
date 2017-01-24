@@ -26,37 +26,37 @@ void defineTests() {
 
   group('sanitizeStacktrace', () {
     test('replace file', () {
-      expect(sanitizeStacktrace(
-          '(file:///Users/foo/tmp/error.dart:3:13)',
-          shorten: false),
+      expect(
+          sanitizeStacktrace('(file:///Users/foo/tmp/error.dart:3:13)',
+              shorten: false),
           '(error.dart:3:13)');
     });
 
     test('replace files', () {
-      expect(sanitizeStacktrace(
-          'foo (file:///Users/foo/tmp/error.dart:3:13)\n'
-          'bar (file:///Users/foo/tmp/error.dart:3:13)',
-          shorten: false),
+      expect(
+          sanitizeStacktrace(
+              'foo (file:///Users/foo/tmp/error.dart:3:13)\n'
+              'bar (file:///Users/foo/tmp/error.dart:3:13)',
+              shorten: false),
           'foo (error.dart:3:13)\nbar (error.dart:3:13)');
     });
 
     test('shorten 1', () {
-      expect(sanitizeStacktrace(
-          '(file:///Users/foo/tmp/error.dart:3:13)'),
+      expect(sanitizeStacktrace('(file:///Users/foo/tmp/error.dart:3:13)'),
           '(error.dart:3:13)');
     });
 
     test('shorten 2', () {
-      expect(sanitizeStacktrace(
-          'foo (file:///Users/foo/tmp/error.dart:3:13)\n'
-          'bar (file:///Users/foo/tmp/error.dart:3:13)'),
+      expect(
+          sanitizeStacktrace('foo (file:///Users/foo/tmp/error.dart:3:13)\n'
+              'bar (file:///Users/foo/tmp/error.dart:3:13)'),
           'foo (error.dart:3:13) bar (error.dart:3:13)');
     });
 
     test('shorten 3', () {
-      expect(sanitizeStacktrace(
-          'foo (package:foo/foo.dart:3:13)\n'
-          'bar (dart:async/schedule_microtask.dart:41)'),
+      expect(
+          sanitizeStacktrace('foo (package:foo/foo.dart:3:13)\n'
+              'bar (dart:async/schedule_microtask.dart:41)'),
           'foo (foo/foo.dart:3:13) bar (async/schedule_microtask.dart:41)');
     });
   });

@@ -59,7 +59,8 @@ class MockHttpClient implements HttpClient {
   Future<HttpClientRequest> postUrl(Uri url) {
     return new Future.value(new MockHttpClientRequest(this));
   }
-  noSuchMethod(Invocation invocation) { }
+
+  noSuchMethod(Invocation invocation) {}
 }
 
 class MockHttpClientRequest implements HttpClientRequest {
@@ -68,11 +69,13 @@ class MockHttpClientRequest implements HttpClientRequest {
   void write(Object obj) {
     client.writeCount++;
   }
+
   Future<HttpClientResponse> close() {
     client.closed = true;
     return new Future.value(new MockHttpClientResponse(client));
   }
-  noSuchMethod(Invocation invocation) { }
+
+  noSuchMethod(Invocation invocation) {}
 }
 
 class MockHttpClientResponse implements HttpClientResponse {
@@ -82,5 +85,6 @@ class MockHttpClientResponse implements HttpClientResponse {
     client.sendCount++;
     return new Future.value();
   }
-  noSuchMethod(Invocation invocation) { }
+
+  noSuchMethod(Invocation invocation) {}
 }

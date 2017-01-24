@@ -31,8 +31,7 @@ class Uuid {
     // Generate xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx / 8-4-4-4-12.
     int special = 8 + _random.nextInt(4);
 
-    return
-        '${_bitsDigits(16, 4)}${_bitsDigits(16, 4)}-'
+    return '${_bitsDigits(16, 4)}${_bitsDigits(16, 4)}-'
         '${_bitsDigits(16, 4)}-'
         '4${_bitsDigits(12, 3)}-'
         '${_printDigits(special,  1)}${_bitsDigits(12, 3)}-'

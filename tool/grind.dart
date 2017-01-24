@@ -15,13 +15,15 @@ main(List<String> args) => grind(args);
 @Task()
 void init() => _buildExampleDir.createSync(recursive: true);
 
-@Task() @Depends(init)
+@Task()
+@Depends(init)
 void build() {
   // Compile `test/web_test.dart` to the `build/test` dir; measure its size.
   File srcFile = new File('example/example.dart');
-  Dart2js.compile(
-    srcFile, outDir: _buildExampleDir, minify: true, extraArgs: ['--conditional-directives']
-  );
+  Dart2js.compile(srcFile,
+      outDir: _buildExampleDir,
+      minify: true,
+      extraArgs: ['--conditional-directives']);
   File outFile = joinFile(_buildExampleDir, ['example.dart.js']);
 
   log('${outFile.path} compiled to ${_printSize(outFile)}');

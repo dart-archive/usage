@@ -19,17 +19,17 @@ import 'usage_impl.dart';
 /// be supplied. For Flutter applications, you should pass in a value like
 /// `PathProvider.getApplicationDocumentsDirectory()`.
 class AnalyticsIO extends AnalyticsImpl {
-  AnalyticsIO(String trackingId, String applicationName, String applicationVersion, {
-    String analyticsUrl,
-    Directory documentDirectory
-  }) : super(
-    trackingId,
-    new IOPersistentProperties(applicationName, documentDirPath: documentDirectory?.path),
-    new IOPostHandler(),
-    applicationName: applicationName,
-    applicationVersion: applicationVersion,
-    analyticsUrl: analyticsUrl
-  );
+  AnalyticsIO(
+      String trackingId, String applicationName, String applicationVersion,
+      {String analyticsUrl, Directory documentDirectory})
+      : super(
+            trackingId,
+            new IOPersistentProperties(applicationName,
+                documentDirPath: documentDirectory?.path),
+            new IOPostHandler(),
+            applicationName: applicationName,
+            applicationVersion: applicationVersion,
+            analyticsUrl: analyticsUrl);
 }
 
 String _createUserAgent() {
@@ -81,7 +81,7 @@ class IOPostHandler extends PostHandler {
       req.write(data);
       HttpClientResponse response = await req.close();
       response.drain();
-    } catch(exception) {
+    } catch (exception) {
       // Catch errors that can happen during a request, but that we can't do
       // anything about, e.g. a missing internet conenction.
     }
@@ -92,7 +92,7 @@ class IOPersistentProperties extends PersistentProperties {
   File _file;
   Map _map;
 
-  IOPersistentProperties(String name, { String documentDirPath }) : super(name) {
+  IOPersistentProperties(String name, {String documentDirPath}) : super(name) {
     String fileName = '.${name.replaceAll(' ', '_')}';
     documentDirPath ??= _userHomeDir();
     _file = new File(path.join(documentDirPath, fileName));
@@ -107,9 +107,9 @@ class IOPersistentProperties extends PersistentProperties {
     }
   }
 
-  dynamic operator[](String key) => _map[key];
+  dynamic operator [](String key) => _map[key];
 
-  void operator[]=(String key, dynamic value) {
+  void operator []=(String key, dynamic value) {
     if (value == null && !_map.containsKey(key)) return;
     if (_map[key] == value) return;
 
@@ -121,7 +121,7 @@ class IOPersistentProperties extends PersistentProperties {
 
     try {
       _file.writeAsStringSync(JSON.encode(_map) + '\n');
-    } catch (_) { }
+    } catch (_) {}
   }
 }
 

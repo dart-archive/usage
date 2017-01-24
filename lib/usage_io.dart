@@ -24,14 +24,12 @@ export 'usage.dart';
  * URL (`https://www.google-analytics.com/collect`).
  */
 class AnalyticsIO extends AnalyticsImpl {
-  AnalyticsIO(String trackingId, String applicationName, String applicationVersion, {
-    String analyticsUrl
-  }) : super(
-    trackingId,
-    new IOPersistentProperties(applicationName),
-    new IOPostHandler(),
-    applicationName: applicationName,
-    applicationVersion: applicationVersion,
-    analyticsUrl: analyticsUrl
-  );
+  AnalyticsIO(
+      String trackingId, String applicationName, String applicationVersion,
+      {String analyticsUrl})
+      : super(trackingId, new IOPersistentProperties(applicationName),
+            new IOPostHandler(),
+            applicationName: applicationName,
+            applicationVersion: applicationVersion,
+            analyticsUrl: analyticsUrl);
 }

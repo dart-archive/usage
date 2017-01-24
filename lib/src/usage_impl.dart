@@ -59,7 +59,8 @@ class ThrottlingBucket {
 }
 
 class AnalyticsImpl implements Analytics {
-  static const String _defaultAnalyticsUrl = 'https://www.google-analytics.com/collect';
+  static const String _defaultAnalyticsUrl =
+      'https://www.google-analytics.com/collect';
 
   /**
    * Tracking ID / Property ID.
@@ -78,16 +79,13 @@ class AnalyticsImpl implements Analytics {
 
   String _url;
 
-  StreamController<Map<String, dynamic>> _sendController = new StreamController.broadcast(sync: true);
+  StreamController<Map<String, dynamic>> _sendController =
+      new StreamController.broadcast(sync: true);
 
-  AnalyticsImpl(
-    this.trackingId,
-    this.properties,
-    this.postHandler, {
-    String applicationName,
-    String applicationVersion,
-    String analyticsUrl
-  }) {
+  AnalyticsImpl(this.trackingId, this.properties, this.postHandler,
+      {String applicationName,
+      String applicationVersion,
+      String analyticsUrl}) {
     assert(trackingId != null);
 
     if (applicationName != null) setSessionValue('an', applicationName);
@@ -115,7 +113,9 @@ class AnalyticsImpl implements Analytics {
    */
   bool get enabled {
     bool optIn = analyticsOpt == AnalyticsOpt.optIn;
-    return optIn ? properties['enabled'] == true : properties['enabled'] != false;
+    return optIn
+        ? properties['enabled'] == true
+        : properties['enabled'] != false;
   }
 
   /**
@@ -142,16 +142,18 @@ class AnalyticsImpl implements Analytics {
     return _sendPayload('social', args);
   }
 
-  Future sendTiming(String variableName, int time, {String category, String label}) {
+  Future sendTiming(String variableName, int time,
+      {String category, String label}) {
     Map<String, dynamic> args = {'utv': variableName, 'utt': time};
     if (label != null) args['utl'] = label;
     if (category != null) args['utc'] = category;
     return _sendPayload('timing', args);
   }
 
-  AnalyticsTimer startTimer(String variableName, {String category, String label}) {
-    return new AnalyticsTimer(this,
-        variableName, category: category, label: label);
+  AnalyticsTimer startTimer(String variableName,
+      {String category, String label}) {
+    return new AnalyticsTimer(this, variableName,
+        category: category, label: label);
   }
 
   Future sendException(String description, {bool fatal}) {
@@ -261,8 +263,8 @@ abstract class PersistentProperties {
 
   PersistentProperties(this.name);
 
-  dynamic operator[](String key);
-  void operator[]=(String key, dynamic value);
+  dynamic operator [](String key);
+  void operator []=(String key, dynamic value);
 }
 
 /**

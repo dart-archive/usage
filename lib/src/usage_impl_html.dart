@@ -9,16 +9,14 @@ import 'dart:html';
 import 'usage_impl.dart';
 
 class AnalyticsHtml extends AnalyticsImpl {
-  AnalyticsHtml(String trackingId, String applicationName, String applicationVersion, {
-    String analyticsUrl
-  }) : super(
-      trackingId,
-      new HtmlPersistentProperties(applicationName),
-      new HtmlPostHandler(),
-      applicationName: applicationName,
-      applicationVersion: applicationVersion,
-      analyticsUrl: analyticsUrl
-  ) {
+  AnalyticsHtml(
+      String trackingId, String applicationName, String applicationVersion,
+      {String analyticsUrl})
+      : super(trackingId, new HtmlPersistentProperties(applicationName),
+            new HtmlPostHandler(),
+            applicationName: applicationName,
+            applicationVersion: applicationVersion,
+            analyticsUrl: analyticsUrl) {
     int screenWidth = window.screen.width;
     int screenHeight = window.screen.height;
 
@@ -57,9 +55,9 @@ class HtmlPersistentProperties extends PersistentProperties {
     _map = JSON.decode(str);
   }
 
-  dynamic operator[](String key) => _map[key];
+  dynamic operator [](String key) => _map[key];
 
-  void operator[]=(String key, dynamic value) {
+  void operator []=(String key, dynamic value) {
     if (value == null) {
       _map.remove(key);
     } else {

@@ -25,16 +25,14 @@ export 'usage.dart';
  * URL (`https://www.google-analytics.com/collect`).
  */
 class AnalyticsHtml extends AnalyticsImpl {
-  AnalyticsHtml(String trackingId, String applicationName, String applicationVersion, {
-    String analyticsUrl
-  }) : super(
-      trackingId,
-      new HtmlPersistentProperties(applicationName),
-      new HtmlPostHandler(),
-      applicationName: applicationName,
-      applicationVersion: applicationVersion,
-      analyticsUrl: analyticsUrl
-  ) {
+  AnalyticsHtml(
+      String trackingId, String applicationName, String applicationVersion,
+      {String analyticsUrl})
+      : super(trackingId, new HtmlPersistentProperties(applicationName),
+            new HtmlPostHandler(),
+            applicationName: applicationName,
+            applicationVersion: applicationVersion,
+            analyticsUrl: analyticsUrl) {
     int screenWidth = window.screen.width;
     int screenHeight = window.screen.height;
 

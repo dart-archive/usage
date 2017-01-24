@@ -90,8 +90,8 @@ abstract class Analytics {
    * milliseconds). [category] specifies the category of the timing. [label]
    * specifies the label of the timing.
    */
-  Future sendTiming(String variableName, int time, {String category,
-      String label});
+  Future sendTiming(String variableName, int time,
+      {String category, String label});
 
   /**
    * Start a timer. The time won't be calculated, and the analytics information
@@ -191,8 +191,8 @@ class AnalyticsTimer {
     if (_endMillis != null) return new Future.value();
 
     _endMillis = new DateTime.now().millisecondsSinceEpoch;
-    return analytics.sendTiming(
-        variableName, currentElapsedMillis, category: category, label: label);
+    return analytics.sendTiming(variableName, currentElapsedMillis,
+        category: category, label: label);
   }
 }
 
@@ -204,11 +204,11 @@ class AnalyticsMock implements Analytics {
   String get trackingId => 'UA-0';
   final bool logCalls;
 
-
   /**
    * Events are never added to this controller for the mock implementation.
    */
-  StreamController<Map<String, dynamic>> _sendController = new StreamController.broadcast();
+  StreamController<Map<String, dynamic>> _sendController =
+      new StreamController.broadcast();
 
   /**
    * Create a new [AnalyticsMock]. If [logCalls] is true, all calls will be
@@ -226,20 +226,31 @@ class AnalyticsMock implements Analytics {
       _log('screenView', {'viewName': viewName});
 
   Future sendEvent(String category, String action, {String label, int value}) {
-    return _log('event', {'category': category, 'action': action,
-      'label': label, 'value': value});
+    return _log('event', {
+      'category': category,
+      'action': action,
+      'label': label,
+      'value': value
+    });
   }
 
   Future sendSocial(String network, String action, String target) =>
       _log('social', {'network': network, 'action': action, 'target': target});
 
-  Future sendTiming(String variableName, int time, {String category, String label}) {
-    return _log('timing', {'variableName': variableName, 'time': time,
-      'category': category, 'label': label});
+  Future sendTiming(String variableName, int time,
+      {String category, String label}) {
+    return _log('timing', {
+      'variableName': variableName,
+      'time': time,
+      'category': category,
+      'label': label
+    });
   }
 
-  AnalyticsTimer startTimer(String variableName, {String category, String label}) {
-    return new AnalyticsTimer(this, variableName, category: category, label: label);
+  AnalyticsTimer startTimer(String variableName,
+      {String category, String label}) {
+    return new AnalyticsTimer(this, variableName,
+        category: category, label: label);
   }
 
   Future sendException(String description, {bool fatal}) =>
@@ -247,7 +258,7 @@ class AnalyticsMock implements Analytics {
 
   dynamic getSessionValue(String param) => null;
 
-  void setSessionValue(String param, dynamic value) { }
+  void setSessionValue(String param, dynamic value) {}
 
   Stream<Map<String, dynamic>> get onSend => _sendController.stream;
 
@@ -280,8 +291,8 @@ String sanitizeStacktrace(dynamic st, {bool shorten: true}) {
 
   for (Match match in iter) {
     String replacement = match.group(1);
-    str = str.substring(0, match.start)
-        + replacement + str.substring(match.end);
+    str =
+        str.substring(0, match.start) + replacement + str.substring(match.end);
   }
 
   if (shorten) {
