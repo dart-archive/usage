@@ -32,7 +32,7 @@ final RegExp _pathRegex = new RegExp(r'file:/\S+/(\S+\.dart)');
 /**
  * An interface to a Google Analytics session. [AnalyticsHtml] and [AnalyticsIO]
  * are concrete implementations of this interface. [AnalyticsMock] can be used
- * for testing or for some varients of an opt-in workflow.
+ * for testing or for some variants of an opt-in workflow.
  *
  * The analytics information is sent on a best-effort basis. So, failures to
  * send the GA information will not result in errors from the asynchronous
@@ -122,7 +122,7 @@ abstract class Analytics {
 
   /**
    * Fires events when the usage library sends any data over the network. This
-   * will not fire if analytics has been disabled or if the throttling algorithim
+   * will not fire if analytics has been disabled or if the throttling algorithm
    * has been engaged.
    *
    * This method is public to allow library clients to more easily test their

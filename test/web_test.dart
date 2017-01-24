@@ -22,7 +22,7 @@ void main() {
   usage_impl_test.defineTests();
   uuid_test.defineTests();
 
-  // Define some web specfic tests.
+  // Define some web specific tests.
   defineWebTests();
 }
 

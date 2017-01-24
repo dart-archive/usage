@@ -19,11 +19,11 @@ String postEncode(Map<String, dynamic> map) {
 }
 
 /**
- * A throttling algorithim. This models the throttling after a bucket with
+ * A throttling algorithm. This models the throttling after a bucket with
  * water dripping into it at the rate of 1 drop per second. If the bucket has
  * water when an operation is requested, 1 drop of water is removed and the
- * operation is performed. If not the operation is skipped. This algorithim
- * lets operations be peformed in bursts without throttling, but holds the
+ * operation is performed. If not the operation is skipped. This algorithm
+ * lets operations be performed in bursts without throttling, but holds the
  * overall average rate of operations to 1 per second.
  */
 class ThrottlingBucket {
@@ -255,7 +255,7 @@ class AnalyticsImpl implements Analytics {
  * of these injected into it. There are default implementations for `dart:io`
  * and `dart:html` clients.
  *
- * The [name] paramater is used to uniquely store these properties on disk /
+ * The [name] parameter is used to uniquely store these properties on disk /
  * persistent storage.
  */
 abstract class PersistentProperties {

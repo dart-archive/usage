@@ -83,7 +83,7 @@ class IOPostHandler extends PostHandler {
       response.drain();
     } catch (exception) {
       // Catch errors that can happen during a request, but that we can't do
-      // anything about, e.g. a missing internet conenction.
+      // anything about, e.g. a missing internet connection.
     }
   }
 }

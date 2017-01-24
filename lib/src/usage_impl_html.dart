@@ -41,7 +41,7 @@ class HtmlPostHandler extends PostHandler {
     var request = mockRequestor == null ? HttpRequest.request : mockRequestor;
     return request(url, method: 'POST', sendData: data).catchError((e) {
       // Catch errors that can happen during a request, but that we can't do
-      // anything about, e.g. a missing internet conenction.
+      // anything about, e.g. a missing internet connection.
     });
   }
 }
