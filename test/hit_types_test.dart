@@ -78,26 +78,25 @@ void defineTests() {
       has(mock.last, 'utl');
     });
 
-    test('timer', () {
+    test('timer', () async {
       AnalyticsImplMock mock = createMock();
       AnalyticsTimer timer =
           mock.startTimer('compile', category: 'Build', label: 'Compile');
 
-      return new Future.delayed(new Duration(milliseconds: 20), () {
-        return timer.finish().then((_) {
-          expect(mock.mockPostHandler.sentValues, isNot(isEmpty));
-          was(mock.last, 'timing');
-          has(mock.last, 'utv');
-          has(mock.last, 'utt');
-          has(mock.last, 'utc');
-          has(mock.last, 'utl');
-          int time = timer.currentElapsedMillis;
-          expect(time, greaterThan(10));
-          return new Future.delayed(new Duration(milliseconds: 10), () {
-            expect(timer.currentElapsedMillis, time);
-          });
-        });
-      });
+      await new Future.delayed(new Duration(milliseconds: 20));
+
+      await timer.finish();
+      expect(mock.mockPostHandler.sentValues, isNot(isEmpty));
+      was(mock.last, 'timing');
+      has(mock.last, 'utv');
+      has(mock.last, 'utt');
+      has(mock.last, 'utc');
+      has(mock.last, 'utl');
+      int time = timer.currentElapsedMillis;
+      expect(time, greaterThan(10));
+
+      await new Future.delayed(new Duration(milliseconds: 10));
+      expect(timer.currentElapsedMillis, time);
     });
   });
 

@@ -28,14 +28,14 @@ void main() {
 
 void defineWebTests() {
   group('HtmlPostHandler', () {
-    test('sendPost', () {
+    test('sendPost', () async {
       MockRequestor client = new MockRequestor();
       HtmlPostHandler postHandler =
           new HtmlPostHandler(mockRequestor: client.request);
       Map<String, dynamic> args = {'utv': 'varName', 'utt': 123};
-      return postHandler.sendPost('http://www.google.com', args).then((_) {
-        expect(client.sendCount, 1);
-      });
+
+      await postHandler.sendPost('http://www.google.com', args);
+      expect(client.sendCount, 1);
     });
   });
 

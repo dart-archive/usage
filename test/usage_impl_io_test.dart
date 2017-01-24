@@ -2,6 +2,7 @@
 // for details. All rights reserved. Use of this source code is governed by a
 // BSD-style license that can be found in the LICENSE file.
 
+@TestOn('!browser')
 library usage.usage_impl_io_test;
 
 import 'dart:async';
@@ -14,13 +15,12 @@ main() => defineTests();
 
 void defineTests() {
   group('IOPostHandler', () {
-    test('sendPost', () {
+    test('sendPost', () async {
       var httpClient = new MockHttpClient();
       IOPostHandler postHandler = new IOPostHandler(mockClient: httpClient);
       Map<String, dynamic> args = {'utv': 'varName', 'utt': 123};
-      return postHandler.sendPost('http://www.google.com', args).then((_) {
-        expect(httpClient.sendCount, 1);
-      });
+      await postHandler.sendPost('http://www.google.com', args);
+      expect(httpClient.sendCount, 1);
     });
   });
 
