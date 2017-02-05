@@ -8,6 +8,10 @@ import 'dart:html';
 
 import 'usage_impl.dart';
 
+/// An interface to a Google Analytics session, suitable for use in web apps.
+///
+/// [analyticsUrl] is an optional replacement for the default Google Analytics
+/// URL (`https://www.google-analytics.com/collect`).
 class AnalyticsHtml extends AnalyticsImpl {
   AnalyticsHtml(
       String trackingId, String applicationName, String applicationVersion,

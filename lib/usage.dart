@@ -297,10 +297,7 @@ String sanitizeStacktrace(dynamic st, {bool shorten: true}) {
 
   if (shorten) {
     // Shorten the stacktrace up a bit.
-    str = str
-        .replaceAll('(package:', '(')
-        .replaceAll('(dart:', '(')
-        .replaceAll(new RegExp(r'\s+'), ' ');
+    str = str.replaceAll('\n', ';').replaceAll(new RegExp(r'\s+'), ' ');
   }
 
   return str;

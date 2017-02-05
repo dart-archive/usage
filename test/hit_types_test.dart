@@ -123,12 +123,5 @@ void defineTests() {
       mock.sendException('foo bar (file:///Users/foobar/tmp/error.dart:3:13)');
       expect(mock.last['exd'], 'foo bar (');
     });
-
-    test('long description trimmed', () {
-      String str = '0123456789abcdefghijklmnopqrstuvwxyz';
-      AnalyticsImplMock mock = createMock();
-      mock.sendException(str + str + str + str + str);
-      expect(mock.last['exd'].length, 100);
-    });
   });
 }
