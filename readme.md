@@ -13,7 +13,7 @@ To use this library as a web app, import the `usage_html.dart` library and
 instantiate the `AnalyticsHtml` class.
 
 When you are creating a new property at [google analytics](https://www.google.com/analytics/)
-make sure to select not the website option, but the **mobile app** option.
+make sure to select the **mobile app** option, not the website option.
 
 ## For Flutter apps
 
