@@ -5,6 +5,8 @@
 - removed the Flutter specific entry-point; Flutter apps can now use the
   regular `dart:io` entrypoint (AnalyticsIO)
 - moved the uuid library from `lib/src/` to `lib/uuid/`
+- fixed an issue with reporting the user language for the dart:io provider
+- send additional lines for reported exceptions
 
 ## 2.2.2
 - adjust the Flutter usage client to Flutter API changes

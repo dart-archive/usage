@@ -2,31 +2,25 @@
 // for details. All rights reserved. Use of this source code is governed by a
 // BSD-style license that can be found in the LICENSE file.
 
-/**
- * A UUID generator library.
- */
+/// A UUID generator library.
 library uuid;
 
 import 'dart:math' show Random;
 
-/**
- * A UUID generator.
- *
- * This will generate unique IDs in the format:
- *
- *     f47ac10b-58cc-4372-a567-0e02b2c3d479
- *
- * The generated uuids are 128 bit numbers encoded in a specific string format.
- * For more information, see
- * [en.wikipedia.org/wiki/Universally_unique_identifier](http://en.wikipedia.org/wiki/Universally_unique_identifier).
- */
+/// A UUID generator.
+///
+/// This will generate unique IDs in the format:
+///
+///     f47ac10b-58cc-4372-a567-0e02b2c3d479
+///
+/// The generated uuids are 128 bit numbers encoded in a specific string format.
+/// For more information, see
+/// [en.wikipedia.org/wiki/Universally_unique_identifier](http://en.wikipedia.org/wiki/Universally_unique_identifier).
 class Uuid {
-  Random _random = new Random();
+  final Random _random = new Random();
 
-  /**
-   * Generate a version 4 (random) uuid. This is a uuid scheme that only uses
-   * random numbers as the source of the generated uuid.
-   */
+  /// Generate a version 4 (random) uuid. This is a uuid scheme that only uses
+  /// random numbers as the source of the generated uuid.
   String generateV4() {
     // Generate xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx / 8-4-4-4-12.
     int special = 8 + _random.nextInt(4);

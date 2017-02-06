@@ -8,8 +8,6 @@ import 'dart:math' as math;
 import '../usage.dart';
 import '../uuid/uuid.dart';
 
-final int _MAX_EXCEPTION_LENGTH = 100;
-
 String postEncode(Map<String, dynamic> map) {
   // &foo=bar
   return map.keys.map((key) {
@@ -157,6 +155,10 @@ class AnalyticsImpl implements Analytics {
   }
 
   Future sendException(String description, {bool fatal}) {
+    // We trim exceptions to a max length; google analytics will apply it's own
+    // truncation, likely around 150 chars or so.
+    const int maxExceptionLength = 1000;
+
     // In order to ensure that the client of this API is not sending any PII
     // data, we strip out any stack trace that may reference a path on the
     // user's drive (file:/...).
@@ -164,8 +166,10 @@ class AnalyticsImpl implements Analytics {
       description = description.substring(0, description.indexOf('file:/'));
     }
 
-    if (description != null && description.length > _MAX_EXCEPTION_LENGTH) {
-      description = description.substring(0, _MAX_EXCEPTION_LENGTH);
+    description = description.replaceAll('\n', '; ');
+
+    if (description.length > maxExceptionLength) {
+      description = description.substring(0, maxExceptionLength);
     }
 
     Map<String, dynamic> args = {'exd': description};

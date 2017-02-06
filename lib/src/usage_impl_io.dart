@@ -10,11 +10,14 @@ import 'package:path/path.dart' as path;
 
 import 'usage_impl.dart';
 
-/// Create a new Analytics instance.
+/// An interface to a Google Analytics session, suitable for use in command-line
+/// applications.
 ///
 /// `trackingId`, `applicationName`, and `applicationVersion` values should be supplied.
 /// `analyticsUrl` is optional, and lets user's substitute their own analytics URL for
-/// the default. `documentDirectory` is where the analytics settings are stored. It
+/// the default.
+///
+/// `documentDirectory` is where the analytics settings are stored. It
 /// defaults to the user home directory. For regular `dart:io` apps this doesn't need to
 /// be supplied. For Flutter applications, you should pass in a value like
 /// `PathProvider.getApplicationDocumentsDirectory()`.
@@ -29,7 +32,12 @@ class AnalyticsIO extends AnalyticsImpl {
             new IOPostHandler(),
             applicationName: applicationName,
             applicationVersion: applicationVersion,
-            analyticsUrl: analyticsUrl);
+            analyticsUrl: analyticsUrl) {
+    final String locale = getPlatformLocale();
+    if (locale != null) {
+      setSessionValue('ul', locale);
+    }
+  }
 }
 
 String _createUserAgent() {
@@ -136,9 +144,8 @@ String getPlatformLocale() {
     int index = locale.indexOf('.');
     if (index != null) locale = locale.substring(0, index);
 
-    // Convert `en_US` to `en`.
-    index = locale.indexOf('_');
-    if (index != null) locale = locale.substring(0, index);
+    // Convert `en_US` to `en-us`.
+    locale = locale.replaceAll('_', '-').toLowerCase();
   }
 
   return locale;

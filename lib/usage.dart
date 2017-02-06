@@ -29,6 +29,9 @@ import 'dart:async';
 // Matches file:/, non-ws, /, non-ws, .dart
 final RegExp _pathRegex = new RegExp(r'file:/\S+/(\S+\.dart)');
 
+// Match multiple tabs or spaces.
+final RegExp _tabOrSpaceRegex = new RegExp(r'[\t ]+');
+
 /**
  * An interface to a Google Analytics session. [AnalyticsHtml] and [AnalyticsIO]
  * are concrete implementations of this interface. [AnalyticsMock] can be used
@@ -297,10 +300,7 @@ String sanitizeStacktrace(dynamic st, {bool shorten: true}) {
 
   if (shorten) {
     // Shorten the stacktrace up a bit.
-    str = str
-        .replaceAll('(package:', '(')
-        .replaceAll('(dart:', '(')
-        .replaceAll(new RegExp(r'\s+'), ' ');
+    str = str.replaceAll(_tabOrSpaceRegex, ' ');
   }
 
   return str;
