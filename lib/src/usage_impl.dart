@@ -168,7 +168,7 @@ class AnalyticsImpl implements Analytics {
 
     description = description.replaceAll('\n', '; ');
 
-    if (description != null && description.length > maxExceptionLength) {
+    if (description.length > maxExceptionLength) {
       description = description.substring(0, maxExceptionLength);
     }
 

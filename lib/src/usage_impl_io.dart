@@ -33,7 +33,7 @@ class AnalyticsIO extends AnalyticsImpl {
             applicationName: applicationName,
             applicationVersion: applicationVersion,
             analyticsUrl: analyticsUrl) {
-    final String locale = getPlatformLocale() ?? '';
+    final String locale = getPlatformLocale();
     if (locale != null) {
       setSessionValue('ul', locale);
     }

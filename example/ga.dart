@@ -24,7 +24,7 @@ main(List args) async {
   await ga.sendScreenView('home');
   await ga.sendScreenView('files');
   await ga
-      .sendException('foo error:\n' + sanitizeStacktrace(StackTrace.current));
+      .sendException('foo error:\n${sanitizeStacktrace(StackTrace.current)}');
   await ga.sendTiming('writeDuration', 123);
   await ga.sendEvent('create', 'consoleapp', label: 'Console App');
   print('pinged ${ua}');
