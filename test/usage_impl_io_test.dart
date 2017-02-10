@@ -41,10 +41,6 @@ void defineTests() {
   });
 
   group('usage_impl_io', () {
-    test('getPlatformLocale', () {
-      expect(getPlatformLocale(), isNotNull);
-    });
-
     test('getDartVersion', () {
       expect(getDartVersion(), isNotNull);
     });
