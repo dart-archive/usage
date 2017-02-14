@@ -1,4 +1,5 @@
 .packages
+.idea/
 .pub/
 build/
 pubspec.lock

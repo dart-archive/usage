@@ -142,7 +142,7 @@ String getPlatformLocale() {
   if (locale != null) {
     // Convert `en_US.UTF-8` to `en_US`.
     int index = locale.indexOf('.');
-    if (index != null) locale = locale.substring(0, index);
+    if (index != -1) locale = locale.substring(0, index);
 
     // Convert `en_US` to `en-us`.
     locale = locale.replaceAll('_', '-').toLowerCase();
