@@ -1,5 +1,8 @@
 # Changelog
 
+## 3.0.0+1
+- fixed an NPE in the `usage_io` `getPlatformLocale()` method
+
 ## 3.0.0
 - removed the use of configurable imports
 - removed the Flutter specific entry-point; Flutter apps can now use the
