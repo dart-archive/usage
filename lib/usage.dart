@@ -68,6 +68,14 @@ abstract class Analytics {
   set enabled(bool value);
 
   /**
+   * Anonymous client ID in UUID v4 format.
+   *
+   * The value is randomly-generated and should be reasonably stable for the
+   * computer sending analytics data.
+   */
+  String get clientId;
+
+  /**
    * Sends a screen view hit to Google Analytics.
    */
   Future sendScreenView(String viewName);
@@ -224,6 +232,9 @@ class AnalyticsMock implements Analytics {
   AnalyticsOpt analyticsOpt = AnalyticsOpt.optOut;
 
   bool enabled = true;
+
+  @override
+  String get clientId => '00000000-0000-4000-0000-000000000000';
 
   Future sendScreenView(String viewName) =>
       _log('screenView', {'viewName': viewName});

@@ -199,13 +199,11 @@ class AnalyticsImpl implements Analytics {
     return f;
   }
 
-  /**
-   * Anonymous Client ID. The value of this field should be a random UUID v4.
-   */
-  String get _clientId => properties['clientId'];
+  @override
+  String get clientId => properties['clientId'];
 
   void _initClientId() {
-    if (_clientId == null) {
+    if (clientId == null) {
       properties['clientId'] = new Uuid().generateV4();
     }
   }
@@ -237,7 +235,7 @@ class AnalyticsImpl implements Analytics {
 
       args['v'] = '1'; // protocol version
       args['tid'] = trackingId;
-      args['cid'] = _clientId;
+      args['cid'] = clientId;
       args['t'] = hitType;
 
       _sendController.add(args);
