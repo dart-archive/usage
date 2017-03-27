@@ -1,5 +1,8 @@
 # Changelog
 
+## 3.0.1
+- expose the `Analytics.clientId` field
+
 ## 3.0.0+1
 - fixed an NPE in the `usage_io` `getPlatformLocale()` method
 
