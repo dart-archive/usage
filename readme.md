@@ -1,7 +1,6 @@
 # usage
 
-`usage` is a wrapper around Google Analytics for both command-line, web, and
-Flutter apps.
+`usage` is a wrapper around Google Analytics for command-line, web, and Flutter apps.
 
 [![pub package](https://img.shields.io/pub/v/usage.svg)](https://pub.dartlang.org/packages/usage)
 [![Build Status](https://travis-ci.org/dart-lang/usage.svg)](https://travis-ci.org/dart-lang/usage)
