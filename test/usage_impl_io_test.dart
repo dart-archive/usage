@@ -44,6 +44,10 @@ void defineTests() {
     test('getDartVersion', () {
       expect(getDartVersion(), isNotNull);
     });
+
+    test('getPlatformLocale', () {
+      expect(getPlatformLocale(), isNotNull);
+    });
   });
 }
 
