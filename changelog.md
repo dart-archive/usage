@@ -1,9 +1,9 @@
 # Changelog
 
 ## 3.1.0
-- switch the method we use to determine the locale to the new dart:io
+- switch the technique we use to determine the locale to the new dart:io
   `Platform.localeName` field
-- change our minimum SDK version to `1.23.0`
+- change our minimum SDK version to `1.24.0`
 
 ## 3.0.1
 - expose the `Analytics.clientId` field
