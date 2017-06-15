@@ -200,13 +200,7 @@ class AnalyticsImpl implements Analytics {
   }
 
   @override
-  String get clientId => properties['clientId'];
-
-  void _initClientId() {
-    if (clientId == null) {
-      properties['clientId'] = new Uuid().generateV4();
-    }
-  }
+  String get clientId => properties['clientId'] ??= new Uuid().generateV4();
 
   /**
    * Send raw data to analytics. Callers should generally use one of the typed
@@ -227,8 +221,6 @@ class AnalyticsImpl implements Analytics {
     if (!enabled) return new Future.value();
 
     if (_bucket.removeDrop()) {
-      _initClientId();
-
       _variableMap.forEach((key, value) {
         args[key] = value;
       });

@@ -62,6 +62,28 @@ void defineTests() {
       mock.sendScreenView('baz');
       return mock.waitForLastPing(timeout: new Duration(milliseconds: 100));
     });
+
+    group('clientId', () {
+      test('is available immediately', () {
+        AnalyticsImplMock mock = createMock();
+        expect(mock.clientId, isNotEmpty);
+      });
+
+      test('is memoized', () {
+        AnalyticsImplMock mock = createMock();
+        final value1 = mock.clientId;
+        final value2 = mock.clientId;
+        expect(value1, isNotEmpty);
+        expect(value1, value2);
+      });
+
+      test('is stored in properties', () {
+        AnalyticsImplMock mock = createMock();
+        expect(mock.properties['clientId'], isNull);
+        final value = mock.clientId;
+        expect(mock.properties['clientId'], value);
+      });
+    });
   });
 
   group('postEncode', () {
