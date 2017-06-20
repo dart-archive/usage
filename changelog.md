@@ -1,5 +1,9 @@
 # Changelog
 
+## 3.1.1
+
+- make Analytics.clientId available immediately
+
 ## 3.1.0
 - switch the technique we use to determine the locale to the new dart:io
   `Platform.localeName` field
