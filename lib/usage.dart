@@ -77,8 +77,11 @@ abstract class Analytics {
 
   /**
    * Sends a screen view hit to Google Analytics.
+   * 
+   * [parameters] can be any analytics key/value pair. Useful
+   * for custom dimensions, etc.
    */
-  Future sendScreenView(String viewName);
+  Future sendScreenView(String viewName, { Map<String, String> parameters });
 
   /**
    * Sends an Event hit to Google Analytics. [label] specifies the event label.
@@ -236,8 +239,13 @@ class AnalyticsMock implements Analytics {
   @override
   String get clientId => '00000000-0000-4000-0000-000000000000';
 
-  Future sendScreenView(String viewName) =>
-      _log('screenView', {'viewName': viewName});
+  Future sendScreenView(String viewName, { Map<String, String> parameters }) {
+    if (parameters == null) {
+      parameters = <String, String>{};
+    }
+    parameters['viewName'] = viewName;
+    _log('screenView', parameters);
+  }
 
   Future sendEvent(String category, String action, {String label, int value}) {
     return _log('event', {

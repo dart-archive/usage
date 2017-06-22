@@ -123,8 +123,11 @@ class AnalyticsImpl implements Analytics {
     properties['enabled'] = value;
   }
 
-  Future sendScreenView(String viewName) {
+  Future sendScreenView(String viewName, { Map<String, String> parameters }) {
     Map<String, dynamic> args = {'cd': viewName};
+    if (parameters != null) {
+      args.addAll(parameters);
+    }
     return _sendPayload('screenview', args);
   }
 
