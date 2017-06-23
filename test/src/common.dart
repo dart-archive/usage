@@ -34,18 +34,22 @@ class MockProperties extends PersistentProperties {
     if (props != null) this.props.addAll(props);
   }
 
+  @override
   dynamic operator [](String key) => props[key];
 
+  @override
   void operator []=(String key, dynamic value) {
     props[key] = value;
   }
 
+  @override
   void syncSettings() {}
 }
 
 class MockPostHandler extends PostHandler {
   List<Map<String, dynamic>> sentValues = [];
 
+  @override
   Future sendPost(String url, Map<String, dynamic> parameters) {
     sentValues.add(parameters);
 

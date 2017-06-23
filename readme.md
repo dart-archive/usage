@@ -112,9 +112,7 @@ For more information, please see the Google Analytics Measurement Protocol
 
 ## Contributing
 
-Run the tests with `pub run test`.
-
-Analyze the code with `dartanalyzer lib/*.dart test/*.dart`.
+Test can be run using `pub run test`.
 
 ## Issues and bugs
 

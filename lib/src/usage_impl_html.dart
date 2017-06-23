@@ -35,6 +35,7 @@ class HtmlPostHandler extends PostHandler {
 
   HtmlPostHandler({Function this.mockRequestor});
 
+  @override
   Future sendPost(String url, Map<String, dynamic> parameters) {
     int viewportWidth = document.documentElement.clientWidth;
     int viewportHeight = document.documentElement.clientHeight;
@@ -59,8 +60,10 @@ class HtmlPersistentProperties extends PersistentProperties {
     _map = JSON.decode(str);
   }
 
+  @override
   dynamic operator [](String key) => _map[key];
 
+  @override
   void operator []=(String key, dynamic value) {
     if (value == null) {
       _map.remove(key);
@@ -71,5 +74,6 @@ class HtmlPersistentProperties extends PersistentProperties {
     window.localStorage[name] = JSON.encode(_map);
   }
 
+  @override
   void syncSettings() {}
 }
