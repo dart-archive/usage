@@ -1,7 +1,11 @@
 # Changelog
 
-## 3.1.1
+## 3.2.0
+- expose the `Analytics.applicationName` and `Analytics.applicationVersion`
+  properties
+- make it easier for clients to extend the `AnalyticsIO` class
 
+## 3.1.1
 - make Analytics.clientId available immediately
 
 ## 3.1.0

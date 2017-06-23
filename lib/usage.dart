@@ -47,6 +47,12 @@ abstract class Analytics {
    */
   String get trackingId;
 
+  /// The application name.
+  String get applicationName;
+
+  /// The application version.
+  String get applicationVersion;
+
   /**
    * Is this the first time the tool has run?
    */
@@ -213,6 +219,9 @@ class AnalyticsTimer {
  */
 class AnalyticsMock implements Analytics {
   String get trackingId => 'UA-0';
+  String get applicationName => 'mock-app';
+  String get applicationVersion => '1.0.0';
+
   final bool logCalls;
 
   /**

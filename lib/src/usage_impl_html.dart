@@ -70,4 +70,6 @@ class HtmlPersistentProperties extends PersistentProperties {
 
     window.localStorage[name] = JSON.encode(_map);
   }
+
+  void syncSettings() {}
 }
