@@ -244,18 +244,14 @@ class AnalyticsMock implements Analytics {
   String get clientId => '00000000-0000-4000-0000-000000000000';
 
   Future sendScreenView(String viewName, {Map<String, String> parameters}) {
-    if (parameters == null) {
-      parameters = <String, String>{};
-    }
+    parameters ??= <String, String>{};
     parameters['viewName'] = viewName;
     return _log('screenView', parameters);
   }
 
   Future sendEvent(String category, String action, {String label, int value,
       Map<String, String> parameters}) {
-    if (parameters == null) {
-      parameters = <String, String>{};
-    }
+    parameters ??= <String, String>{};
     return _log('event', {
       'category': category,
       'action': action,
