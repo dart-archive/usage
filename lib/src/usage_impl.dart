@@ -123,7 +123,7 @@ class AnalyticsImpl implements Analytics {
     properties['enabled'] = value;
   }
 
-  Future sendScreenView(String viewName, { Map<String, String> parameters }) {
+  Future sendScreenView(String viewName, {Map<String, String> parameters}) {
     Map<String, dynamic> args = {'cd': viewName};
     if (parameters != null) {
       args.addAll(parameters);
@@ -131,10 +131,14 @@ class AnalyticsImpl implements Analytics {
     return _sendPayload('screenview', args);
   }
 
-  Future sendEvent(String category, String action, {String label, int value}) {
+  Future sendEvent(String category, String action, {String label, int value,
+      Map<String, String> parameters}) {
     Map<String, dynamic> args = {'ec': category, 'ea': action};
     if (label != null) args['el'] = label;
     if (value != null) args['ev'] = value;
+    if (parameters != null) {
+      args.addAll(parameters);
+    }
     return _sendPayload('event', args);
   }
 

@@ -21,6 +21,13 @@ void defineTests() {
       expect(mock.mockProperties['clientId'], isNotNull);
       expect(mock.mockPostHandler.sentValues, isNot(isEmpty));
     });
+    test('with parameters', () {
+      AnalyticsImplMock mock = createMock();
+      mock.sendScreenView('withParams', parameters: {'cd1': 'foo'});
+      expect(mock.mockProperties['clientId'], isNotNull);
+      expect(mock.mockPostHandler.sentValues, isNot(isEmpty));
+      has(mock.last, 'cd1');
+    });
   });
 
   group('event', () {
@@ -31,6 +38,16 @@ void defineTests() {
       was(mock.last, 'event');
       has(mock.last, 'ec');
       has(mock.last, 'ea');
+    });
+
+    test('with parameters', () {
+      AnalyticsImplMock mock = createMock();
+      mock.sendEvent('withParams', 'save', parameters: {'cd1': 'foo'});
+      expect(mock.mockPostHandler.sentValues, isNot(isEmpty));
+      was(mock.last, 'event');
+      has(mock.last, 'ec');
+      has(mock.last, 'ea');
+      has(mock.last, 'cd1');
     });
 
     test('optional args', () {

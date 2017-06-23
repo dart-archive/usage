@@ -81,13 +81,17 @@ abstract class Analytics {
    * [parameters] can be any analytics key/value pair. Useful
    * for custom dimensions, etc.
    */
-  Future sendScreenView(String viewName, { Map<String, String> parameters });
+  Future sendScreenView(String viewName, {Map<String, String> parameters});
 
   /**
    * Sends an Event hit to Google Analytics. [label] specifies the event label.
    * [value] specifies the event value. Values must be non-negative.
+   * 
+   * [parameters] can be any analytics key/value pair. Useful
+   * for custom dimensions, etc.
    */
-  Future sendEvent(String category, String action, {String label, int value});
+  Future sendEvent(String category, String action, {String label, int value,
+      Map<String, String> parameters});
 
   /**
    * Sends a Social hit to Google Analytics. [network] specifies the social
@@ -239,21 +243,25 @@ class AnalyticsMock implements Analytics {
   @override
   String get clientId => '00000000-0000-4000-0000-000000000000';
 
-  Future sendScreenView(String viewName, { Map<String, String> parameters }) {
+  Future sendScreenView(String viewName, {Map<String, String> parameters}) {
     if (parameters == null) {
       parameters = <String, String>{};
     }
     parameters['viewName'] = viewName;
-    _log('screenView', parameters);
+    return _log('screenView', parameters);
   }
 
-  Future sendEvent(String category, String action, {String label, int value}) {
+  Future sendEvent(String category, String action, {String label, int value,
+      Map<String, String> parameters}) {
+    if (parameters == null) {
+      parameters = <String, String>{};
+    }
     return _log('event', {
       'category': category,
       'action': action,
       'label': label,
       'value': value
-    });
+    }..addAll(parameters));
   }
 
   Future sendSocial(String network, String action, String target) =>
