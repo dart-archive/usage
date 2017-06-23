@@ -79,6 +79,7 @@ class IOPostHandler extends PostHandler {
 
   IOPostHandler({HttpClient this.mockClient}) : _userAgent = _createUserAgent();
 
+  @override
   Future sendPost(String url, Map<String, dynamic> parameters) async {
     String data = postEncode(parameters);
 
@@ -120,8 +121,10 @@ class IOPersistentProperties extends PersistentProperties {
     syncSettings();
   }
 
+  @override
   dynamic operator [](String key) => _map[key];
 
+  @override
   void operator []=(String key, dynamic value) {
     if (value == null && !_map.containsKey(key)) return;
     if (_map[key] == value) return;
@@ -137,6 +140,7 @@ class IOPersistentProperties extends PersistentProperties {
     } catch (_) {}
   }
 
+  @override
   void syncSettings() {
     try {
       String contents = _file.readAsStringSync();

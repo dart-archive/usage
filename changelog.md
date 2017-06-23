@@ -4,6 +4,7 @@
 - expose the `Analytics.applicationName` and `Analytics.applicationVersion`
   properties
 - make it easier for clients to extend the `AnalyticsIO` class
+- allow for custom parameters when sending a screenView
 
 ## 3.1.1
 - make Analytics.clientId available immediately

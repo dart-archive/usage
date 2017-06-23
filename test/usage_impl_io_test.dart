@@ -52,39 +52,52 @@ void defineTests() {
 }
 
 class MockHttpClient implements HttpClient {
+  @override
   String userAgent;
   int sendCount = 0;
   int writeCount = 0;
   bool closed = false;
+
+  @override
   Future<HttpClientRequest> postUrl(Uri url) {
     return new Future.value(new MockHttpClientRequest(this));
   }
 
+  @override
   noSuchMethod(Invocation invocation) {}
 }
 
 class MockHttpClientRequest implements HttpClientRequest {
   final MockHttpClient client;
+
   MockHttpClientRequest(this.client);
+
+  @override
   void write(Object obj) {
     client.writeCount++;
   }
 
+  @override
   Future<HttpClientResponse> close() {
     client.closed = true;
     return new Future.value(new MockHttpClientResponse(client));
   }
 
+  @override
   noSuchMethod(Invocation invocation) {}
 }
 
 class MockHttpClientResponse implements HttpClientResponse {
   final MockHttpClient client;
+
   MockHttpClientResponse(this.client);
+
+  @override
   Future/*<E>*/ drain/*<E>*/([/*=E*/ futureValue]) {
     client.sendCount++;
     return new Future.value();
   }
 
+  @override
   noSuchMethod(Invocation invocation) {}
 }
