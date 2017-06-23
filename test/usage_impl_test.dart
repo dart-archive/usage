@@ -28,6 +28,21 @@ void defineTests() {
   });
 
   group('AnalyticsImpl', () {
+    test('trackingId', () {
+      AnalyticsImplMock mock = createMock();
+      expect(mock.trackingId, isNotNull);
+    });
+
+    test('applicationName', () {
+      AnalyticsImplMock mock = createMock();
+      expect(mock.applicationName, isNotNull);
+    });
+
+    test('applicationVersion', () {
+      AnalyticsImplMock mock = createMock();
+      expect(mock.applicationVersion, isNotNull);
+    });
+
     test('respects disabled', () {
       AnalyticsImplMock mock = createMock();
       mock.enabled = false;

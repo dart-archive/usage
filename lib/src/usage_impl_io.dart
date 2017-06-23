@@ -3,7 +3,7 @@
 // BSD-style license that can be found in the LICENSE file.
 
 import 'dart:async';
-import 'dart:convert' show JSON;
+import 'dart:convert' show JSON, JsonEncoder;
 import 'dart:io';
 
 import 'package:path/path.dart' as path;
@@ -60,7 +60,7 @@ String _createUserAgent() {
   }
 }
 
-String _userHomeDir() {
+String userHomeDir() {
   String envKey = Platform.operatingSystem == 'windows' ? 'APPDATA' : 'HOME';
   String value = Platform.environment[envKey];
   return value == null ? '.' : value;
@@ -96,23 +96,28 @@ class IOPostHandler extends PostHandler {
   }
 }
 
+JsonEncoder _jsonEncoder = new JsonEncoder.withIndent('  ');
+
 class IOPersistentProperties extends PersistentProperties {
   File _file;
   Map _map;
 
   IOPersistentProperties(String name, {String documentDirPath}) : super(name) {
     String fileName = '.${name.replaceAll(' ', '_')}';
-    documentDirPath ??= _userHomeDir();
+    documentDirPath ??= userHomeDir();
     _file = new File(path.join(documentDirPath, fileName));
-
-    try {
-      if (!_file.existsSync()) _file.createSync();
-      String contents = _file.readAsStringSync();
-      if (contents.isEmpty) contents = '{}';
-      _map = JSON.decode(contents);
-    } catch (_) {
-      _map = {};
+    if (!_file.existsSync()) {
+      _file.createSync();
     }
+    syncSettings();
+  }
+
+  IOPersistentProperties.fromFile(File file) : super(path.basename(file.path)) {
+    _file = file;
+    if (!_file.existsSync()) {
+      _file.createSync();
+    }
+    syncSettings();
   }
 
   dynamic operator [](String key) => _map[key];
@@ -128,8 +133,18 @@ class IOPersistentProperties extends PersistentProperties {
     }
 
     try {
-      _file.writeAsStringSync(JSON.encode(_map) + '\n');
+      _file.writeAsStringSync(_jsonEncoder.convert(_map) + '\n');
     } catch (_) {}
+  }
+
+  void syncSettings() {
+    try {
+      String contents = _file.readAsStringSync();
+      if (contents.isEmpty) contents = '{}';
+      _map = JSON.decode(contents);
+    } catch (_) {
+      _map = {};
+    }
   }
 }
 

@@ -1,0 +1,7 @@
+analyzer:
+  strong-mode: true
+linter:
+  rules:
+    #- annotate_overrides
+    - empty_constructor_bodies
+    - empty_statements

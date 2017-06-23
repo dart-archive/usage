@@ -60,10 +60,9 @@ class AnalyticsImpl implements Analytics {
   static const String _defaultAnalyticsUrl =
       'https://www.google-analytics.com/collect';
 
-  /**
-   * Tracking ID / Property ID.
-   */
   final String trackingId;
+  final String applicationName;
+  final String applicationVersion;
 
   final PersistentProperties properties;
   final PostHandler postHandler;
@@ -81,9 +80,7 @@ class AnalyticsImpl implements Analytics {
       new StreamController.broadcast(sync: true);
 
   AnalyticsImpl(this.trackingId, this.properties, this.postHandler,
-      {String applicationName,
-      String applicationVersion,
-      String analyticsUrl}) {
+      {this.applicationName, this.applicationVersion, String analyticsUrl}) {
     assert(trackingId != null);
 
     if (applicationName != null) setSessionValue('an', applicationName);
@@ -266,6 +263,10 @@ abstract class PersistentProperties {
 
   dynamic operator [](String key);
   void operator []=(String key, dynamic value);
+
+  /// Re-read settings from the backing store. This may be a no-op on some
+  /// platforms.
+  void syncSettings();
 }
 
 /**

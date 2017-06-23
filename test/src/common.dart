@@ -39,6 +39,8 @@ class MockProperties extends PersistentProperties {
   void operator []=(String key, dynamic value) {
     props[key] = value;
   }
+
+  void syncSettings() {}
 }
 
 class MockPostHandler extends PostHandler {
