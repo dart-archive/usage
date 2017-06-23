@@ -110,6 +110,12 @@ mobile app style tracking IDs (as opposed to the web site style tracking IDs).
 For more information, please see the Google Analytics Measurement Protocol
 [Policy](https://developers.google.com/analytics/devguides/collection/protocol/policy).
 
+## Contributing
+
+Run the tests with `pub run test`.
+
+Analyze the code with `dartanalyzer lib/*.dart test/*.dart`.
+
 ## Issues and bugs
 
 Please file reports on the

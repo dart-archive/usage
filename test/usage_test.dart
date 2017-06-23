@@ -14,7 +14,9 @@ void defineTests() {
     test('simple', () {
       AnalyticsMock mock = new AnalyticsMock();
       mock.sendScreenView('main');
+      mock.sendScreenView('withParameters', parameters: {'cd1': 'custom'});
       mock.sendEvent('files', 'save');
+      mock.sendEvent('eventWithParameters', 'save', parameters: {'cd1': 'custom'});
       mock.sendSocial('g+', 'plus', 'userid');
       mock.sendTiming('compile', 123);
       mock.startTimer('compile').finish();
