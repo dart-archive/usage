@@ -112,7 +112,7 @@ For more information, please see the Google Analytics Measurement Protocol
 
 ## Contributing
 
-Test can be run using `pub run test`.
+Tests can be run using `pub run test`.
 
 ## Issues and bugs
 
