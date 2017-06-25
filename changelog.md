@@ -1,5 +1,8 @@
 # Changelog
 
+## unreleased
+- change our minimum SDK from `1.24.0-dev` to `1.24.0` stable
+
 ## 3.2.0
 - expose the `Analytics.applicationName` and `Analytics.applicationVersion`
   properties
