@@ -28,4 +28,8 @@ main(List args) async {
   await ga.sendTiming('writeDuration', 123);
   await ga.sendEvent('create', 'consoleapp', label: 'Console App');
   print('pinged ${ua}');
+
+  await ga.waitForLastPing();
+
+  ga.close();
 }

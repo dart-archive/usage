@@ -6,6 +6,7 @@
 library usage.web_test;
 
 import 'dart:async';
+import 'dart:html';
 
 import 'package:test/test.dart';
 import 'package:usage/src/usage_impl_html.dart';
@@ -61,7 +62,7 @@ void defineWebTests() {
 class MockRequestor {
   int sendCount = 0;
 
-  Future request(String url, {String method, String sendData}) {
+  Future<HttpRequest> request(String url, {String method, sendData}) {
     expect(url, isNotEmpty);
     expect(method, isNotEmpty);
     expect(sendData, isNotEmpty);

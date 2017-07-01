@@ -57,4 +57,7 @@ class MockPostHandler extends PostHandler {
   }
 
   Map<String, dynamic> get last => sentValues.last;
+
+  @override
+  void close() {}
 }
