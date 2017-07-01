@@ -30,10 +30,13 @@ class AnalyticsHtml extends AnalyticsImpl {
   }
 }
 
-class HtmlPostHandler extends PostHandler {
-  final Function mockRequestor;
+typedef Future<HttpRequest> HttpRequestor(String url,
+    {String method, sendData});
 
-  HtmlPostHandler({Function this.mockRequestor});
+class HtmlPostHandler extends PostHandler {
+  final HttpRequestor mockRequestor;
+
+  HtmlPostHandler({this.mockRequestor});
 
   @override
   Future sendPost(String url, Map<String, dynamic> parameters) {
@@ -43,12 +46,16 @@ class HtmlPostHandler extends PostHandler {
     parameters['vp'] = '${viewportWidth}x$viewportHeight';
 
     String data = postEncode(parameters);
-    var request = mockRequestor == null ? HttpRequest.request : mockRequestor;
-    return request(url, method: 'POST', sendData: data).catchError((e) {
+    HttpRequestor requestor =
+        mockRequestor == null ? HttpRequest.request : mockRequestor;
+    return requestor(url, method: 'POST', sendData: data).catchError((e) {
       // Catch errors that can happen during a request, but that we can't do
       // anything about, e.g. a missing internet connection.
     });
   }
+
+  @override
+  void close() {}
 }
 
 class HtmlPersistentProperties extends PersistentProperties {

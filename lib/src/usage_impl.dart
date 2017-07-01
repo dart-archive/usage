@@ -215,6 +215,9 @@ class AnalyticsImpl implements Analytics {
   }
 
   @override
+  void close() => postHandler.close();
+
+  @override
   String get clientId => properties['clientId'] ??= new Uuid().generateV4();
 
   /**
@@ -291,4 +294,7 @@ abstract class PersistentProperties {
  */
 abstract class PostHandler {
   Future sendPost(String url, Map<String, dynamic> parameters);
+
+  /// Free any used resources.
+  void close();
 }

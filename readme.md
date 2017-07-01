@@ -52,9 +52,15 @@ have completed, or until the specified duration has elapsed. So, CLI apps can do
 something like:
 
 ```dart
-analytics.waitForLastPing(timeout: new Duration(milliseconds: 500)).then((_) {
-  exit(0);
-});
+await analytics.waitForLastPing(timeout: new Duration(milliseconds: 200));
+analytics.close();
+```
+
+or:
+
+```dart
+await analytics.waitForLastPing(timeout: new Duration(milliseconds: 200));
+exit(0);
 ```
 
 ## Using the API

@@ -77,16 +77,21 @@ class IOPostHandler extends PostHandler {
   final String _userAgent;
   final HttpClient mockClient;
 
-  IOPostHandler({HttpClient this.mockClient}) : _userAgent = _createUserAgent();
+  HttpClient _client;
+
+  IOPostHandler({this.mockClient}) : _userAgent = _createUserAgent();
 
   @override
   Future sendPost(String url, Map<String, dynamic> parameters) async {
     String data = postEncode(parameters);
 
-    HttpClient client = mockClient != null ? mockClient : new HttpClient();
-    client.userAgent = _userAgent;
+    if (_client == null) {
+      _client = mockClient != null ? mockClient : new HttpClient();
+      _client.userAgent = _userAgent;
+    }
+
     try {
-      HttpClientRequest req = await client.postUrl(Uri.parse(url));
+      HttpClientRequest req = await _client.postUrl(Uri.parse(url));
       req.write(data);
       HttpClientResponse response = await req.close();
       response.drain();
@@ -95,6 +100,9 @@ class IOPostHandler extends PostHandler {
       // anything about, e.g. a missing internet connection.
     }
   }
+
+  @override
+  void close() => _client?.close();
 }
 
 JsonEncoder _jsonEncoder = new JsonEncoder.withIndent('  ');

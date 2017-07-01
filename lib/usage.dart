@@ -164,9 +164,15 @@ abstract class Analytics {
    * users won't want their CLI app to pause at the end of the process waiting
    * for Google analytics requests to complete. This method allows CLI apps to
    * delay for a short time waiting for GA requests to complete, and then do
-   * something like call `exit()` explicitly themselves.
+   * something like call `dart:io`'s `exit()` explicitly themselves (or the
+   * [close] method below).
    */
   Future waitForLastPing({Duration timeout});
+
+  /// Free any used resources.
+  ///
+  /// The [Analytics] instance should not be used after this call.
+  void close();
 }
 
 enum AnalyticsOpt {
@@ -312,6 +318,9 @@ class AnalyticsMock implements Analytics {
 
   @override
   Future waitForLastPing({Duration timeout}) => new Future.value();
+
+  @override
+  void close() {}
 
   Future _log(String hitType, Map m) {
     if (logCalls) {

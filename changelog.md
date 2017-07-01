@@ -1,6 +1,7 @@
 # Changelog
 
-## unreleased
+## 3.3.0
+- added a `close()` method to the `Analytics` class
 - change our minimum SDK from `1.24.0-dev` to `1.24.0` stable
 
 ## 3.2.0
