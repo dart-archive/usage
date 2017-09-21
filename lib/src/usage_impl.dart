@@ -16,14 +16,12 @@ String postEncode(Map<String, dynamic> map) {
   }).join('&');
 }
 
-/**
- * A throttling algorithm. This models the throttling after a bucket with
- * water dripping into it at the rate of 1 drop per second. If the bucket has
- * water when an operation is requested, 1 drop of water is removed and the
- * operation is performed. If not the operation is skipped. This algorithm
- * lets operations be performed in bursts without throttling, but holds the
- * overall average rate of operations to 1 per second.
- */
+/// A throttling algorithm. This models the throttling after a bucket with
+/// water dripping into it at the rate of 1 drop per second. If the bucket has
+/// water when an operation is requested, 1 drop of water is removed and the
+/// operation is performed. If not the operation is skipped. This algorithm
+/// lets operations be performed in bursts without throttling, but holds the
+/// overall average rate of operations to 1 per second.
 class ThrottlingBucket {
   final int startingCount;
   int drops;
@@ -220,21 +218,17 @@ class AnalyticsImpl implements Analytics {
   @override
   String get clientId => properties['clientId'] ??= new Uuid().generateV4();
 
-  /**
-   * Send raw data to analytics. Callers should generally use one of the typed
-   * methods (`sendScreenView`, `sendEvent`, ...).
-   *
-   * Valid values for [hitType] are: 'pageview', 'screenview', 'event',
-   * 'transaction', 'item', 'social', 'exception', and 'timing'.
-   */
+  /// Send raw data to analytics. Callers should generally use one of the typed
+  /// methods (`sendScreenView`, `sendEvent`, ...).
+  ///
+  /// Valid values for [hitType] are: 'pageview', 'screenview', 'event',
+  /// 'transaction', 'item', 'social', 'exception', and 'timing'.
   Future sendRaw(String hitType, Map<String, dynamic> args) {
     return _sendPayload(hitType, args);
   }
 
-  /**
-   * Valid values for [hitType] are: 'pageview', 'screenview', 'event',
-   * 'transaction', 'item', 'social', 'exception', and 'timing'.
-   */
+  /// Valid values for [hitType] are: 'pageview', 'screenview', 'event',
+  /// 'transaction', 'item', 'social', 'exception', and 'timing'.
   Future _sendPayload(String hitType, Map<String, dynamic> args) {
     if (!enabled) return new Future.value();
 
@@ -262,14 +256,13 @@ class AnalyticsImpl implements Analytics {
   }
 }
 
-/**
- * A persistent key/value store. An [AnalyticsImpl] instance expects to have one
- * of these injected into it. There are default implementations for `dart:io`
- * and `dart:html` clients.
- *
- * The [name] parameter is used to uniquely store these properties on disk /
- * persistent storage.
- */
+/// A persistent key/value store. An [AnalyticsImpl] instance expects to have
+/// one of these injected into it.
+///
+/// There are default implementations for `dart:io` and `dart:html` clients.
+///
+/// The [name] parameter is used to uniquely store these properties on disk /
+/// persistent storage.
 abstract class PersistentProperties {
   final String name;
 
@@ -283,15 +276,15 @@ abstract class PersistentProperties {
   void syncSettings();
 }
 
-/**
- * A utility class to perform HTTP POSTs. An [AnalyticsImpl] instance expects to
- * have one of these injected into it. There are default implementations for
- * `dart:io` and `dart:html` clients.
- *
- * The POST information should be sent on a best-effort basis. The `Future` from
- * [sendPost] should complete when the operation is finished, but failures to
- * send the information should be silent.
- */
+/// A utility class to perform HTTP POSTs.
+///
+/// An [AnalyticsImpl] instance expects to have one of these injected into it.
+/// There are default implementations for `dart:io` and `dart:html` clients.
+///
+/// The POST information should be sent on a best-effort basis.
+///
+/// The `Future` from [sendPost] should complete when the operation is finished,
+/// but failures to send the information should be silent.
 abstract class PostHandler {
   Future sendPost(String url, Map<String, dynamic> parameters);
 

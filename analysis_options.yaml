@@ -9,3 +9,4 @@ linter:
     - non_constant_identifier_names
     - prefer_final_fields
     - prefer_single_quotes
+    - slash_for_doc_comments
