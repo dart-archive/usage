@@ -12,7 +12,7 @@ String postEncode(Map<String, dynamic> map) {
   // &foo=bar
   return map.keys.map((key) {
     String value = '${map[key]}';
-    return "${key}=${Uri.encodeComponent(value)}";
+    return '${key}=${Uri.encodeComponent(value)}';
   }).join('&');
 }
 
@@ -80,7 +80,7 @@ class AnalyticsImpl implements Analytics {
 
   String _url;
 
-  StreamController<Map<String, dynamic>> _sendController =
+  final StreamController<Map<String, dynamic>> _sendController =
       new StreamController.broadcast(sync: true);
 
   AnalyticsImpl(this.trackingId, this.properties, this.postHandler,

@@ -6,3 +6,6 @@ linter:
     - directives_ordering
     - empty_constructor_bodies
     - empty_statements
+    - non_constant_identifier_names
+    - prefer_final_fields
+    - prefer_single_quotes

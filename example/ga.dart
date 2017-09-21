@@ -8,16 +8,16 @@ library usage_ga;
 import 'package:usage/usage_io.dart';
 
 main(List args) async {
-  final String DEFAULT_UA = 'UA-55029513-1';
+  final String defaultUA = 'UA-55029513-1';
 
   if (args.isEmpty) {
     print('usage: dart ga <GA tracking ID>');
-    print('pinging default UA value (${DEFAULT_UA})');
+    print('pinging default UA value (${defaultUA})');
   } else {
     print('pinging ${args.first}');
   }
 
-  String ua = args.isEmpty ? DEFAULT_UA : args.first;
+  String ua = args.isEmpty ? defaultUA : args.first;
 
   Analytics ga = new AnalyticsIO(ua, 'ga_test', '3.0');
 

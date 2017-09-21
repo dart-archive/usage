@@ -56,7 +56,7 @@ String _createUserAgent() {
   } else {
     // Dart/1.8.0 (macos; macos; macos; en_US)
     String os = Platform.operatingSystem;
-    return "Dart/${getDartVersion()} (${os}; ${os}; ${os}; ${locale})";
+    return 'Dart/${getDartVersion()} (${os}; ${os}; ${os}; ${locale})';
   }
 }
 

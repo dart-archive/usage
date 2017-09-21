@@ -243,7 +243,7 @@ class AnalyticsMock implements Analytics {
   /**
    * Events are never added to this controller for the mock implementation.
    */
-  StreamController<Map<String, dynamic>> _sendController =
+  final StreamController<Map<String, dynamic>> _sendController =
       new StreamController.broadcast();
 
   /**
