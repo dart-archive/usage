@@ -93,7 +93,7 @@ class MockHttpClientResponse implements HttpClientResponse {
   MockHttpClientResponse(this.client);
 
   @override
-  Future/*<E>*/ drain/*<E>*/([/*=E*/ futureValue]) {
+  Future<E> drain<E>([E futureValue]) {
     client.sendCount++;
     return new Future.value();
   }
