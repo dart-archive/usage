@@ -7,7 +7,7 @@ library usage.uuid_test;
 import 'package:test/test.dart';
 import 'package:usage/uuid/uuid.dart';
 
-main() => defineTests();
+void main() => defineTests();
 
 void defineTests() {
   group('uuid', () {

@@ -7,7 +7,7 @@ library usage.usage_test;
 import 'package:test/test.dart';
 import 'package:usage/usage.dart';
 
-main() => defineTests();
+void main() => defineTests();
 
 void defineTests() {
   group('AnalyticsMock', () {
