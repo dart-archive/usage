@@ -9,7 +9,7 @@ import 'package:usage/src/usage_impl.dart';
 
 import 'src/common.dart';
 
-main() => defineTests();
+void main() => defineTests();
 
 void defineTests() {
   group('ThrottlingBucket', () {

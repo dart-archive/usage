@@ -11,7 +11,7 @@ import 'dart:io';
 import 'package:test/test.dart';
 import 'package:usage/src/usage_impl_io.dart';
 
-main() => defineTests();
+void main() => defineTests();
 
 void defineTests() {
   group('IOPostHandler', () {

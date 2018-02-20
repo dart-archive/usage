@@ -12,9 +12,9 @@ import 'package:usage/src/usage_impl.dart';
 AnalyticsImplMock createMock({Map<String, dynamic> props}) =>
     new AnalyticsImplMock('UA-0', props: props);
 
-was(Map m, String type) => expect(m['t'], type);
-has(Map m, String key) => expect(m[key], isNotNull);
-hasnt(Map m, String key) => expect(m[key], isNull);
+void was(Map m, String type) => expect(m['t'], type);
+void has(Map m, String key) => expect(m[key], isNotNull);
+void hasnt(Map m, String key) => expect(m[key], isNull);
 
 class AnalyticsImplMock extends AnalyticsImpl {
   MockProperties get mockProperties => properties;
