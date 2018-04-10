@@ -1,5 +1,9 @@
 # Changelog
 
+## 3.4.0
+- bump our minimum SDK constraint to `>=2.0.0-dev.30`
+- change to using non-deprecated dart:convert constants
+
 ## 3.3.0
 - added a `close()` method to the `Analytics` class
 - change our minimum SDK from `1.24.0-dev` to `1.24.0` stable

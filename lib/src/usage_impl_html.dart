@@ -3,7 +3,7 @@
 // BSD-style license that can be found in the LICENSE file.
 
 import 'dart:async';
-import 'dart:convert' show JSON;
+import 'dart:convert' show jsonEncode, jsonDecode;
 import 'dart:html';
 
 import 'usage_impl.dart';
@@ -64,7 +64,7 @@ class HtmlPersistentProperties extends PersistentProperties {
   HtmlPersistentProperties(String name) : super(name) {
     String str = window.localStorage[name];
     if (str == null || str.isEmpty) str = '{}';
-    _map = JSON.decode(str);
+    _map = jsonDecode(str);
   }
 
   @override
@@ -78,7 +78,7 @@ class HtmlPersistentProperties extends PersistentProperties {
       _map[key] = value;
     }
 
-    window.localStorage[name] = JSON.encode(_map);
+    window.localStorage[name] = jsonEncode(_map);
   }
 
   @override
