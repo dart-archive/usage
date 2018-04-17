@@ -125,7 +125,7 @@ class AnalyticsImpl implements Analytics {
     if (parameters != null) {
       args.addAll(parameters);
     }
-    return _sendPayload('screenview', args);
+    return sendPayload('screenview', args);
   }
 
   @override
@@ -137,13 +137,13 @@ class AnalyticsImpl implements Analytics {
     if (parameters != null) {
       args.addAll(parameters);
     }
-    return _sendPayload('event', args);
+    return sendPayload('event', args);
   }
 
   @override
   Future sendSocial(String network, String action, String target) {
     Map<String, dynamic> args = {'sn': network, 'sa': action, 'st': target};
-    return _sendPayload('social', args);
+    return sendPayload('social', args);
   }
 
   @override
@@ -152,7 +152,7 @@ class AnalyticsImpl implements Analytics {
     Map<String, dynamic> args = {'utv': variableName, 'utt': time};
     if (label != null) args['utl'] = label;
     if (category != null) args['utc'] = category;
-    return _sendPayload('timing', args);
+    return sendPayload('timing', args);
   }
 
   @override
@@ -183,7 +183,7 @@ class AnalyticsImpl implements Analytics {
 
     Map<String, dynamic> args = {'exd': description};
     if (fatal != null && fatal) args['exf'] = '1';
-    return _sendPayload('exception', args);
+    return sendPayload('exception', args);
   }
 
   @override
@@ -224,12 +224,11 @@ class AnalyticsImpl implements Analytics {
   /// Valid values for [hitType] are: 'pageview', 'screenview', 'event',
   /// 'transaction', 'item', 'social', 'exception', and 'timing'.
   Future sendRaw(String hitType, Map<String, dynamic> args) {
-    return _sendPayload(hitType, args);
+    return sendPayload(hitType, args);
   }
 
-  /// Valid values for [hitType] are: 'pageview', 'screenview', 'event',
-  /// 'transaction', 'item', 'social', 'exception', and 'timing'.
-  Future _sendPayload(String hitType, Map<String, dynamic> args) {
+  @override
+  Future sendPayload(String hitType, Map<String, dynamic> args) {
     if (!enabled) return new Future.value();
 
     if (_bucket.removeDrop()) {

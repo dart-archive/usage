@@ -1,4 +1,6 @@
-# Changelog
+## 4.0.0
+- Add a new `sendPayload` to `Usage` class. In all included implementations,
+  each `send` method calls `sendPayload`.
 
 ## 3.4.0
 - bump our minimum SDK constraint to `>=2.0.0-dev.30`
