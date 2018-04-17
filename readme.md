@@ -77,7 +77,7 @@ And call some analytics code:
 final String UA = ...;
 
 Analytics ga = new AnalyticsIO(UA, 'ga_test', '3.0');
-ga.optIn = true;
+ga.analyticsOpt = AnalyticsOpt.optIn;
 
 ga.sendScreenView('home');
 ga.sendException('foo exception');
@@ -95,20 +95,15 @@ opts-out. The mode can be adjusted by changing the value of the
 `Analytics.analyticsOpt` field.
 
 *Opt-out* In opt-out mode, if the user does not explicitly opt-out of collecting
-analytics (`Analytics.enabled = false`), the usage library will send usage data.
+analytics, the usage library will send usage data.
 
 *Opt-in* In opt-in mode, no data will be sent until the user explicitly opt-in
-to collection (`Analytics.enabled = true`). This includes screen views, events,
-timing information, and exceptions.
+to collection. This includes screen views, events, timing information, and exceptions.
 
 ## Other info
 
 For both classes, you need to provide a Google Analytics tracking ID, the
 application name, and the application version.
-
-Your application should provide an opt-in option for the user. If they opt-in,
-set the `optIn` field to `true`. This setting will persist across sessions
-automatically.
 
 *Note:* This library is intended for use with the Google Analytics application /
 mobile app style tracking IDs (as opposed to the web site style tracking IDs).
