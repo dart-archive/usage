@@ -117,6 +117,10 @@ abstract class Analytics {
   /// https://developers.google.com/analytics/devguides/collection/protocol/v1/parameters.
   void setSessionValue(String param, dynamic value);
 
+  /// Valid values for [hitType] are: 'pageview', 'screenview', 'event',
+  /// 'transaction', 'item', 'social', 'exception', and 'timing'.
+  Future sendPayload(String hitType, Map<String, dynamic> args);
+
   /// Fires events when the usage library sends any data over the network. This
   /// will not fire if analytics has been disabled or if the throttling
   /// algorithm has been engaged.
@@ -223,14 +227,14 @@ class AnalyticsMock implements Analytics {
   Future sendScreenView(String viewName, {Map<String, String> parameters}) {
     parameters ??= <String, String>{};
     parameters['viewName'] = viewName;
-    return _log('screenView', parameters);
+    return sendPayload('screenView', parameters);
   }
 
   @override
   Future sendEvent(String category, String action,
       {String label, int value, Map<String, String> parameters}) {
     parameters ??= <String, String>{};
-    return _log(
+    return sendPayload(
         'event',
         {'category': category, 'action': action, 'label': label, 'value': value}
           ..addAll(parameters));
@@ -238,12 +242,13 @@ class AnalyticsMock implements Analytics {
 
   @override
   Future sendSocial(String network, String action, String target) =>
-      _log('social', {'network': network, 'action': action, 'target': target});
+      sendPayload(
+          'social', {'network': network, 'action': action, 'target': target});
 
   @override
   Future sendTiming(String variableName, int time,
       {String category, String label}) {
-    return _log('timing', {
+    return sendPayload('timing', {
       'variableName': variableName,
       'time': time,
       'category': category,
@@ -260,7 +265,7 @@ class AnalyticsMock implements Analytics {
 
   @override
   Future sendException(String description, {bool fatal}) =>
-      _log('exception', {'description': description, 'fatal': fatal});
+      sendPayload('exception', {'description': description, 'fatal': fatal});
 
   @override
   dynamic getSessionValue(String param) => null;
@@ -277,7 +282,8 @@ class AnalyticsMock implements Analytics {
   @override
   void close() {}
 
-  Future _log(String hitType, Map m) {
+  @override
+  Future sendPayload(String hitType, Map m) {
     if (logCalls) {
       print('analytics: ${hitType} ${m}');
     }
