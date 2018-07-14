@@ -3,11 +3,15 @@ dart: dev
 
 env:
   global:
-  - DIR="example lib test"
+    - DIR="example lib test"
+  matrix:
+    - CI_TASK="dartfmt --set-exit-if-changed -n $DIR"
+    - CI_TASK="dartanalyzer --fatal-warnings $DIR"
+    - CI_TASK="pub run test"
+    - CI_TASK="tool/travis.sh"
 
-dart_task:
-  - dartfmt: -n $DIR
-  - dartanalyzer: --fatal-warning $DIR
-  - test
+cache:
+  directories:
+  - $HOME/.pub-cache
 
-script: ./tool/travis.sh
+script: $CI_TASK
