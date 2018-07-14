@@ -7,16 +7,6 @@
 # Fast fail the script on failures.
 set -e
 
-# Verify that the libraries are error free.
-dartanalyzer --fatal-warnings \
-  example/example.dart \
-  example/ga.dart \
-  lib/usage.dart \
-  test/all.dart
-
-# Run the tests.
-dart --enable-asserts test/all.dart
-
 # Measure the size of the compiled JS, for the dart:html version of the library.
 dart tool/grind.dart build
 

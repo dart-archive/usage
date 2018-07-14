@@ -1,4 +1,13 @@
 language: dart
 dart: dev
-sudo: false
+
+env:
+  global:
+  - DIR="example lib test"
+
+dart_task:
+  - dartfmt: -n $DIR
+  - dartanalyzer: --fatal-warning $DIR
+  - test
+
 script: ./tool/travis.sh
