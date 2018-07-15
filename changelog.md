@@ -1,5 +1,8 @@
 # Changelog
 
+## 3.4.1
+- increase the support SDK range to `'<3.0.0'`
+
 ## 3.4.0
 - bump our minimum SDK constraint to `>=2.0.0-dev.30`
 - change to using non-deprecated dart:convert constants
