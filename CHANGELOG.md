@@ -1,4 +1,7 @@
-# Changelog
+## 3.4.1
+
+- Set max SDK version to `<3.0.0`
+- Updated example to be Dart 2 compliant
 
 ## 3.4.1
 - increase the support SDK range to `'<3.0.0'`

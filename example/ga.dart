@@ -19,7 +19,7 @@ main(List args) async {
 
   String ua = args.isEmpty ? defaultUA : args.first;
 
-  Analytics ga = new AnalyticsIO(ua, 'ga_test', '3.0');
+  Analytics ga = AnalyticsIO(ua, 'ga_test', '3.0');
 
   await ga.sendScreenView('home');
   await ga.sendScreenView('files');

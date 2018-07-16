@@ -1,4 +1,17 @@
 language: dart
 dart: dev
-sudo: false
-script: ./tool/travis.sh
+
+env:
+  global:
+    - DIR="example lib test"
+  matrix:
+    - CI_TASK="dartfmt --set-exit-if-changed -n $DIR"
+    - CI_TASK="dartanalyzer --fatal-warnings $DIR"
+    - CI_TASK="pub run test"
+    - CI_TASK="tool/travis.sh"
+
+cache:
+  directories:
+  - $HOME/.pub-cache
+
+script: $CI_TASK
