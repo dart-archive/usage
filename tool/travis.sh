@@ -8,11 +8,7 @@
 set -e
 
 # Verify that the libraries are error free.
-dartanalyzer --fatal-warnings \
-  example/example.dart \
-  example/ga.dart \
-  lib/usage.dart \
-  test/all.dart
+dartanalyzer --fatal-warnings .
 
 # Run the tests.
 dart --enable-asserts test/all.dart
