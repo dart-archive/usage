@@ -21,14 +21,14 @@ to specify the documents directory in the constructor in order to tell the libra
 to save the analytics preferences:
 
 ```dart
-import 'package:flutter/services.dart';
+import 'package:path_provider/path_provider.dart';
 import 'package:usage/usage_io.dart';
 
-void main() {
+void main() async {
   final String UA = ...;
 
-  Analytics ga = new AnalyticsIO(UA, 'ga_test', '3.0',
-    documentsDirectory: PathProvider.getApplicationDocumentsDirectory());
+  Directory appDocDir = await getApplicationDocumentsDirectory();
+  Analytics ga = new AnalyticsIO(UA, 'ga_test', '3.0', documentDirectory: appDocDir);
   ...
 }
 ```
