@@ -16,6 +16,7 @@ import 'usage_impl.dart';
 /// `trackingId`, `applicationName`, and `applicationVersion` values should be supplied.
 /// `analyticsUrl` is optional, and lets user's substitute their own analytics URL for
 /// the default.
+/// `userAgent` is optional, overrides the default generated userAgent.
 ///
 /// `documentDirectory` is where the analytics settings are stored. It
 /// defaults to the user home directory. For regular `dart:io` apps this doesn't need to
@@ -24,12 +25,12 @@ import 'usage_impl.dart';
 class AnalyticsIO extends AnalyticsImpl {
   AnalyticsIO(
       String trackingId, String applicationName, String applicationVersion,
-      {String analyticsUrl, Directory documentDirectory})
+      {String analyticsUrl, Directory documentDirectory, String userAgent})
       : super(
             trackingId,
             new IOPersistentProperties(applicationName,
                 documentDirPath: documentDirectory?.path),
-            new IOPostHandler(),
+            new IOPostHandler(userAgent: userAgent),
             applicationName: applicationName,
             applicationVersion: applicationVersion,
             analyticsUrl: analyticsUrl) {
@@ -79,7 +80,8 @@ class IOPostHandler extends PostHandler {
 
   HttpClient _client;
 
-  IOPostHandler({this.mockClient}) : _userAgent = _createUserAgent();
+  IOPostHandler({this.mockClient, String userAgent}) :
+        _userAgent = userAgent ?? _createUserAgent();
 
   @override
   Future sendPost(String url, Map<String, dynamic> parameters) async {
