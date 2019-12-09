@@ -11,7 +11,7 @@ import '../uuid/uuid.dart';
 String postEncode(Map<String, dynamic> map) {
   // &foo=bar
   return map.keys.map((key) {
-    String value = '${map[key]}';
+    var value = '${map[key]}';
     return '${key}=${Uri.encodeComponent(value)}';
   }).join('&');
 }
@@ -44,10 +44,10 @@ class ThrottlingBucket {
   }
 
   void _checkReplenish() {
-    int now = DateTime.now().millisecondsSinceEpoch;
+    var now = DateTime.now().millisecondsSinceEpoch;
 
     if (_lastReplenish + 1000 >= now) {
-      int inc = (now - _lastReplenish) ~/ 1000;
+      var inc = (now - _lastReplenish) ~/ 1000;
       drops = math.min(drops + inc, startingCount);
       _lastReplenish += (1000 * inc);
     }
@@ -108,7 +108,7 @@ class AnalyticsImpl implements Analytics {
 
   @override
   bool get enabled {
-    bool optIn = analyticsOpt == AnalyticsOpt.optIn;
+    var optIn = analyticsOpt == AnalyticsOpt.optIn;
     return optIn
         ? properties['enabled'] == true
         : properties['enabled'] != false;
@@ -121,7 +121,7 @@ class AnalyticsImpl implements Analytics {
 
   @override
   Future sendScreenView(String viewName, {Map<String, String> parameters}) {
-    Map<String, dynamic> args = {'cd': viewName};
+    var args = <String, dynamic>{'cd': viewName};
     if (parameters != null) {
       args.addAll(parameters);
     }
@@ -131,7 +131,7 @@ class AnalyticsImpl implements Analytics {
   @override
   Future sendEvent(String category, String action,
       {String label, int value, Map<String, String> parameters}) {
-    Map<String, dynamic> args = {'ec': category, 'ea': action};
+    var args = <String, dynamic>{'ec': category, 'ea': action};
     if (label != null) args['el'] = label;
     if (value != null) args['ev'] = value;
     if (parameters != null) {
@@ -142,14 +142,14 @@ class AnalyticsImpl implements Analytics {
 
   @override
   Future sendSocial(String network, String action, String target) {
-    Map<String, dynamic> args = {'sn': network, 'sa': action, 'st': target};
+    var args = <String, dynamic>{'sn': network, 'sa': action, 'st': target};
     return _sendPayload('social', args);
   }
 
   @override
   Future sendTiming(String variableName, int time,
       {String category, String label}) {
-    Map<String, dynamic> args = {'utv': variableName, 'utt': time};
+    var args = <String, dynamic>{'utv': variableName, 'utt': time};
     if (label != null) args['utl'] = label;
     if (category != null) args['utc'] = category;
     return _sendPayload('timing', args);
@@ -165,7 +165,7 @@ class AnalyticsImpl implements Analytics {
   Future sendException(String description, {bool fatal}) {
     // We trim exceptions to a max length; google analytics will apply it's own
     // truncation, likely around 150 chars or so.
-    const int maxExceptionLength = 1000;
+    const maxExceptionLength = 1000;
 
     // In order to ensure that the client of this API is not sending any PII
     // data, we strip out any stack trace that may reference a path on the
@@ -180,7 +180,7 @@ class AnalyticsImpl implements Analytics {
       description = description.substring(0, maxExceptionLength);
     }
 
-    Map<String, dynamic> args = {'exd': description};
+    var args = <String, dynamic>{'exd': description};
     if (fatal != null && fatal) args['exf'] = '1';
     return _sendPayload('exception', args);
   }

@@ -12,7 +12,7 @@ void main() => defineTests();
 void defineTests() {
   group('AnalyticsMock', () {
     test('simple', () {
-      AnalyticsMock mock = AnalyticsMock();
+      var mock = AnalyticsMock();
       mock.sendScreenView('main');
       mock.sendScreenView('withParameters', parameters: {'cd1': 'custom'});
       mock.sendEvent('files', 'save');

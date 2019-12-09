@@ -7,7 +7,6 @@ library usage.hit_types_test;
 import 'dart:async';
 
 import 'package:test/test.dart';
-import 'package:usage/usage.dart';
 
 import 'src/common.dart';
 
@@ -16,13 +15,13 @@ void main() => defineTests();
 void defineTests() {
   group('screenView', () {
     test('simple', () {
-      AnalyticsImplMock mock = createMock();
+      var mock = createMock();
       mock.sendScreenView('main');
       expect(mock.mockProperties['clientId'], isNotNull);
       expect(mock.mockPostHandler.sentValues, isNot(isEmpty));
     });
     test('with parameters', () {
-      AnalyticsImplMock mock = createMock();
+      var mock = createMock();
       mock.sendScreenView('withParams', parameters: {'cd1': 'foo'});
       expect(mock.mockProperties['clientId'], isNotNull);
       expect(mock.mockPostHandler.sentValues, isNot(isEmpty));
@@ -32,7 +31,7 @@ void defineTests() {
 
   group('event', () {
     test('simple', () {
-      AnalyticsImplMock mock = createMock();
+      var mock = createMock();
       mock.sendEvent('files', 'save');
       expect(mock.mockPostHandler.sentValues, isNot(isEmpty));
       was(mock.last, 'event');
@@ -41,7 +40,7 @@ void defineTests() {
     });
 
     test('with parameters', () {
-      AnalyticsImplMock mock = createMock();
+      var mock = createMock();
       mock.sendEvent('withParams', 'save', parameters: {'cd1': 'foo'});
       expect(mock.mockPostHandler.sentValues, isNot(isEmpty));
       was(mock.last, 'event');
@@ -51,7 +50,7 @@ void defineTests() {
     });
 
     test('optional args', () {
-      AnalyticsImplMock mock = createMock();
+      var mock = createMock();
       mock.sendEvent('files', 'save', label: 'File Save', value: 23);
       expect(mock.mockPostHandler.sentValues, isNot(isEmpty));
       was(mock.last, 'event');
@@ -64,7 +63,7 @@ void defineTests() {
 
   group('social', () {
     test('simple', () {
-      AnalyticsImplMock mock = createMock();
+      var mock = createMock();
       mock.sendSocial('g+', 'plus', 'userid');
       expect(mock.mockPostHandler.sentValues, isNot(isEmpty));
       was(mock.last, 'social');
@@ -76,7 +75,7 @@ void defineTests() {
 
   group('timing', () {
     test('simple', () {
-      AnalyticsImplMock mock = createMock();
+      var mock = createMock();
       mock.sendTiming('compile', 123);
       expect(mock.mockPostHandler.sentValues, isNot(isEmpty));
       was(mock.last, 'timing');
@@ -85,7 +84,7 @@ void defineTests() {
     });
 
     test('optional args', () {
-      AnalyticsImplMock mock = createMock();
+      var mock = createMock();
       mock.sendTiming('compile', 123, category: 'Build', label: 'Compile');
       expect(mock.mockPostHandler.sentValues, isNot(isEmpty));
       was(mock.last, 'timing');
@@ -96,8 +95,8 @@ void defineTests() {
     });
 
     test('timer', () async {
-      AnalyticsImplMock mock = createMock();
-      AnalyticsTimer timer =
+      var mock = createMock();
+      var timer =
           mock.startTimer('compile', category: 'Build', label: 'Compile');
 
       await Future.delayed(Duration(milliseconds: 20));
@@ -109,7 +108,7 @@ void defineTests() {
       has(mock.last, 'utt');
       has(mock.last, 'utc');
       has(mock.last, 'utl');
-      int time = timer.currentElapsedMillis;
+      var time = timer.currentElapsedMillis;
       expect(time, greaterThan(10));
 
       await Future.delayed(Duration(milliseconds: 10));
@@ -119,7 +118,7 @@ void defineTests() {
 
   group('exception', () {
     test('simple', () {
-      AnalyticsImplMock mock = createMock();
+      var mock = createMock();
       mock.sendException('FooException');
       expect(mock.mockPostHandler.sentValues, isNot(isEmpty));
       was(mock.last, 'exception');
@@ -127,7 +126,7 @@ void defineTests() {
     });
 
     test('optional args', () {
-      AnalyticsImplMock mock = createMock();
+      var mock = createMock();
       mock.sendException('FooException', fatal: true);
       expect(mock.mockPostHandler.sentValues, isNot(isEmpty));
       was(mock.last, 'exception');
@@ -136,7 +135,7 @@ void defineTests() {
     });
 
     test('exception file paths', () {
-      AnalyticsImplMock mock = createMock();
+      var mock = createMock();
       mock.sendException('foo bar (file:///Users/foobar/tmp/error.dart:3:13)');
       expect(mock.last['exd'], 'foo bar (');
     });

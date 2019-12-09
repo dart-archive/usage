@@ -33,7 +33,7 @@ class AnalyticsIO extends AnalyticsImpl {
             applicationName: applicationName,
             applicationVersion: applicationVersion,
             analyticsUrl: analyticsUrl) {
-    final String locale = getPlatformLocale();
+    final locale = getPlatformLocale();
     if (locale != null) {
       setSessionValue('ul', locale);
     }
@@ -41,7 +41,7 @@ class AnalyticsIO extends AnalyticsImpl {
 }
 
 String _createUserAgent() {
-  final String locale = getPlatformLocale() ?? '';
+  final locale = getPlatformLocale() ?? '';
 
   if (Platform.isAndroid) {
     return 'Mozilla/5.0 (Android; Mobile; ${locale})';
@@ -55,20 +55,20 @@ String _createUserAgent() {
     return 'Mozilla/5.0 (Linux; Linux; Linux; ${locale})';
   } else {
     // Dart/1.8.0 (macos; macos; macos; en_US)
-    String os = Platform.operatingSystem;
+    var os = Platform.operatingSystem;
     return 'Dart/${getDartVersion()} (${os}; ${os}; ${os}; ${locale})';
   }
 }
 
 String userHomeDir() {
-  String envKey = Platform.operatingSystem == 'windows' ? 'APPDATA' : 'HOME';
-  String value = Platform.environment[envKey];
-  return value == null ? '.' : value;
+  var envKey = Platform.operatingSystem == 'windows' ? 'APPDATA' : 'HOME';
+  var value = Platform.environment[envKey];
+  return value ?? '.';
 }
 
 String getDartVersion() {
-  String ver = Platform.version;
-  int index = ver.indexOf(' ');
+  var ver = Platform.version;
+  var index = ver.indexOf(' ');
   if (index != -1) ver = ver.substring(0, index);
   return ver;
 }
@@ -83,18 +83,18 @@ class IOPostHandler extends PostHandler {
 
   @override
   Future sendPost(String url, Map<String, dynamic> parameters) async {
-    String data = postEncode(parameters);
+    var data = postEncode(parameters);
 
     if (_client == null) {
-      _client = mockClient != null ? mockClient : HttpClient();
+      _client = mockClient ?? HttpClient();
       _client.userAgent = _userAgent;
     }
 
     try {
-      HttpClientRequest req = await _client.postUrl(Uri.parse(url));
+      var req = await _client.postUrl(Uri.parse(url));
       req.write(data);
-      HttpClientResponse response = await req.close();
-      response.drain();
+      var response = await req.close();
+      await response.drain();
     } catch (exception) {
       // Catch errors that can happen during a request, but that we can't do
       // anything about, e.g. a missing internet connection.
@@ -112,7 +112,7 @@ class IOPersistentProperties extends PersistentProperties {
   Map _map;
 
   IOPersistentProperties(String name, {String documentDirPath}) : super(name) {
-    String fileName = '.${name.replaceAll(' ', '_')}';
+    var fileName = '.${name.replaceAll(' ', '_')}';
     documentDirPath ??= userHomeDir();
     _file = File(path.join(documentDirPath, fileName));
     if (!_file.existsSync()) {
@@ -151,7 +151,7 @@ class IOPersistentProperties extends PersistentProperties {
   @override
   void syncSettings() {
     try {
-      String contents = _file.readAsStringSync();
+      var contents = _file.readAsStringSync();
       if (contents.isEmpty) contents = '{}';
       _map = jsonDecode(contents);
     } catch (_) {
@@ -163,12 +163,12 @@ class IOPersistentProperties extends PersistentProperties {
 /// Return the string for the platform's locale; return's `null` if the locale
 /// can't be determined.
 String getPlatformLocale() {
-  String locale = Platform.localeName;
+  var locale = Platform.localeName;
   if (locale == null) return null;
 
   if (locale != null) {
     // Convert `en_US.UTF-8` to `en_US`.
-    int index = locale.indexOf('.');
+    var index = locale.indexOf('.');
     if (index != -1) locale = locale.substring(0, index);
 
     // Convert `en_US` to `en-us`.

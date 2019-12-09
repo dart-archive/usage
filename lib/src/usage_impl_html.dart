@@ -21,8 +21,8 @@ class AnalyticsHtml extends AnalyticsImpl {
             applicationName: applicationName,
             applicationVersion: applicationVersion,
             analyticsUrl: analyticsUrl) {
-    int screenWidth = window.screen.width;
-    int screenHeight = window.screen.height;
+    var screenWidth = window.screen.width;
+    var screenHeight = window.screen.height;
 
     setSessionValue('sr', '${screenWidth}x$screenHeight');
     setSessionValue('sd', '${window.screen.pixelDepth}-bits');
@@ -40,14 +40,13 @@ class HtmlPostHandler extends PostHandler {
 
   @override
   Future sendPost(String url, Map<String, dynamic> parameters) {
-    int viewportWidth = document.documentElement.clientWidth;
-    int viewportHeight = document.documentElement.clientHeight;
+    var viewportWidth = document.documentElement.clientWidth;
+    var viewportHeight = document.documentElement.clientHeight;
 
     parameters['vp'] = '${viewportWidth}x$viewportHeight';
 
-    String data = postEncode(parameters);
-    HttpRequestor requestor =
-        mockRequestor == null ? HttpRequest.request : mockRequestor;
+    var data = postEncode(parameters);
+    var requestor = mockRequestor ?? HttpRequest.request;
     return requestor(url, method: 'POST', sendData: data).catchError((e) {
       // Catch errors that can happen during a request, but that we can't do
       // anything about, e.g. a missing internet connection.
@@ -62,7 +61,7 @@ class HtmlPersistentProperties extends PersistentProperties {
   Map _map;
 
   HtmlPersistentProperties(String name) : super(name) {
-    String str = window.localStorage[name];
+    var str = window.localStorage[name];
     if (str == null || str.isEmpty) str = '{}';
     _map = jsonDecode(str);
   }

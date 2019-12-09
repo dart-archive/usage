@@ -32,17 +32,17 @@ Analytics getAnalytics() {
 }
 
 void _handleFoo() {
-  Analytics analytics = getAnalytics();
+  var analytics = getAnalytics();
   analytics.sendEvent('main', 'foo');
 }
 
 void _handleBar() {
-  Analytics analytics = getAnalytics();
+  var analytics = getAnalytics();
   analytics.sendEvent('main', 'bar');
 }
 
 void _changePage() {
-  Analytics analytics = getAnalytics();
+  var analytics = getAnalytics();
   window.history.pushState(null, 'new page', '${++_count}.html');
   analytics.sendScreenView(window.location.pathname);
 }

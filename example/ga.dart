@@ -7,8 +7,8 @@ library usage_ga;
 
 import 'package:usage/usage_io.dart';
 
-main(List args) async {
-  final String defaultUA = 'UA-55029513-1';
+void main(List args) async {
+  final defaultUA = 'UA-55029513-1';
 
   if (args.isEmpty) {
     print('usage: dart ga <GA tracking ID>');
