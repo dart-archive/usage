@@ -24,7 +24,7 @@ String _ua() => (querySelector('#ua') as InputElement).value.trim();
 Analytics getAnalytics() {
   if (_analytics == null || _lastUa != _ua()) {
     _lastUa = _ua();
-    _analytics = new AnalyticsHtml(_lastUa, 'Test app', '1.0');
+    _analytics = AnalyticsHtml(_lastUa, 'Test app', '1.0');
     _analytics.sendScreenView(window.location.pathname);
   }
 

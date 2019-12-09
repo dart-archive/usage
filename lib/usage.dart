@@ -25,10 +25,10 @@ library usage;
 import 'dart:async';
 
 // Matches file:/, non-ws, /, non-ws, .dart
-final RegExp _pathRegex = new RegExp(r'file:/\S+/(\S+\.dart)');
+final RegExp _pathRegex = RegExp(r'file:/\S+/(\S+\.dart)');
 
 // Match multiple tabs or spaces.
-final RegExp _tabOrSpaceRegex = new RegExp(r'[\t ]+');
+final RegExp _tabOrSpaceRegex = RegExp(r'[\t ]+');
 
 /// An interface to a Google Analytics session.
 ///
@@ -165,12 +165,12 @@ class AnalyticsTimer {
 
   AnalyticsTimer(this.analytics, this.variableName,
       {this.category, this.label}) {
-    _startMillis = new DateTime.now().millisecondsSinceEpoch;
+    _startMillis = DateTime.now().millisecondsSinceEpoch;
   }
 
   int get currentElapsedMillis {
     if (_endMillis == null) {
-      return new DateTime.now().millisecondsSinceEpoch - _startMillis;
+      return DateTime.now().millisecondsSinceEpoch - _startMillis;
     } else {
       return _endMillis - _startMillis;
     }
@@ -179,9 +179,9 @@ class AnalyticsTimer {
   /// Finish the timer, calculate the elapsed time, and send the information to
   /// analytics. Once this is called, any future invocations are no-ops.
   Future finish() {
-    if (_endMillis != null) return new Future.value();
+    if (_endMillis != null) return Future.value();
 
-    _endMillis = new DateTime.now().millisecondsSinceEpoch;
+    _endMillis = DateTime.now().millisecondsSinceEpoch;
     return analytics.sendTiming(variableName, currentElapsedMillis,
         category: category, label: label);
   }
@@ -201,7 +201,7 @@ class AnalyticsMock implements Analytics {
 
   /// Events are never added to this controller for the mock implementation.
   final StreamController<Map<String, dynamic>> _sendController =
-      new StreamController.broadcast();
+      StreamController.broadcast();
 
   /// Create a new [AnalyticsMock]. If [logCalls] is true, all calls will be
   /// logged to stdout.
@@ -254,8 +254,7 @@ class AnalyticsMock implements Analytics {
   @override
   AnalyticsTimer startTimer(String variableName,
       {String category, String label}) {
-    return new AnalyticsTimer(this, variableName,
-        category: category, label: label);
+    return AnalyticsTimer(this, variableName, category: category, label: label);
   }
 
   @override
@@ -272,7 +271,7 @@ class AnalyticsMock implements Analytics {
   Stream<Map<String, dynamic>> get onSend => _sendController.stream;
 
   @override
-  Future waitForLastPing({Duration timeout}) => new Future.value();
+  Future waitForLastPing({Duration timeout}) => Future.value();
 
   @override
   void close() {}
@@ -282,7 +281,7 @@ class AnalyticsMock implements Analytics {
       print('analytics: ${hitType} ${m}');
     }
 
-    return new Future.value();
+    return Future.value();
   }
 }
 
@@ -294,7 +293,7 @@ class AnalyticsMock implements Analytics {
 /// of the stacktrace. GA has a 100 char limit on the text that can be sent for
 /// an exception. This will try and make those first 100 chars contain
 /// information useful to debugging the issue.
-String sanitizeStacktrace(dynamic st, {bool shorten: true}) {
+String sanitizeStacktrace(dynamic st, {bool shorten = true}) {
   String str = '${st}';
 
   Iterable<Match> iter = _pathRegex.allMatches(str);

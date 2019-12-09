@@ -100,7 +100,7 @@ void defineTests() {
       AnalyticsTimer timer =
           mock.startTimer('compile', category: 'Build', label: 'Compile');
 
-      await new Future.delayed(new Duration(milliseconds: 20));
+      await Future.delayed(Duration(milliseconds: 20));
 
       await timer.finish();
       expect(mock.mockPostHandler.sentValues, isNot(isEmpty));
@@ -112,7 +112,7 @@ void defineTests() {
       int time = timer.currentElapsedMillis;
       expect(time, greaterThan(10));
 
-      await new Future.delayed(new Duration(milliseconds: 10));
+      await Future.delayed(Duration(milliseconds: 10));
       expect(timer.currentElapsedMillis, time);
     });
   });
