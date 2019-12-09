@@ -17,7 +17,7 @@ import 'dart:math' show Random;
 /// For more information, see
 /// [en.wikipedia.org/wiki/Universally_unique_identifier](http://en.wikipedia.org/wiki/Universally_unique_identifier).
 class Uuid {
-  final Random _random = new Random();
+  final Random _random = Random();
 
   /// Generate a version 4 (random) uuid. This is a uuid scheme that only uses
   /// random numbers as the source of the generated uuid.
@@ -28,7 +28,7 @@ class Uuid {
     return '${_bitsDigits(16, 4)}${_bitsDigits(16, 4)}-'
         '${_bitsDigits(16, 4)}-'
         '4${_bitsDigits(12, 3)}-'
-        '${_printDigits(special,  1)}${_bitsDigits(12, 3)}-'
+        '${_printDigits(special, 1)}${_bitsDigits(12, 3)}-'
         '${_bitsDigits(16, 4)}${_bitsDigits(16, 4)}${_bitsDigits(16, 4)}';
   }
 

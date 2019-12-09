@@ -16,8 +16,8 @@ class AnalyticsHtml extends AnalyticsImpl {
   AnalyticsHtml(
       String trackingId, String applicationName, String applicationVersion,
       {String analyticsUrl})
-      : super(trackingId, new HtmlPersistentProperties(applicationName),
-            new HtmlPostHandler(),
+      : super(trackingId, HtmlPersistentProperties(applicationName),
+            HtmlPostHandler(),
             applicationName: applicationName,
             applicationVersion: applicationVersion,
             analyticsUrl: analyticsUrl) {
@@ -30,8 +30,8 @@ class AnalyticsHtml extends AnalyticsImpl {
   }
 }
 
-typedef Future<HttpRequest> HttpRequestor(String url,
-    {String method, sendData});
+typedef HttpRequestor = Future<HttpRequest> Function(String url,
+    {String method, dynamic sendData});
 
 class HtmlPostHandler extends PostHandler {
   final HttpRequestor mockRequestor;

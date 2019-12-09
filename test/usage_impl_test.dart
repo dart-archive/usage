@@ -14,12 +14,12 @@ void main() => defineTests();
 void defineTests() {
   group('ThrottlingBucket', () {
     test('can send', () {
-      ThrottlingBucket bucket = new ThrottlingBucket(20);
+      ThrottlingBucket bucket = ThrottlingBucket(20);
       expect(bucket.removeDrop(), true);
     });
 
     test('doesn\'t send too many', () {
-      ThrottlingBucket bucket = new ThrottlingBucket(20);
+      ThrottlingBucket bucket = ThrottlingBucket(20);
       for (int i = 0; i < 20; i++) {
         expect(bucket.removeDrop(), true);
       }
@@ -75,7 +75,7 @@ void defineTests() {
       mock.sendScreenView('foo');
       mock.sendScreenView('bar');
       mock.sendScreenView('baz');
-      return mock.waitForLastPing(timeout: new Duration(milliseconds: 100));
+      return mock.waitForLastPing(timeout: Duration(milliseconds: 100));
     });
 
     group('clientId', () {

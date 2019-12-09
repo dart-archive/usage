@@ -27,9 +27,9 @@ class AnalyticsIO extends AnalyticsImpl {
       {String analyticsUrl, Directory documentDirectory})
       : super(
             trackingId,
-            new IOPersistentProperties(applicationName,
+            IOPersistentProperties(applicationName,
                 documentDirPath: documentDirectory?.path),
-            new IOPostHandler(),
+            IOPostHandler(),
             applicationName: applicationName,
             applicationVersion: applicationVersion,
             analyticsUrl: analyticsUrl) {
@@ -86,7 +86,7 @@ class IOPostHandler extends PostHandler {
     String data = postEncode(parameters);
 
     if (_client == null) {
-      _client = mockClient != null ? mockClient : new HttpClient();
+      _client = mockClient != null ? mockClient : HttpClient();
       _client.userAgent = _userAgent;
     }
 
@@ -105,7 +105,7 @@ class IOPostHandler extends PostHandler {
   void close() => _client?.close();
 }
 
-JsonEncoder _jsonEncoder = new JsonEncoder.withIndent('  ');
+JsonEncoder _jsonEncoder = JsonEncoder.withIndent('  ');
 
 class IOPersistentProperties extends PersistentProperties {
   File _file;
@@ -114,7 +114,7 @@ class IOPersistentProperties extends PersistentProperties {
   IOPersistentProperties(String name, {String documentDirPath}) : super(name) {
     String fileName = '.${name.replaceAll(' ', '_')}';
     documentDirPath ??= userHomeDir();
-    _file = new File(path.join(documentDirPath, fileName));
+    _file = File(path.join(documentDirPath, fileName));
     if (!_file.existsSync()) {
       _file.createSync();
     }

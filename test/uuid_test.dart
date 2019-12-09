@@ -13,7 +13,7 @@ void defineTests() {
   group('uuid', () {
     // xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx
     test('simple', () {
-      Uuid uuid = new Uuid();
+      Uuid uuid = Uuid();
       String result = uuid.generateV4();
       expect(result.length, 36);
       expect(result[8], '-');
@@ -23,7 +23,7 @@ void defineTests() {
     });
 
     test('can parse', () {
-      Uuid uuid = new Uuid();
+      Uuid uuid = Uuid();
       String result = uuid.generateV4();
       expect(int.parse(result.substring(0, 8), radix: 16), isNotNull);
       expect(int.parse(result.substring(9, 13), radix: 16), isNotNull);
@@ -33,7 +33,7 @@ void defineTests() {
     });
 
     test('special bits', () {
-      Uuid uuid = new Uuid();
+      Uuid uuid = Uuid();
       String result = uuid.generateV4();
       expect(result[14], '4');
       expect(result[19].toLowerCase(), isIn('89ab'));
@@ -46,23 +46,23 @@ void defineTests() {
     });
 
     test('is pretty random', () {
-      Set set = new Set();
+      Set set = Set();
 
-      Uuid uuid = new Uuid();
+      Uuid uuid = Uuid();
       for (int i = 0; i < 64; i++) {
         String val = uuid.generateV4();
         expect(set, isNot(contains(val)));
         set.add(val);
       }
 
-      uuid = new Uuid();
+      uuid = Uuid();
       for (int i = 0; i < 64; i++) {
         String val = uuid.generateV4();
         expect(set, isNot(contains(val)));
         set.add(val);
       }
 
-      uuid = new Uuid();
+      uuid = Uuid();
       for (int i = 0; i < 64; i++) {
         String val = uuid.generateV4();
         expect(set, isNot(contains(val)));

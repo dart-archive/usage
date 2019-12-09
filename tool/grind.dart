@@ -8,7 +8,7 @@ import 'dart:io';
 
 import 'package:grinder/grinder.dart';
 
-final Directory _buildExampleDir = new Directory('build/example');
+final Directory _buildExampleDir = Directory('build/example');
 
 main(List<String> args) => grind(args);
 
@@ -19,7 +19,7 @@ void init() => _buildExampleDir.createSync(recursive: true);
 @Depends(init)
 void build() {
   // Compile `test/web_test.dart` to the `build/test` dir; measure its size.
-  File srcFile = new File('example/example.dart');
+  File srcFile = File('example/example.dart');
   Dart2js.compile(srcFile,
       outDir: _buildExampleDir,
       minify: true,

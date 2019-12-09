@@ -10,7 +10,7 @@ import 'package:test/test.dart';
 import 'package:usage/src/usage_impl.dart';
 
 AnalyticsImplMock createMock({Map<String, dynamic> props}) =>
-    new AnalyticsImplMock('UA-0', props: props);
+    AnalyticsImplMock('UA-0', props: props);
 
 void was(Map m, String type) => expect(m['t'], type);
 void has(Map m, String key) => expect(m[key], isNotNull);
@@ -21,7 +21,7 @@ class AnalyticsImplMock extends AnalyticsImpl {
   MockPostHandler get mockPostHandler => postHandler;
 
   AnalyticsImplMock(String trackingId, {Map<String, dynamic> props})
-      : super(trackingId, new MockProperties(props), new MockPostHandler(),
+      : super(trackingId, MockProperties(props), MockPostHandler(),
             applicationName: 'Test App', applicationVersion: '0.1');
 
   Map<String, dynamic> get last => mockPostHandler.last;
@@ -53,7 +53,7 @@ class MockPostHandler extends PostHandler {
   Future sendPost(String url, Map<String, dynamic> parameters) {
     sentValues.add(parameters);
 
-    return new Future.value();
+    return Future.value();
   }
 
   Map<String, dynamic> get last => sentValues.last;

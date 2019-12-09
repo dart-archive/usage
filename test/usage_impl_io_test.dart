@@ -16,8 +16,8 @@ void main() => defineTests();
 void defineTests() {
   group('IOPostHandler', () {
     test('sendPost', () async {
-      var httpClient = new MockHttpClient();
-      IOPostHandler postHandler = new IOPostHandler(mockClient: httpClient);
+      var httpClient = MockHttpClient();
+      IOPostHandler postHandler = IOPostHandler(mockClient: httpClient);
       Map<String, dynamic> args = {'utv': 'varName', 'utt': 123};
       await postHandler.sendPost('http://www.google.com', args);
       expect(httpClient.sendCount, 1);
@@ -26,13 +26,13 @@ void defineTests() {
 
   group('IOPersistentProperties', () {
     test('add', () {
-      IOPersistentProperties props = new IOPersistentProperties('foo_props');
+      IOPersistentProperties props = IOPersistentProperties('foo_props');
       props['foo'] = 'bar';
       expect(props['foo'], 'bar');
     });
 
     test('remove', () {
-      IOPersistentProperties props = new IOPersistentProperties('foo_props');
+      IOPersistentProperties props = IOPersistentProperties('foo_props');
       props['foo'] = 'bar';
       expect(props['foo'], 'bar');
       props['foo'] = null;
@@ -60,7 +60,7 @@ class MockHttpClient implements HttpClient {
 
   @override
   Future<HttpClientRequest> postUrl(Uri url) {
-    return new Future.value(new MockHttpClientRequest(this));
+    return Future.value(MockHttpClientRequest(this));
   }
 
   @override
@@ -80,7 +80,7 @@ class MockHttpClientRequest implements HttpClientRequest {
   @override
   Future<HttpClientResponse> close() {
     client.closed = true;
-    return new Future.value(new MockHttpClientResponse(client));
+    return Future.value(MockHttpClientResponse(client));
   }
 
   @override
@@ -95,7 +95,7 @@ class MockHttpClientResponse implements HttpClientResponse {
   @override
   Future<E> drain<E>([E futureValue]) {
     client.sendCount++;
-    return new Future.value();
+    return Future.value();
   }
 
   @override

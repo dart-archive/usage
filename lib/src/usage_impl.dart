@@ -29,7 +29,7 @@ class ThrottlingBucket {
 
   ThrottlingBucket(this.startingCount) {
     drops = startingCount;
-    _lastReplenish = new DateTime.now().millisecondsSinceEpoch;
+    _lastReplenish = DateTime.now().millisecondsSinceEpoch;
   }
 
   bool removeDrop() {
@@ -44,7 +44,7 @@ class ThrottlingBucket {
   }
 
   void _checkReplenish() {
-    int now = new DateTime.now().millisecondsSinceEpoch;
+    int now = DateTime.now().millisecondsSinceEpoch;
 
     if (_lastReplenish + 1000 >= now) {
       int inc = (now - _lastReplenish) ~/ 1000;
@@ -68,7 +68,7 @@ class AnalyticsImpl implements Analytics {
   final PersistentProperties properties;
   final PostHandler postHandler;
 
-  final ThrottlingBucket _bucket = new ThrottlingBucket(20);
+  final ThrottlingBucket _bucket = ThrottlingBucket(20);
   final Map<String, dynamic> _variableMap = {};
 
   final List<Future> _futures = [];
@@ -79,7 +79,7 @@ class AnalyticsImpl implements Analytics {
   String _url;
 
   final StreamController<Map<String, dynamic>> _sendController =
-      new StreamController.broadcast(sync: true);
+      StreamController.broadcast(sync: true);
 
   AnalyticsImpl(this.trackingId, this.properties, this.postHandler,
       {this.applicationName, this.applicationVersion, String analyticsUrl}) {
@@ -158,8 +158,7 @@ class AnalyticsImpl implements Analytics {
   @override
   AnalyticsTimer startTimer(String variableName,
       {String category, String label}) {
-    return new AnalyticsTimer(this, variableName,
-        category: category, label: label);
+    return AnalyticsTimer(this, variableName, category: category, label: label);
   }
 
   @override
@@ -216,7 +215,7 @@ class AnalyticsImpl implements Analytics {
   void close() => postHandler.close();
 
   @override
-  String get clientId => properties['clientId'] ??= new Uuid().generateV4();
+  String get clientId => properties['clientId'] ??= Uuid().generateV4();
 
   /// Send raw data to analytics. Callers should generally use one of the typed
   /// methods (`sendScreenView`, `sendEvent`, ...).
@@ -230,7 +229,7 @@ class AnalyticsImpl implements Analytics {
   /// Valid values for [hitType] are: 'pageview', 'screenview', 'event',
   /// 'transaction', 'item', 'social', 'exception', and 'timing'.
   Future _sendPayload(String hitType, Map<String, dynamic> args) {
-    if (!enabled) return new Future.value();
+    if (!enabled) return Future.value();
 
     if (_bucket.removeDrop()) {
       _variableMap.forEach((key, value) {
@@ -246,7 +245,7 @@ class AnalyticsImpl implements Analytics {
 
       return _recordFuture(postHandler.sendPost(_url, args));
     } else {
-      return new Future.value();
+      return Future.value();
     }
   }
 
