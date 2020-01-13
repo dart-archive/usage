@@ -14,13 +14,13 @@ void main() => defineTests();
 void defineTests() {
   group('ThrottlingBucket', () {
     test('can send', () {
-      ThrottlingBucket bucket = ThrottlingBucket(20);
+      var bucket = ThrottlingBucket(20);
       expect(bucket.removeDrop(), true);
     });
 
     test('doesn\'t send too many', () {
-      ThrottlingBucket bucket = ThrottlingBucket(20);
-      for (int i = 0; i < 20; i++) {
+      var bucket = ThrottlingBucket(20);
+      for (var i = 0; i < 20; i++) {
         expect(bucket.removeDrop(), true);
       }
       expect(bucket.removeDrop(), false);
@@ -29,22 +29,22 @@ void defineTests() {
 
   group('AnalyticsImpl', () {
     test('trackingId', () {
-      AnalyticsImplMock mock = createMock();
+      var mock = createMock();
       expect(mock.trackingId, isNotNull);
     });
 
     test('applicationName', () {
-      AnalyticsImplMock mock = createMock();
+      var mock = createMock();
       expect(mock.applicationName, isNotNull);
     });
 
     test('applicationVersion', () {
-      AnalyticsImplMock mock = createMock();
+      var mock = createMock();
       expect(mock.applicationVersion, isNotNull);
     });
 
     test('respects disabled', () {
-      AnalyticsImplMock mock = createMock();
+      var mock = createMock();
       mock.enabled = false;
       mock.sendException('FooBar exception');
       expect(mock.enabled, false);
@@ -52,14 +52,14 @@ void defineTests() {
     });
 
     test('firstRun', () {
-      AnalyticsImplMock mock = createMock();
+      var mock = createMock();
       expect(mock.firstRun, true);
       mock = createMock(props: {'firstRun': false});
       expect(mock.firstRun, false);
     });
 
     test('setSessionValue', () {
-      AnalyticsImplMock mock = createMock();
+      var mock = createMock();
       mock.sendScreenView('foo');
       hasnt(mock.last, 'val');
       mock.setSessionValue('val', 'ue');
@@ -71,7 +71,7 @@ void defineTests() {
     });
 
     test('waitForLastPing', () {
-      AnalyticsImplMock mock = createMock();
+      var mock = createMock();
       mock.sendScreenView('foo');
       mock.sendScreenView('bar');
       mock.sendScreenView('baz');
@@ -80,12 +80,12 @@ void defineTests() {
 
     group('clientId', () {
       test('is available immediately', () {
-        AnalyticsImplMock mock = createMock();
+        var mock = createMock();
         expect(mock.clientId, isNotEmpty);
       });
 
       test('is memoized', () {
-        AnalyticsImplMock mock = createMock();
+        var mock = createMock();
         final value1 = mock.clientId;
         final value2 = mock.clientId;
         expect(value1, isNotEmpty);
@@ -93,7 +93,7 @@ void defineTests() {
       });
 
       test('is stored in properties', () {
-        AnalyticsImplMock mock = createMock();
+        var mock = createMock();
         expect(mock.properties['clientId'], isNull);
         final value = mock.clientId;
         expect(mock.properties['clientId'], value);
@@ -103,7 +103,7 @@ void defineTests() {
 
   group('postEncode', () {
     test('simple', () {
-      Map<String, dynamic> map = {'foo': 'bar', 'baz': 'qux norf'};
+      var map = <String, dynamic>{'foo': 'bar', 'baz': 'qux norf'};
       expect(postEncode(map), 'foo=bar&baz=qux%20norf');
     });
   });

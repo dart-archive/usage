@@ -30,10 +30,9 @@ void main() {
 void defineWebTests() {
   group('HtmlPostHandler', () {
     test('sendPost', () async {
-      MockRequestor client = MockRequestor();
-      HtmlPostHandler postHandler =
-          HtmlPostHandler(mockRequestor: client.request);
-      Map<String, dynamic> args = {'utv': 'varName', 'utt': 123};
+      var client = MockRequestor();
+      var postHandler = HtmlPostHandler(mockRequestor: client.request);
+      var args = <String, dynamic>{'utv': 'varName', 'utt': 123};
 
       await postHandler.sendPost('http://www.google.com', args);
       expect(client.sendCount, 1);
@@ -42,13 +41,13 @@ void defineWebTests() {
 
   group('HtmlPersistentProperties', () {
     test('add', () {
-      HtmlPersistentProperties props = HtmlPersistentProperties('foo_props');
+      var props = HtmlPersistentProperties('foo_props');
       props['foo'] = 'bar';
       expect(props['foo'], 'bar');
     });
 
     test('remove', () {
-      HtmlPersistentProperties props = HtmlPersistentProperties('foo_props');
+      var props = HtmlPersistentProperties('foo_props');
       props['foo'] = 'bar';
       expect(props['foo'], 'bar');
       props['foo'] = null;

@@ -294,13 +294,13 @@ class AnalyticsMock implements Analytics {
 /// an exception. This will try and make those first 100 chars contain
 /// information useful to debugging the issue.
 String sanitizeStacktrace(dynamic st, {bool shorten = true}) {
-  String str = '${st}';
+  var str = '${st}';
 
   Iterable<Match> iter = _pathRegex.allMatches(str);
   iter = iter.toList().reversed;
 
-  for (Match match in iter) {
-    String replacement = match.group(1);
+  for (var match in iter) {
+    var replacement = match.group(1);
     str =
         str.substring(0, match.start) + replacement + str.substring(match.end);
   }

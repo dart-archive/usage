@@ -10,7 +10,7 @@ import 'package:grinder/grinder.dart';
 
 final Directory _buildExampleDir = Directory('build/example');
 
-main(List<String> args) => grind(args);
+void main(List<String> args) => grind(args);
 
 @Task()
 void init() => _buildExampleDir.createSync(recursive: true);
@@ -19,12 +19,12 @@ void init() => _buildExampleDir.createSync(recursive: true);
 @Depends(init)
 void build() {
   // Compile `test/web_test.dart` to the `build/test` dir; measure its size.
-  File srcFile = File('example/example.dart');
+  var srcFile = File('example/example.dart');
   Dart2js.compile(srcFile,
       outDir: _buildExampleDir,
       minify: true,
       extraArgs: ['--conditional-directives']);
-  File outFile = joinFile(_buildExampleDir, ['example.dart.js']);
+  var outFile = joinFile(_buildExampleDir, ['example.dart.js']);
 
   log('${outFile.path} compiled to ${_printSize(outFile)}');
 }
