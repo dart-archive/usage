@@ -1,8 +1,6 @@
-# usage
+A wrapper around Google Analytics for command-line, web, and Flutter apps.
 
-`usage` is a wrapper around Google Analytics for command-line, web, and Flutter apps.
-
-[![pub package](https://img.shields.io/pub/v/usage.svg)](https://pub.dartlang.org/packages/usage)
+[![pub package](https://img.shields.io/pub/v/usage.svg)](https://pub.dev/packages/usage)
 [![Build Status](https://travis-ci.org/dart-lang/usage.svg)](https://travis-ci.org/dart-lang/usage)
 [![Coverage Status](https://img.shields.io/coveralls/dart-lang/usage.svg)](https://coveralls.io/r/dart-lang/usage?branch=master)
 
@@ -111,13 +109,3 @@ For more information, please see the Google Analytics Measurement Protocol
 ## Contributing
 
 Tests can be run using `pub run test`.
-
-## Issues and bugs
-
-Please file reports on the
-[GitHub Issue Tracker](https://github.com/dart-lang/usage/issues).
-
-## License
-
-You can view our license
-[here](https://github.com/dart-lang/usage/blob/master/LICENSE).

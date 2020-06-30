@@ -1,4 +1,5 @@
-# Changelog
+## 3.4.2
+- A number of cleanups to improve the package health score.
 
 ## 3.4.1
 - increase the support SDK range to `'<3.0.0'`
