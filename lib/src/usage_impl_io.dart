@@ -66,6 +66,19 @@ String userHomeDir() {
   return value ?? '.';
 }
 
+String configPath(String applicationName) {
+  final homeDirFile = path.join(userHomeDir(), '.$applicationName');
+  if (Platform.isLinux || Platform.isMacOS) {
+    if (File(homeDirFile).existsSync()) {
+      return homeDirFile;
+    }
+    final configDir = Platform.environment['XDG_CONFIG_HOME'] ??
+        path.join(userHomeDir(), '.config', applicationName);
+    return path.join(configDir, 'analytics');
+  }
+  return homeDirFile;
+}
+
 String getDartVersion() {
   var ver = Platform.version;
   var index = ver.indexOf(' ');
@@ -112,11 +125,14 @@ class IOPersistentProperties extends PersistentProperties {
   late Map _map;
 
   IOPersistentProperties(String name, {String? documentDirPath}) : super(name) {
-    var fileName = '.${name.replaceAll(' ', '_')}';
-    documentDirPath ??= userHomeDir();
-    _file = File(path.join(documentDirPath, fileName));
+    final escapedName = name.replaceAll(' ', '_');
+    if (documentDirPath != null) {
+      _file = File(path.join(documentDirPath, '.$escapedName'));
+    } else {
+      _file = File(configPath(name));
+    }
     if (!_file.existsSync()) {
-      _file.createSync();
+      _file.createSync(recursive: true);
     }
     syncSettings();
   }
