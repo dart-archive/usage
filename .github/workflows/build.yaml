@@ -1,17 +1,17 @@
 name: Dart
 
 on:
-  push:
-    branches: [ $default-branch ]
   pull_request:
-    branches: [ $default-branch ]
+  push:
+    branches:
+      - master
 
 jobs:
   build:
     runs-on: ubuntu-latest
 
     container:
-      image:  google/dart:dev
+      image:  google/dart:beta
 
     steps:
       - uses: actions/checkout@v2
