@@ -1,10 +1,10 @@
 name: Dart
 
 on:
-  push:
-    branches: [ $default-branch ]
   pull_request:
-    branches: [ $default-branch ]
+  push:
+    branches:
+      - master
 
 jobs:
   build:
