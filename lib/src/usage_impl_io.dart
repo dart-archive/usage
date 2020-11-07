@@ -109,7 +109,7 @@ JsonEncoder _jsonEncoder = JsonEncoder.withIndent('  ');
 
 class IOPersistentProperties extends PersistentProperties {
   late File _file;
-  Map? _map;
+  late Map _map;
 
   IOPersistentProperties(String name, {String? documentDirPath}) : super(name) {
     var fileName = '.${name.replaceAll(' ', '_')}';
@@ -130,17 +130,17 @@ class IOPersistentProperties extends PersistentProperties {
   }
 
   @override
-  dynamic operator [](String key) => _map![key];
+  dynamic operator [](String key) => _map[key];
 
   @override
   void operator []=(String key, dynamic value) {
-    if (value == null && !_map!.containsKey(key)) return;
-    if (_map![key] == value) return;
+    if (value == null && !_map.containsKey(key)) return;
+    if (_map[key] == value) return;
 
     if (value == null) {
-      _map!.remove(key);
+      _map.remove(key);
     } else {
-      _map![key] = value;
+      _map[key] = value;
     }
 
     try {

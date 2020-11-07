@@ -24,11 +24,10 @@ String postEncode(Map<String, dynamic> map) {
 /// overall average rate of operations to 1 per second.
 class ThrottlingBucket {
   final int startingCount;
-  late int drops;
+  int drops;
   late int _lastReplenish;
 
-  ThrottlingBucket(this.startingCount) {
-    drops = startingCount;
+  ThrottlingBucket(this.startingCount) : drops = startingCount {
     _lastReplenish = DateTime.now().millisecondsSinceEpoch;
   }
 

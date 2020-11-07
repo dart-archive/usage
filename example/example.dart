@@ -21,28 +21,28 @@ void main() {
 
 String _ua() => (querySelector('#ua') as InputElement).value!.trim();
 
-Analytics? getAnalytics() {
+Analytics getAnalytics() {
   if (_analytics == null || _lastUa != _ua()) {
     _lastUa = _ua();
     _analytics = AnalyticsHtml(_lastUa!, 'Test app', '1.0');
     _analytics!.sendScreenView(window.location.pathname!);
   }
 
-  return _analytics;
+  return _analytics!;
 }
 
 void _handleFoo() {
-  var analytics = getAnalytics()!;
+  var analytics = getAnalytics();
   analytics.sendEvent('main', 'foo');
 }
 
 void _handleBar() {
-  var analytics = getAnalytics()!;
+  var analytics = getAnalytics();
   analytics.sendEvent('main', 'bar');
 }
 
 void _changePage() {
-  var analytics = getAnalytics()!;
+  var analytics = getAnalytics();
   window.history.pushState(null, 'new page', '${++_count}.html');
   analytics.sendScreenView(window.location.pathname!);
 }
