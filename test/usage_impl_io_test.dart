@@ -53,7 +53,7 @@ void defineTests() {
 
 class MockHttpClient implements HttpClient {
   @override
-  String userAgent;
+  String? userAgent;
   int sendCount = 0;
   int writeCount = 0;
   bool closed = false;
@@ -73,7 +73,7 @@ class MockHttpClientRequest implements HttpClientRequest {
   MockHttpClientRequest(this.client);
 
   @override
-  void write(Object obj) {
+  void write(Object? obj) {
     client.writeCount++;
   }
 
@@ -93,7 +93,7 @@ class MockHttpClientResponse implements HttpClientResponse {
   MockHttpClientResponse(this.client);
 
   @override
-  Future<E> drain<E>([E futureValue]) {
+  Future<E> drain<E>([E? futureValue]) {
     client.sendCount++;
     return Future.value();
   }

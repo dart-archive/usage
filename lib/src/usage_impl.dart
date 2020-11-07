@@ -24,8 +24,8 @@ String postEncode(Map<String, dynamic> map) {
 /// overall average rate of operations to 1 per second.
 class ThrottlingBucket {
   final int startingCount;
-  int drops;
-  int _lastReplenish;
+  late int drops;
+  late int _lastReplenish;
 
   ThrottlingBucket(this.startingCount) {
     drops = startingCount;
@@ -61,9 +61,9 @@ class AnalyticsImpl implements Analytics {
   @override
   final String trackingId;
   @override
-  final String applicationName;
+  final String? applicationName;
   @override
-  final String applicationVersion;
+  final String? applicationVersion;
 
   final PersistentProperties properties;
   final PostHandler postHandler;
@@ -76,22 +76,20 @@ class AnalyticsImpl implements Analytics {
   @override
   AnalyticsOpt analyticsOpt = AnalyticsOpt.optOut;
 
-  String _url;
+  late String _url;
 
   final StreamController<Map<String, dynamic>> _sendController =
       StreamController.broadcast(sync: true);
 
   AnalyticsImpl(this.trackingId, this.properties, this.postHandler,
-      {this.applicationName, this.applicationVersion, String analyticsUrl}) {
-    assert(trackingId != null);
-
+      {this.applicationName, this.applicationVersion, String? analyticsUrl}) {
     if (applicationName != null) setSessionValue('an', applicationName);
     if (applicationVersion != null) setSessionValue('av', applicationVersion);
 
     _url = analyticsUrl ?? _defaultAnalyticsUrl;
   }
 
-  bool _firstRun;
+  bool? _firstRun;
 
   @override
   bool get firstRun {
@@ -103,7 +101,7 @@ class AnalyticsImpl implements Analytics {
       }
     }
 
-    return _firstRun;
+    return _firstRun!;
   }
 
   @override
@@ -120,7 +118,7 @@ class AnalyticsImpl implements Analytics {
   }
 
   @override
-  Future sendScreenView(String viewName, {Map<String, String> parameters}) {
+  Future sendScreenView(String viewName, {Map<String, String>? parameters}) {
     var args = <String, dynamic>{'cd': viewName};
     if (parameters != null) {
       args.addAll(parameters);
@@ -130,7 +128,7 @@ class AnalyticsImpl implements Analytics {
 
   @override
   Future sendEvent(String category, String action,
-      {String label, int value, Map<String, String> parameters}) {
+      {String? label, int? value, Map<String, String>? parameters}) {
     var args = <String, dynamic>{'ec': category, 'ea': action};
     if (label != null) args['el'] = label;
     if (value != null) args['ev'] = value;
@@ -148,7 +146,7 @@ class AnalyticsImpl implements Analytics {
 
   @override
   Future sendTiming(String variableName, int time,
-      {String category, String label}) {
+      {String? category, String? label}) {
     var args = <String, dynamic>{'utv': variableName, 'utt': time};
     if (label != null) args['utl'] = label;
     if (category != null) args['utc'] = category;
@@ -157,12 +155,12 @@ class AnalyticsImpl implements Analytics {
 
   @override
   AnalyticsTimer startTimer(String variableName,
-      {String category, String label}) {
+      {String? category, String? label}) {
     return AnalyticsTimer(this, variableName, category: category, label: label);
   }
 
   @override
-  Future sendException(String description, {bool fatal}) {
+  Future sendException(String description, {bool? fatal}) {
     // We trim exceptions to a max length; google analytics will apply it's own
     // truncation, likely around 150 chars or so.
     const maxExceptionLength = 1000;
@@ -201,7 +199,7 @@ class AnalyticsImpl implements Analytics {
   Stream<Map<String, dynamic>> get onSend => _sendController.stream;
 
   @override
-  Future waitForLastPing({Duration timeout}) {
+  Future waitForLastPing({Duration? timeout}) {
     Future f = Future.wait(_futures).catchError((e) => null);
 
     if (timeout != null) {
@@ -268,6 +266,7 @@ abstract class PersistentProperties {
   PersistentProperties(this.name);
 
   dynamic operator [](String key);
+
   void operator []=(String key, dynamic value);
 
   /// Re-read settings from the backing store. This may be a no-op on some

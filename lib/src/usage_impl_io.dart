@@ -24,7 +24,7 @@ import 'usage_impl.dart';
 class AnalyticsIO extends AnalyticsImpl {
   AnalyticsIO(
       String trackingId, String applicationName, String applicationVersion,
-      {String analyticsUrl, Directory documentDirectory})
+      {String? analyticsUrl, Directory? documentDirectory})
       : super(
             trackingId,
             IOPersistentProperties(applicationName,
@@ -75,9 +75,9 @@ String getDartVersion() {
 
 class IOPostHandler extends PostHandler {
   final String _userAgent;
-  final HttpClient mockClient;
+  final HttpClient? mockClient;
 
-  HttpClient _client;
+  HttpClient? _client;
 
   IOPostHandler({this.mockClient}) : _userAgent = _createUserAgent();
 
@@ -87,11 +87,11 @@ class IOPostHandler extends PostHandler {
 
     if (_client == null) {
       _client = mockClient ?? HttpClient();
-      _client.userAgent = _userAgent;
+      _client!.userAgent = _userAgent;
     }
 
     try {
-      var req = await _client.postUrl(Uri.parse(url));
+      var req = await _client!.postUrl(Uri.parse(url));
       req.write(data);
       var response = await req.close();
       await response.drain();
@@ -108,10 +108,10 @@ class IOPostHandler extends PostHandler {
 JsonEncoder _jsonEncoder = JsonEncoder.withIndent('  ');
 
 class IOPersistentProperties extends PersistentProperties {
-  File _file;
-  Map _map;
+  late File _file;
+  Map? _map;
 
-  IOPersistentProperties(String name, {String documentDirPath}) : super(name) {
+  IOPersistentProperties(String name, {String? documentDirPath}) : super(name) {
     var fileName = '.${name.replaceAll(' ', '_')}';
     documentDirPath ??= userHomeDir();
     _file = File(path.join(documentDirPath, fileName));
@@ -130,17 +130,17 @@ class IOPersistentProperties extends PersistentProperties {
   }
 
   @override
-  dynamic operator [](String key) => _map[key];
+  dynamic operator [](String key) => _map![key];
 
   @override
   void operator []=(String key, dynamic value) {
-    if (value == null && !_map.containsKey(key)) return;
-    if (_map[key] == value) return;
+    if (value == null && !_map!.containsKey(key)) return;
+    if (_map![key] == value) return;
 
     if (value == null) {
-      _map.remove(key);
+      _map!.remove(key);
     } else {
-      _map[key] = value;
+      _map![key] = value;
     }
 
     try {
@@ -162,18 +162,15 @@ class IOPersistentProperties extends PersistentProperties {
 
 /// Return the string for the platform's locale; return's `null` if the locale
 /// can't be determined.
-String getPlatformLocale() {
+String? getPlatformLocale() {
   var locale = Platform.localeName;
-  if (locale == null) return null;
 
-  if (locale != null) {
-    // Convert `en_US.UTF-8` to `en_US`.
-    var index = locale.indexOf('.');
-    if (index != -1) locale = locale.substring(0, index);
+  // Convert `en_US.UTF-8` to `en_US`.
+  var index = locale.indexOf('.');
+  if (index != -1) locale = locale.substring(0, index);
 
-    // Convert `en_US` to `en-us`.
-    locale = locale.replaceAll('_', '-').toLowerCase();
-  }
+  // Convert `en_US` to `en-us`.
+  locale = locale.replaceAll('_', '-').toLowerCase();
 
   return locale;
 }
