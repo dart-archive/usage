@@ -1,3 +1,6 @@
+## 4.0.0-nullsafety
+- Updated to support 2.12.0 and null safety.
+
 ## 3.4.2
 - A number of cleanups to improve the package health score.
 

@@ -9,7 +9,7 @@ import 'dart:async';
 import 'package:test/test.dart';
 import 'package:usage/src/usage_impl.dart';
 
-AnalyticsImplMock createMock({Map<String, dynamic> props}) =>
+AnalyticsImplMock createMock({Map<String, dynamic>? props}) =>
     AnalyticsImplMock('UA-0', props: props);
 
 void was(Map m, String type) => expect(m['t'], type);
@@ -17,10 +17,10 @@ void has(Map m, String key) => expect(m[key], isNotNull);
 void hasnt(Map m, String key) => expect(m[key], isNull);
 
 class AnalyticsImplMock extends AnalyticsImpl {
-  MockProperties get mockProperties => properties;
-  MockPostHandler get mockPostHandler => postHandler;
+  MockProperties get mockProperties => properties as MockProperties;
+  MockPostHandler get mockPostHandler => postHandler as MockPostHandler;
 
-  AnalyticsImplMock(String trackingId, {Map<String, dynamic> props})
+  AnalyticsImplMock(String trackingId, {Map<String, dynamic>? props})
       : super(trackingId, MockProperties(props), MockPostHandler(),
             applicationName: 'Test App', applicationVersion: '0.1');
 
@@ -30,7 +30,7 @@ class AnalyticsImplMock extends AnalyticsImpl {
 class MockProperties extends PersistentProperties {
   Map<String, dynamic> props = {};
 
-  MockProperties([Map<String, dynamic> props]) : super('mock') {
+  MockProperties([Map<String, dynamic>? props]) : super('mock') {
     if (props != null) this.props.addAll(props);
   }
 

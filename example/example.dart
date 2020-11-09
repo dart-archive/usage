@@ -9,26 +9,26 @@ import 'dart:html';
 
 import 'package:usage/usage_html.dart';
 
-Analytics _analytics;
-String _lastUa;
+Analytics? _analytics;
+String? _lastUa;
 int _count = 0;
 
 void main() {
-  querySelector('#foo').onClick.listen((_) => _handleFoo());
-  querySelector('#bar').onClick.listen((_) => _handleBar());
-  querySelector('#page').onClick.listen((_) => _changePage());
+  querySelector('#foo')!.onClick.listen((_) => _handleFoo());
+  querySelector('#bar')!.onClick.listen((_) => _handleBar());
+  querySelector('#page')!.onClick.listen((_) => _changePage());
 }
 
-String _ua() => (querySelector('#ua') as InputElement).value.trim();
+String _ua() => (querySelector('#ua') as InputElement).value!.trim();
 
 Analytics getAnalytics() {
   if (_analytics == null || _lastUa != _ua()) {
     _lastUa = _ua();
-    _analytics = AnalyticsHtml(_lastUa, 'Test app', '1.0');
-    _analytics.sendScreenView(window.location.pathname);
+    _analytics = AnalyticsHtml(_lastUa!, 'Test app', '1.0');
+    _analytics!.sendScreenView(window.location.pathname!);
   }
 
-  return _analytics;
+  return _analytics!;
 }
 
 void _handleFoo() {
@@ -44,5 +44,5 @@ void _handleBar() {
 void _changePage() {
   var analytics = getAnalytics();
   window.history.pushState(null, 'new page', '${++_count}.html');
-  analytics.sendScreenView(window.location.pathname);
+  analytics.sendScreenView(window.location.pathname!);
 }

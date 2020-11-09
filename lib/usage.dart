@@ -44,10 +44,10 @@ abstract class Analytics {
   String get trackingId;
 
   /// The application name.
-  String get applicationName;
+  String? get applicationName;
 
   /// The application version.
-  String get applicationVersion;
+  String? get applicationVersion;
 
   /// Is this the first time the tool has run?
   bool get firstRun;
@@ -72,7 +72,7 @@ abstract class Analytics {
   ///
   /// [parameters] can be any analytics key/value pair. Useful
   /// for custom dimensions, etc.
-  Future sendScreenView(String viewName, {Map<String, String> parameters});
+  Future sendScreenView(String viewName, {Map<String, String>? parameters});
 
   /// Sends an Event hit to Google Analytics. [label] specifies the event label.
   /// [value] specifies the event value. Values must be non-negative.
@@ -80,7 +80,7 @@ abstract class Analytics {
   /// [parameters] can be any analytics key/value pair. Useful
   /// for custom dimensions, etc.
   Future sendEvent(String category, String action,
-      {String label, int value, Map<String, String> parameters});
+      {String? label, int? value, Map<String, String>? parameters});
 
   /// Sends a Social hit to Google Analytics.
   ///
@@ -96,17 +96,17 @@ abstract class Analytics {
   /// milliseconds). [category] specifies the category of the timing. [label]
   /// specifies the label of the timing.
   Future sendTiming(String variableName, int time,
-      {String category, String label});
+      {String? category, String? label});
 
   /// Start a timer. The time won't be calculated, and the analytics information
   /// sent, until the [AnalyticsTimer.finish] method is called.
   AnalyticsTimer startTimer(String variableName,
-      {String category, String label});
+      {String? category, String? label});
 
   /// In order to avoid sending any personally identifying information, the
   /// [description] field must not contain the exception message. In addition,
   /// only the first 100 chars of the description will be sent.
-  Future sendException(String description, {bool fatal});
+  Future sendException(String description, {bool? fatal});
 
   /// Gets a session variable value.
   dynamic getSessionValue(String param);
@@ -136,7 +136,7 @@ abstract class Analytics {
   /// allows CLI apps to delay for a short time waiting for GA requests to
   /// complete, and then do something like call `dart:io`'s `exit()` explicitly
   /// themselves (or the [close] method below).
-  Future waitForLastPing({Duration timeout});
+  Future waitForLastPing({Duration? timeout});
 
   /// Free any used resources.
   ///
@@ -157,11 +157,11 @@ enum AnalyticsOpt {
 class AnalyticsTimer {
   final Analytics analytics;
   final String variableName;
-  final String category;
-  final String label;
+  final String? category;
+  final String? label;
 
-  int _startMillis;
-  int _endMillis;
+  late int _startMillis;
+  int? _endMillis;
 
   AnalyticsTimer(this.analytics, this.variableName,
       {this.category, this.label}) {
@@ -172,7 +172,7 @@ class AnalyticsTimer {
     if (_endMillis == null) {
       return DateTime.now().millisecondsSinceEpoch - _startMillis;
     } else {
-      return _endMillis - _startMillis;
+      return _endMillis! - _startMillis;
     }
   }
 
@@ -220,7 +220,7 @@ class AnalyticsMock implements Analytics {
   String get clientId => '00000000-0000-4000-0000-000000000000';
 
   @override
-  Future sendScreenView(String viewName, {Map<String, String> parameters}) {
+  Future sendScreenView(String viewName, {Map<String, String>? parameters}) {
     parameters ??= <String, String>{};
     parameters['viewName'] = viewName;
     return _log('screenView', parameters);
@@ -228,7 +228,7 @@ class AnalyticsMock implements Analytics {
 
   @override
   Future sendEvent(String category, String action,
-      {String label, int value, Map<String, String> parameters}) {
+      {String? label, int? value, Map<String, String>? parameters}) {
     parameters ??= <String, String>{};
     return _log(
         'event',
@@ -242,7 +242,7 @@ class AnalyticsMock implements Analytics {
 
   @override
   Future sendTiming(String variableName, int time,
-      {String category, String label}) {
+      {String? category, String? label}) {
     return _log('timing', {
       'variableName': variableName,
       'time': time,
@@ -253,12 +253,12 @@ class AnalyticsMock implements Analytics {
 
   @override
   AnalyticsTimer startTimer(String variableName,
-      {String category, String label}) {
+      {String? category, String? label}) {
     return AnalyticsTimer(this, variableName, category: category, label: label);
   }
 
   @override
-  Future sendException(String description, {bool fatal}) =>
+  Future sendException(String description, {bool? fatal}) =>
       _log('exception', {'description': description, 'fatal': fatal});
 
   @override
@@ -271,7 +271,7 @@ class AnalyticsMock implements Analytics {
   Stream<Map<String, dynamic>> get onSend => _sendController.stream;
 
   @override
-  Future waitForLastPing({Duration timeout}) => Future.value();
+  Future waitForLastPing({Duration? timeout}) => Future.value();
 
   @override
   void close() {}
@@ -300,7 +300,7 @@ String sanitizeStacktrace(dynamic st, {bool shorten = true}) {
   iter = iter.toList().reversed;
 
   for (var match in iter) {
-    var replacement = match.group(1);
+    var replacement = match.group(1)!;
     str =
         str.substring(0, match.start) + replacement + str.substring(match.end);
   }
