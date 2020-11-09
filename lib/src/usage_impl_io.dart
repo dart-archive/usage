@@ -108,7 +108,7 @@ class IOPostHandler extends PostHandler {
 JsonEncoder _jsonEncoder = JsonEncoder.withIndent('  ');
 
 class IOPersistentProperties extends PersistentProperties {
-  late File _file;
+  late final File _file;
   late Map _map;
 
   IOPersistentProperties(String name, {String? documentDirPath}) : super(name) {
