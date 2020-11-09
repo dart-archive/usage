@@ -160,7 +160,7 @@ class AnalyticsTimer {
   final String? category;
   final String? label;
 
-  late int _startMillis;
+  late final int _startMillis;
   int? _endMillis;
 
   AnalyticsTimer(this.analytics, this.variableName,

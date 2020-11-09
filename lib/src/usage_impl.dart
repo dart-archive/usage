@@ -25,7 +25,7 @@ String postEncode(Map<String, dynamic> map) {
 class ThrottlingBucket {
   final int startingCount;
   int drops;
-  late int _lastReplenish;
+  late final int _lastReplenish;
 
   ThrottlingBucket(this.startingCount) : drops = startingCount {
     _lastReplenish = DateTime.now().millisecondsSinceEpoch;
@@ -75,7 +75,7 @@ class AnalyticsImpl implements Analytics {
   @override
   AnalyticsOpt analyticsOpt = AnalyticsOpt.optOut;
 
-  late String _url;
+  late final String _url;
 
   final StreamController<Map<String, dynamic>> _sendController =
       StreamController.broadcast(sync: true);

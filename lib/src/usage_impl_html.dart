@@ -59,7 +59,7 @@ class HtmlPostHandler extends PostHandler {
 }
 
 class HtmlPersistentProperties extends PersistentProperties {
-  late Map _map;
+  late final Map _map;
 
   HtmlPersistentProperties(String name) : super(name) {
     var str = window.localStorage[name];
