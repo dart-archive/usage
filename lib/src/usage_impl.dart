@@ -25,7 +25,7 @@ String postEncode(Map<String, dynamic> map) {
 class ThrottlingBucket {
   final int startingCount;
   int drops;
-  late final int _lastReplenish;
+  late int _lastReplenish;
 
   ThrottlingBucket(this.startingCount) : drops = startingCount {
     _lastReplenish = DateTime.now().millisecondsSinceEpoch;
