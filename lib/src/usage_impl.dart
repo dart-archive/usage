@@ -202,7 +202,7 @@ class AnalyticsImpl implements Analytics {
     Future f = Future.wait(_futures).catchError((e) => null);
 
     if (timeout != null) {
-      f = f.timeout(timeout, onTimeout: () => null);
+      f = f.timeout(timeout, onTimeout: () => []);
     }
 
     return f;
