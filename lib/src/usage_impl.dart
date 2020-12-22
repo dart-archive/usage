@@ -198,8 +198,8 @@ class AnalyticsImpl implements Analytics {
   Stream<Map<String, dynamic>> get onSend => _sendController.stream;
 
   @override
-  Future waitForLastPing({Duration? timeout}) {
-    Future f = Future.wait(_futures).catchError((e) => null);
+  Future<List<dynamic>> waitForLastPing({Duration? timeout}) {
+    var f = Future.wait(_futures).catchError((e) => []);
 
     if (timeout != null) {
       f = f.timeout(timeout, onTimeout: () => []);
