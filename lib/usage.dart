@@ -98,6 +98,15 @@ abstract class Analytics {
   Future sendTiming(String variableName, int time,
       {String? category, String? label});
 
+  /// All sendX calls sent from within [callback] will be enqueued and sent
+  /// in batches of {maxEventsPerBatch} messages at a time.
+  ///
+  /// Google analytics by default supports no more than 20 items per batch.
+  Future<T> withBatching<T>(
+    FutureOr<T> Function() callback, {
+    int maxEventsPerBatch = 20,
+  });
+
   /// Start a timer. The time won't be calculated, and the analytics information
   /// sent, until the [AnalyticsTimer.finish] method is called.
   AnalyticsTimer startTimer(String variableName,
@@ -282,6 +291,12 @@ class AnalyticsMock implements Analytics {
     }
 
     return Future.value();
+  }
+
+  @override
+  Future<T> withBatching<T>(FutureOr<T> Function() callback) {
+    // TODO: implement withBatching
+    throw UnimplementedError();
   }
 }
 

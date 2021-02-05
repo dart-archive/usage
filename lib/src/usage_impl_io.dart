@@ -3,10 +3,11 @@
 // BSD-style license that can be found in the LICENSE file.
 
 import 'dart:async';
-import 'dart:convert' show jsonDecode, JsonEncoder;
+import 'dart:convert' show JsonEncoder, jsonDecode;
 import 'dart:io';
 
 import 'package:path/path.dart' as path;
+import 'package:meta/meta.dart';
 
 import 'usage_impl.dart';
 
@@ -24,12 +25,12 @@ import 'usage_impl.dart';
 class AnalyticsIO extends AnalyticsImpl {
   AnalyticsIO(
       String trackingId, String applicationName, String applicationVersion,
-      {String? analyticsUrl, Directory? documentDirectory})
+      {String? analyticsUrl, Directory? documentDirectory, HttpClient? client})
       : super(
             trackingId,
             IOPersistentProperties(applicationName,
                 documentDirPath: documentDirectory?.path),
-            IOPostHandler(),
+            IOPostHandler(client: client),
             applicationName: applicationName,
             applicationVersion: applicationVersion,
             analyticsUrl: analyticsUrl) {
@@ -40,7 +41,8 @@ class AnalyticsIO extends AnalyticsImpl {
   }
 }
 
-String _createUserAgent() {
+@visibleForTesting
+String createUserAgent() {
   final locale = getPlatformLocale() ?? '';
 
   if (Platform.isAndroid) {
@@ -74,24 +76,16 @@ String getDartVersion() {
 }
 
 class IOPostHandler extends PostHandler {
-  final String _userAgent;
-  final HttpClient? mockClient;
+  final HttpClient _client;
 
-  HttpClient? _client;
-
-  IOPostHandler({this.mockClient}) : _userAgent = _createUserAgent();
+  IOPostHandler({HttpClient? client})
+      : _client = (client ?? HttpClient())..userAgent = createUserAgent();
 
   @override
-  Future sendPost(String url, Map<String, dynamic> parameters) async {
-    var data = postEncode(parameters);
-
-    if (_client == null) {
-      _client = mockClient ?? HttpClient();
-      _client!.userAgent = _userAgent;
-    }
-
+  Future sendPost(String url, List<Map<String, dynamic>> batch) async {
+    var data = batch.map(postEncode).join('\n');
     try {
-      var req = await _client!.postUrl(Uri.parse(url));
+      var req = await _client.postUrl(Uri.parse(url));
       req.write(data);
       var response = await req.close();
       await response.drain();
@@ -102,7 +96,7 @@ class IOPostHandler extends PostHandler {
   }
 
   @override
-  void close() => _client?.close();
+  void close() => _client.close();
 }
 
 JsonEncoder _jsonEncoder = JsonEncoder.withIndent('  ');

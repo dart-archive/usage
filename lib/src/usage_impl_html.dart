@@ -39,13 +39,14 @@ class HtmlPostHandler extends PostHandler {
   HtmlPostHandler({this.mockRequestor});
 
   @override
-  Future sendPost(String url, Map<String, dynamic> parameters) {
+  Future sendPost(String url, List<Map<String, dynamic>> batch) {
     var viewportWidth = document.documentElement!.clientWidth;
     var viewportHeight = document.documentElement!.clientHeight;
 
-    parameters['vp'] = '${viewportWidth}x$viewportHeight';
-
-    var data = postEncode(parameters);
+    var data = batch
+        .map((event) =>
+            postEncode({...event, 'vp': '${viewportWidth}x$viewportHeight'}))
+        .join('\n');
     Future<HttpRequest> Function(String, {String method, dynamic sendData})
         requestor = mockRequestor ?? HttpRequest.request;
     return requestor(url, method: 'POST', sendData: data).catchError((e) {

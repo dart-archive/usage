@@ -16,11 +16,17 @@ void main() => defineTests();
 void defineTests() {
   group('IOPostHandler', () {
     test('sendPost', () async {
-      var httpClient = MockHttpClient();
-      var postHandler = IOPostHandler(mockClient: httpClient);
-      var args = <String, dynamic>{'utv': 'varName', 'utt': 123};
+      var mockClient = MockHttpClient();
+
+      var postHandler = IOPostHandler(client: mockClient);
+      var args = [
+        <String, String>{'utv': 'varName', 'utt': '123'},
+      ];
       await postHandler.sendPost('http://www.google.com', args);
-      expect(httpClient.sendCount, 1);
+      expect(mockClient.requests.single.buffer.toString(), '''
+Request to http://www.google.com with ${createUserAgent()}
+utv=varName&utt=123''');
+      expect(mockClient.requests.single.response.drained, isTrue);
     });
   });
 
@@ -49,55 +55,104 @@ void defineTests() {
       expect(getPlatformLocale(), isNotNull);
     });
   });
+
+  group('batching', () {
+    test('Without batching sends to regular url', () async {
+      final mockClient = MockHttpClient();
+
+      final analytics = AnalyticsIO(
+        '<TRACKING-ID',
+        'usage-test',
+        '0.0.1',
+        client: mockClient,
+      );
+      await analytics.sendEvent('my-event', 'something');
+      expect(mockClient.requests.single.buffer.toString(), '''
+Request to https://www.google-analytics.com/collect with ${createUserAgent()}
+ec=my-event&ea=something&an=usage-test&av=0.0.1&ul=en-us&v=1&tid=%3CTRACKING-ID&cid=8e3fa343-70bc-4afe-ad81-5fed4256b4e8&t=event''');
+    });
+
+    test('with batching sends to batching url', () async {
+      var mockClient = MockHttpClient();
+
+      final analytics = AnalyticsIO('<TRACKING-ID', 'usage-test', '0.0.1',
+          client: mockClient);
+      await analytics.withBatching(() async {
+        await analytics.sendEvent('my-event1', 'something1');
+        await analytics.sendEvent('my-event2', 'something2');
+        await analytics.sendEvent('my-event3', 'something3');
+        await analytics.sendEvent('my-event4', 'something4');
+      }, maxEventsPerBatch: 3);
+      await analytics.sendEvent('my-event-not-batched', 'something');
+
+      expect(mockClient.requests.length, 3);
+      expect(mockClient.requests[0].buffer.toString(), '''
+Request to https://www.google-analytics.com/batch with ${createUserAgent()}
+ec=my-event1&ea=something1&an=usage-test&av=0.0.1&ul=en-us&v=1&tid=%3CTRACKING-ID&cid=8e3fa343-70bc-4afe-ad81-5fed4256b4e8&t=event
+ec=my-event2&ea=something2&an=usage-test&av=0.0.1&ul=en-us&v=1&tid=%3CTRACKING-ID&cid=8e3fa343-70bc-4afe-ad81-5fed4256b4e8&t=event
+ec=my-event3&ea=something3&an=usage-test&av=0.0.1&ul=en-us&v=1&tid=%3CTRACKING-ID&cid=8e3fa343-70bc-4afe-ad81-5fed4256b4e8&t=event''');
+      expect(mockClient.requests[1].buffer.toString(), '''
+Request to https://www.google-analytics.com/batch with ${createUserAgent()}
+ec=my-event4&ea=something4&an=usage-test&av=0.0.1&ul=en-us&v=1&tid=%3CTRACKING-ID&cid=8e3fa343-70bc-4afe-ad81-5fed4256b4e8&t=event''');
+      expect(mockClient.requests[2].buffer.toString(), '''
+Request to https://www.google-analytics.com/collect with ${createUserAgent()}
+ec=my-event-not-batched&ea=something&an=usage-test&av=0.0.1&ul=en-us&v=1&tid=%3CTRACKING-ID&cid=8e3fa343-70bc-4afe-ad81-5fed4256b4e8&t=event''');
+    });
+  });
 }
 
 class MockHttpClient implements HttpClient {
+  final List<MockHttpClientRequest> requests = <MockHttpClientRequest>[];
   @override
   String? userAgent;
-  int sendCount = 0;
-  int writeCount = 0;
-  bool closed = false;
+  MockHttpClient();
 
   @override
-  Future<HttpClientRequest> postUrl(Uri url) {
-    return Future.value(MockHttpClientRequest(this));
+  Future<HttpClientRequest> postUrl(Uri uri) async {
+    final request = MockHttpClientRequest();
+    request.buffer.writeln('Request to $uri with $userAgent');
+    requests.add(request);
+    return request;
   }
 
   @override
-  dynamic noSuchMethod(Invocation invocation) {}
+  dynamic noSuchMethod(Invocation invocation) {
+    throw UnimplementedError('Unexpected call');
+  }
 }
 
 class MockHttpClientRequest implements HttpClientRequest {
-  final MockHttpClient client;
+  final buffer = StringBuffer();
+  final MockHttpClientResponse response = MockHttpClientResponse();
 
-  MockHttpClientRequest(this.client);
+  MockHttpClientRequest();
 
   @override
-  void write(Object? obj) {
-    client.writeCount++;
+  void write(Object? o) {
+    buffer.write(o);
   }
 
   @override
-  Future<HttpClientResponse> close() {
-    client.closed = true;
-    return Future.value(MockHttpClientResponse(client));
-  }
+  Future<HttpClientResponse> close() async => response;
 
   @override
-  dynamic noSuchMethod(Invocation invocation) {}
+  dynamic noSuchMethod(Invocation invocation) {
+    throw UnimplementedError('Unexpected call');
+  }
 }
 
 class MockHttpClientResponse implements HttpClientResponse {
-  final MockHttpClient client;
-
-  MockHttpClientResponse(this.client);
+  bool drained = false;
+  MockHttpClientResponse();
 
   @override
-  Future<E> drain<E>([E? futureValue]) {
-    client.sendCount++;
-    return Future.value();
+  Future<E> drain<E>([E? futureValue]) async {
+    drained = true;
+    return futureValue as E;
   }
 
   @override
-  dynamic noSuchMethod(Invocation invocation) {}
+  dynamic noSuchMethod(Invocation invocation) {
+    throw UnimplementedError('Unexpected call');
+  }
 }

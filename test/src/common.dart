@@ -50,8 +50,8 @@ class MockPostHandler extends PostHandler {
   List<Map<String, dynamic>> sentValues = [];
 
   @override
-  Future sendPost(String url, Map<String, dynamic> parameters) {
-    sentValues.add(parameters);
+  Future sendPost(String url, List<Map<String, dynamic>> batch) {
+    sentValues.addAll(batch);
 
     return Future.value();
   }

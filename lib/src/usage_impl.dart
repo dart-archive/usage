@@ -57,6 +57,9 @@ class AnalyticsImpl implements Analytics {
   static const String _defaultAnalyticsUrl =
       'https://www.google-analytics.com/collect';
 
+  static const String _defaultAnalyticsBatchingUrl =
+      'https://www.google-analytics.com/batch';
+
   @override
   final String trackingId;
   @override
@@ -76,16 +79,25 @@ class AnalyticsImpl implements Analytics {
   AnalyticsOpt analyticsOpt = AnalyticsOpt.optOut;
 
   late final String _url;
+  late final String _batchingUrl;
 
   final StreamController<Map<String, dynamic>> _sendController =
       StreamController.broadcast(sync: true);
 
-  AnalyticsImpl(this.trackingId, this.properties, this.postHandler,
-      {this.applicationName, this.applicationVersion, String? analyticsUrl}) {
+  AnalyticsImpl(
+    this.trackingId,
+    this.properties,
+    this.postHandler, {
+    this.applicationName,
+    this.applicationVersion,
+    String? analyticsUrl,
+    String? analyticsBatchingUrl,
+  }) {
     if (applicationName != null) setSessionValue('an', applicationName);
     if (applicationVersion != null) setSessionValue('av', applicationVersion);
 
     _url = analyticsUrl ?? _defaultAnalyticsUrl;
+    _batchingUrl = analyticsBatchingUrl ?? _defaultAnalyticsBatchingUrl;
   }
 
   bool? _firstRun;
@@ -118,38 +130,41 @@ class AnalyticsImpl implements Analytics {
 
   @override
   Future sendScreenView(String viewName, {Map<String, String>? parameters}) {
-    var args = <String, dynamic>{'cd': viewName};
-    if (parameters != null) {
-      args.addAll(parameters);
-    }
-    return _sendPayload('screenview', args);
+    var args = <String, String>{'cd': viewName, ...?parameters};
+    return _enqueuePayload('screenview', args);
   }
 
   @override
   Future sendEvent(String category, String action,
       {String? label, int? value, Map<String, String>? parameters}) {
-    var args = <String, dynamic>{'ec': category, 'ea': action};
-    if (label != null) args['el'] = label;
-    if (value != null) args['ev'] = value;
-    if (parameters != null) {
-      args.addAll(parameters);
-    }
-    return _sendPayload('event', args);
+    final args = <String, String>{
+      'ec': category,
+      'ea': action,
+      if (label != null) 'el': label,
+      if (value != null) 'ev': value.toString(),
+      ...?parameters
+    };
+
+    return _enqueuePayload('event', args);
   }
 
   @override
   Future sendSocial(String network, String action, String target) {
-    var args = <String, dynamic>{'sn': network, 'sa': action, 'st': target};
-    return _sendPayload('social', args);
+    var args = <String, String>{'sn': network, 'sa': action, 'st': target};
+    return _enqueuePayload('social', args);
   }
 
   @override
   Future sendTiming(String variableName, int time,
       {String? category, String? label}) {
-    var args = <String, dynamic>{'utv': variableName, 'utt': time};
-    if (label != null) args['utl'] = label;
-    if (category != null) args['utc'] = category;
-    return _sendPayload('timing', args);
+    var args = <String, String>{
+      'utv': variableName,
+      'utt': time.toString(),
+      if (label != null) 'utl': label,
+      if (category != null) 'utc': category,
+    };
+
+    return _enqueuePayload('timing', args);
   }
 
   @override
@@ -177,9 +192,29 @@ class AnalyticsImpl implements Analytics {
       description = description.substring(0, maxExceptionLength);
     }
 
-    var args = <String, dynamic>{'exd': description};
-    if (fatal != null && fatal) args['exf'] = '1';
-    return _sendPayload('exception', args);
+    var args = <String, String>{
+      'exd': description,
+      if (fatal != null && fatal) 'exf': '1',
+    };
+    return _enqueuePayload('exception', args);
+  }
+
+  static const _batchingKey = #_batching;
+
+  @override
+  Future<T> withBatching<T>(
+    FutureOr<T> Function() callback, {
+    int maxEventsPerBatch = 20,
+  }) async {
+    final queue = _BatchingQueue(maxEventsPerBatch: maxEventsPerBatch);
+    return await runZoned(() async {
+      final result = await callback();
+      if (queue.enqueuedEvents.isNotEmpty) {
+        // Send any remaining events.
+        _trySendBatch(queue.takeBatch());
+      }
+      return result;
+    }, zoneValues: {_batchingKey: queue});
   }
 
   @override
@@ -219,36 +254,66 @@ class AnalyticsImpl implements Analytics {
   ///
   /// Valid values for [hitType] are: 'pageview', 'screenview', 'event',
   /// 'transaction', 'item', 'social', 'exception', and 'timing'.
-  Future sendRaw(String hitType, Map<String, dynamic> args) {
-    return _sendPayload(hitType, args);
+  Future sendRaw(String hitType, Map<String, String> args) {
+    return _enqueuePayload(hitType, args);
   }
 
+  /// Puts a single event in the queue. If batching is not enabled it will be
+  /// send immediately - otherwise when the batch is full (20 events) or when
+  /// the batching callback is over.
   /// Valid values for [hitType] are: 'pageview', 'screenview', 'event',
   /// 'transaction', 'item', 'social', 'exception', and 'timing'.
-  Future _sendPayload(String hitType, Map<String, dynamic> args) {
-    if (!enabled) return Future.value();
+  Future<void> _enqueuePayload(String hitType, Map<String, String> args) async {
+    if (!enabled) return;
 
-    if (_bucket.removeDrop()) {
-      _variableMap.forEach((key, value) {
-        args[key] = value;
-      });
+    final eventArgs = <String, String>{
+      ...args,
+      ..._variableMap,
+      'v': '1', // protocol version
+      'tid': trackingId,
+      'cid': clientId,
+      't': hitType,
+    };
 
-      args['v'] = '1'; // protocol version
-      args['tid'] = trackingId;
-      args['cid'] = clientId;
-      args['t'] = hitType;
+    final batch = <Map<String, String>>[];
 
-      _sendController.add(args);
-
-      return _recordFuture(postHandler.sendPost(_url, args));
+    // See if we currently are batching events:
+    final batchingQueue = Zone.current[_batchingKey];
+    if (batchingQueue is _BatchingQueue) {
+      // Add the current event to the batch.
+      batchingQueue.enqueuedEvents.add(eventArgs);
+      if (!batchingQueue.isFull) {
+        // Queue not full yet. Do nothing.
+        return;
+      }
+      // We have a full batch, start a new one.
+      batch.addAll(batchingQueue.takeBatch());
     } else {
-      return Future.value();
+      batch.add(eventArgs);
+    }
+    _trySendBatch(batch);
+  }
+
+  void _trySendBatch(List<Map<String, String>> batch) {
+    if (_bucket.removeDrop()) {
+      for (final args in batch) {
+        _sendController.add(args);
+      }
+
+      // See if we currently are batching events:
+      final batchingQueue = Zone.current[_batchingKey];
+      if (batchingQueue is _BatchingQueue) {
+        _recordFuture(postHandler.sendPost(_batchingUrl, batch));
+      } else {
+        assert(batch.length == 1);
+        _recordFuture(postHandler.sendPost(_url, batch));
+      }
     }
   }
 
-  Future _recordFuture(Future f) {
+  void _recordFuture(Future f) {
     _futures.add(f);
-    return f.whenComplete(() => _futures.remove(f));
+    f.whenComplete(() => _futures.remove(f));
   }
 }
 
@@ -283,8 +348,24 @@ abstract class PersistentProperties {
 /// The `Future` from [sendPost] should complete when the operation is finished,
 /// but failures to send the information should be silent.
 abstract class PostHandler {
-  Future sendPost(String url, Map<String, dynamic> parameters);
+  Future sendPost(String url, List<Map<String, dynamic>> batch);
 
   /// Free any used resources.
   void close();
+}
+
+class _BatchingQueue {
+  List<Map<String, String>> enqueuedEvents = [];
+  int maxEventsPerBatch;
+
+  _BatchingQueue({required this.maxEventsPerBatch});
+
+  bool get isFull => enqueuedEvents.length >= maxEventsPerBatch;
+  List<Map<String, String>> takeBatch() {
+    final result = enqueuedEvents.take(maxEventsPerBatch).toList();
+    // If for some reason more events than one batch have queued up simply
+    // discard them.
+    enqueuedEvents.clear();
+    return result;
+  }
 }
