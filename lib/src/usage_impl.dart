@@ -362,6 +362,8 @@ class _BatchingQueue {
 
   bool get isFull => enqueuedEvents.length >= maxEventsPerBatch;
   List<Map<String, String>> takeBatch() {
+    // TODO(sigurdm): We should take size limits on batching into account.
+    // https://developers.google.com/analytics/devguides/collection/protocol/v1/devguide#batch-limitations
     final result = enqueuedEvents.take(maxEventsPerBatch).toList();
     // If for some reason more events than one batch have queued up simply
     // discard them.
