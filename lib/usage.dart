@@ -294,9 +294,9 @@ class AnalyticsMock implements Analytics {
   }
 
   @override
-  Future<T> withBatching<T>(FutureOr<T> Function() callback) {
-    // TODO: implement withBatching
-    throw UnimplementedError();
+  Future<T> withBatching<T>(FutureOr<T> Function() callback,
+      {int maxEventsPerBatch = 20}) async {
+    return await callback();
   }
 }
 
