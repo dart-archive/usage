@@ -1,3 +1,6 @@
+## 4.0.0
+- Publishing a null safe stable release.
+
 ## 4.0.0-nullsafety
 - Updated to support 2.12.0 and null safety.
 
