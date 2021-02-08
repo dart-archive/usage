@@ -14,6 +14,9 @@ import 'usage_impl.dart';
 /// An interface to a Google Analytics session, suitable for use in command-line
 /// applications.
 ///
+/// [analyticsUrl] is an optional replacement for the default Google Analytics
+/// URL (`https://www.google-analytics.com/collect`).
+///
 /// `trackingId`, `applicationName`, and `applicationVersion` values should be supplied.
 /// `analyticsUrl` is optional, and lets user's substitute their own analytics URL for
 /// the default.
@@ -22,18 +25,38 @@ import 'usage_impl.dart';
 /// defaults to the user home directory. For regular `dart:io` apps this doesn't need to
 /// be supplied. For Flutter applications, you should pass in a value like
 /// `PathProvider.getApplicationDocumentsDirectory()`.
+///
+/// [batchingDelay] is used to control batching behaviour. It should return a
+/// [Future] that will be awaited before attempting sending the enqueued
+/// messages. The default [batchingDelay] is `() => Future(() {})`. That implies
+/// messages will be sent whem control returns to the event loop.
+///
+/// If [batchingDelay] returns `null`, events will not be batched.
+///
+/// Batched messages are sent in batches of up to 20 messages. They will be sent
+/// to [analyticsBatchingUrl] defaulting to
+/// `https://www.google-analytics.com/batch`.
 class AnalyticsIO extends AnalyticsImpl {
   AnalyticsIO(
-      String trackingId, String applicationName, String applicationVersion,
-      {String? analyticsUrl, Directory? documentDirectory, HttpClient? client})
-      : super(
-            trackingId,
-            IOPersistentProperties(applicationName,
-                documentDirPath: documentDirectory?.path),
-            IOPostHandler(client: client),
-            applicationName: applicationName,
-            applicationVersion: applicationVersion,
-            analyticsUrl: analyticsUrl) {
+    String trackingId,
+    String applicationName,
+    String applicationVersion, {
+    String? analyticsUrl,
+    String? analyticsBatchingUrl,
+    Directory? documentDirectory,
+    HttpClient? client,
+    Future<void>? Function()? batchingDelay,
+  }) : super(
+          trackingId,
+          IOPersistentProperties(applicationName,
+              documentDirPath: documentDirectory?.path),
+          IOPostHandler(client: client),
+          applicationName: applicationName,
+          applicationVersion: applicationVersion,
+          analyticsUrl: analyticsUrl,
+          analyticsBatchingUrl: analyticsBatchingUrl,
+          batchingDelay: batchingDelay,
+        ) {
     final locale = getPlatformLocale();
     if (locale != null) {
       setSessionValue('ul', locale);
@@ -82,8 +105,13 @@ class IOPostHandler extends PostHandler {
       : _client = (client ?? HttpClient())..userAgent = createUserAgent();
 
   @override
-  Future sendPost(String url, List<Map<String, dynamic>> batch) async {
-    var data = batch.map(postEncode).join('\n');
+  String encodeHit(Map<String, String> hit) {
+    return postEncode(hit);
+  }
+
+  @override
+  Future sendPost(String url, List<String> batch) async {
+    var data = batch.join('\n');
     try {
       var req = await _client.postUrl(Uri.parse(url));
       req.write(data);

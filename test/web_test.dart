@@ -36,7 +36,8 @@ void defineWebTests() {
         <String, String>{'utv': 'varName', 'utt': '123'},
       ];
 
-      await postHandler.sendPost('http://www.google.com', args);
+      await postHandler.sendPost(
+          'http://www.google.com', args.map(postHandler.encodeHit).toList());
       expect(client.sendCount, 1);
     });
   });

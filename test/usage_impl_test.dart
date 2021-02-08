@@ -58,15 +58,15 @@ void defineTests() {
       expect(mock.firstRun, false);
     });
 
-    test('setSessionValue', () {
+    test('setSessionValue', () async {
       var mock = createMock();
-      mock.sendScreenView('foo');
+      await mock.sendScreenView('foo');
       hasnt(mock.last, 'val');
       mock.setSessionValue('val', 'ue');
-      mock.sendScreenView('bar');
+      await mock.sendScreenView('bar');
       has(mock.last, 'val');
       mock.setSessionValue('val', null);
-      mock.sendScreenView('baz');
+      await mock.sendScreenView('baz');
       hasnt(mock.last, 'val');
     });
 

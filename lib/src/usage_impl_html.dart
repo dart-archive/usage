@@ -12,15 +12,28 @@ import 'usage_impl.dart';
 ///
 /// [analyticsUrl] is an optional replacement for the default Google Analytics
 /// URL (`https://www.google-analytics.com/collect`).
+///
+/// [batchingDelay] is used to control batching behaviour. It should return a
+/// [Future] that will be awaited before attempting sending the enqueued
+/// messages. If it returns `null` events will not be batched.
+///
+/// Batched messages are sent in batches of up to 20 messages.
 class AnalyticsHtml extends AnalyticsImpl {
   AnalyticsHtml(
-      String trackingId, String applicationName, String applicationVersion,
-      {String? analyticsUrl})
-      : super(trackingId, HtmlPersistentProperties(applicationName),
-            HtmlPostHandler(),
-            applicationName: applicationName,
-            applicationVersion: applicationVersion,
-            analyticsUrl: analyticsUrl) {
+    String trackingId,
+    String applicationName,
+    String applicationVersion, {
+    String? analyticsUrl,
+    Future<void>? Function()? batchingDelay,
+  }) : super(
+          trackingId,
+          HtmlPersistentProperties(applicationName),
+          HtmlPostHandler(),
+          applicationName: applicationName,
+          applicationVersion: applicationVersion,
+          analyticsUrl: analyticsUrl,
+          batchingDelay: batchingDelay,
+        ) {
     var screenWidth = window.screen!.width;
     var screenHeight = window.screen!.height;
 
@@ -39,14 +52,15 @@ class HtmlPostHandler extends PostHandler {
   HtmlPostHandler({this.mockRequestor});
 
   @override
-  Future sendPost(String url, List<Map<String, dynamic>> batch) {
+  String encodeHit(Map<String, String> hit) {
     var viewportWidth = document.documentElement!.clientWidth;
     var viewportHeight = document.documentElement!.clientHeight;
+    return postEncode({...hit, 'vp': '${viewportWidth}x$viewportHeight'});
+  }
 
-    var data = batch
-        .map((event) =>
-            postEncode({...event, 'vp': '${viewportWidth}x$viewportHeight'}))
-        .join('\n');
+  @override
+  Future sendPost(String url, List<String> batch) {
+    var data = batch.join('\n');
     Future<HttpRequest> Function(String, {String method, dynamic sendData})
         requestor = mockRequestor ?? HttpRequest.request;
     return requestor(url, method: 'POST', sendData: data).catchError((e) {

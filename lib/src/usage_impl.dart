@@ -3,7 +3,10 @@
 // BSD-style license that can be found in the LICENSE file.
 
 import 'dart:async';
+import 'dart:collection';
 import 'dart:math' as math;
+
+import 'package:pedantic/pedantic.dart';
 
 import '../usage.dart';
 import '../uuid/uuid.dart';
@@ -78,6 +81,10 @@ class AnalyticsImpl implements Analytics {
   @override
   AnalyticsOpt analyticsOpt = AnalyticsOpt.optOut;
 
+  late Future<void>? Function() _batchingDelay;
+  final Queue<String> _batchedEvents = Queue<String>();
+  bool _isAwaitingSending = false;
+
   late final String _url;
   late final String _batchingUrl;
 
@@ -92,12 +99,14 @@ class AnalyticsImpl implements Analytics {
     this.applicationVersion,
     String? analyticsUrl,
     String? analyticsBatchingUrl,
+    Future<void>? Function()? batchingDelay,
   }) {
     if (applicationName != null) setSessionValue('an', applicationName);
     if (applicationVersion != null) setSessionValue('av', applicationVersion);
 
     _url = analyticsUrl ?? _defaultAnalyticsUrl;
     _batchingUrl = analyticsBatchingUrl ?? _defaultAnalyticsBatchingUrl;
+    _batchingDelay = batchingDelay ?? () => Future(() {});
   }
 
   bool? _firstRun;
@@ -199,24 +208,6 @@ class AnalyticsImpl implements Analytics {
     return _enqueuePayload('exception', args);
   }
 
-  static const _batchingKey = #_batching;
-
-  @override
-  Future<T> withBatching<T>(
-    FutureOr<T> Function() callback, {
-    int maxEventsPerBatch = 20,
-  }) async {
-    final queue = _BatchingQueue(maxEventsPerBatch: maxEventsPerBatch);
-    return await runZoned(() async {
-      final result = await callback();
-      if (queue.enqueuedEvents.isNotEmpty) {
-        // Send any remaining events.
-        _trySendBatch(queue.takeBatch());
-      }
-      return result;
-    }, zoneValues: {_batchingKey: queue});
-  }
-
   @override
   dynamic getSessionValue(String param) => _variableMap[param];
 
@@ -258,14 +249,16 @@ class AnalyticsImpl implements Analytics {
     return _enqueuePayload(hitType, args);
   }
 
-  /// Puts a single event in the queue. If batching is not enabled it will be
-  /// send immediately - otherwise when the batch is full (20 events) or when
-  /// the batching callback is over.
+  /// Puts a single hit in the queue. If the queue was empty - start waiting
+  /// for the result of [_batchingDelay] before sending all enqueued events.
+  ///
   /// Valid values for [hitType] are: 'pageview', 'screenview', 'event',
   /// 'transaction', 'item', 'social', 'exception', and 'timing'.
   Future<void> _enqueuePayload(String hitType, Map<String, String> args) async {
     if (!enabled) return;
-
+    // TODO(sigurdm): Really all the 'send' methods should not return Futures
+    // there is not much point in waiting for it. Only [waitForLastPing].
+    final completer = Completer<void>();
     final eventArgs = <String, String>{
       ...args,
       ..._variableMap,
@@ -275,40 +268,51 @@ class AnalyticsImpl implements Analytics {
       't': hitType,
     };
 
-    final batch = <Map<String, String>>[];
+    _sendController.add(eventArgs);
 
-    // See if we currently are batching events:
-    final batchingQueue = Zone.current[_batchingKey];
-    if (batchingQueue is _BatchingQueue) {
-      // Add the current event to the batch.
-      batchingQueue.enqueuedEvents.add(eventArgs);
-      if (!batchingQueue.isFull) {
-        // Queue not full yet. Do nothing.
-        return;
+    _batchedEvents.add(postHandler.encodeHit(eventArgs));
+
+    if (!_isAwaitingSending) {
+      final delay = _batchingDelay();
+      if (delay == null) {
+        _trySendBatches(completer);
+      } else {
+        _isAwaitingSending = true;
+        unawaited(delay.then((value) {
+          _trySendBatches(completer);
+          _isAwaitingSending = false;
+        }));
       }
-      // We have a full batch, start a new one.
-      batch.addAll(batchingQueue.takeBatch());
-    } else {
-      batch.add(eventArgs);
     }
-    _trySendBatch(batch);
+    return completer.future;
   }
 
-  void _trySendBatch(List<Map<String, String>> batch) {
-    if (_bucket.removeDrop()) {
-      for (final args in batch) {
-        _sendController.add(args);
-      }
+  // Send no more than 20 messages per batch.
+  static const _maxHitsPerBatch = 20;
+  // Send no more than 16K per batch.
+  static const _maxBytesPerBatch = 16000;
 
-      // See if we currently are batching events:
-      final batchingQueue = Zone.current[_batchingKey];
-      if (batchingQueue is _BatchingQueue) {
-        _recordFuture(postHandler.sendPost(_batchingUrl, batch));
-      } else {
-        assert(batch.length == 1);
-        _recordFuture(postHandler.sendPost(_url, batch));
+  void _trySendBatches(Completer completer) {
+    final futures = <Future>[];
+    while (_batchedEvents.isNotEmpty) {
+      final batch = <String>[];
+      final totalLength = 0;
+
+      while (true) {
+        if (_batchedEvents.isEmpty) break;
+        if (totalLength + _batchedEvents.first.length > _maxBytesPerBatch) {
+          break;
+        }
+        batch.add(_batchedEvents.removeFirst());
+        if (batch.length == _maxHitsPerBatch) break;
+      }
+      if (_bucket.removeDrop()) {
+        final future = postHandler.sendPost(
+            batch.length == 1 ? _url : _batchingUrl, batch);
+        _recordFuture(future);
       }
     }
+    Future.wait(futures).then((_) => completer.complete());
   }
 
   void _recordFuture(Future f) {
@@ -348,26 +352,9 @@ abstract class PersistentProperties {
 /// The `Future` from [sendPost] should complete when the operation is finished,
 /// but failures to send the information should be silent.
 abstract class PostHandler {
-  Future sendPost(String url, List<Map<String, dynamic>> batch);
+  Future sendPost(String url, List<String> batch);
+  String encodeHit(Map<String, String> hit);
 
   /// Free any used resources.
   void close();
-}
-
-class _BatchingQueue {
-  List<Map<String, String>> enqueuedEvents = [];
-  int maxEventsPerBatch;
-
-  _BatchingQueue({required this.maxEventsPerBatch});
-
-  bool get isFull => enqueuedEvents.length >= maxEventsPerBatch;
-  List<Map<String, String>> takeBatch() {
-    // TODO(sigurdm): We should take size limits on batching into account.
-    // https://developers.google.com/analytics/devguides/collection/protocol/v1/devguide#batch-limitations
-    final result = enqueuedEvents.take(maxEventsPerBatch).toList();
-    // If for some reason more events than one batch have queued up simply
-    // discard them.
-    enqueuedEvents.clear();
-    return result;
-  }
 }

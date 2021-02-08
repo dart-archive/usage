@@ -5,6 +5,7 @@
 library usage.hit_types_test;
 
 import 'dart:async';
+import 'dart:convert';
 
 import 'package:test/test.dart';
 
@@ -14,15 +15,15 @@ void main() => defineTests();
 
 void defineTests() {
   group('screenView', () {
-    test('simple', () {
+    test('simple', () async {
       var mock = createMock();
-      mock.sendScreenView('main');
+      await mock.sendScreenView('main');
       expect(mock.mockProperties['clientId'], isNotNull);
       expect(mock.mockPostHandler.sentValues, isNot(isEmpty));
     });
-    test('with parameters', () {
+    test('with parameters', () async {
       var mock = createMock();
-      mock.sendScreenView('withParams', parameters: {'cd1': 'foo'});
+      await mock.sendScreenView('withParams', parameters: {'cd1': 'foo'});
       expect(mock.mockProperties['clientId'], isNotNull);
       expect(mock.mockPostHandler.sentValues, isNot(isEmpty));
       has(mock.last, 'cd1');
@@ -30,18 +31,18 @@ void defineTests() {
   });
 
   group('event', () {
-    test('simple', () {
+    test('simple', () async {
       var mock = createMock();
-      mock.sendEvent('files', 'save');
+      await mock.sendEvent('files', 'save');
       expect(mock.mockPostHandler.sentValues, isNot(isEmpty));
       was(mock.last, 'event');
       has(mock.last, 'ec');
       has(mock.last, 'ea');
     });
 
-    test('with parameters', () {
+    test('with parameters', () async {
       var mock = createMock();
-      mock.sendEvent('withParams', 'save', parameters: {'cd1': 'foo'});
+      await mock.sendEvent('withParams', 'save', parameters: {'cd1': 'foo'});
       expect(mock.mockPostHandler.sentValues, isNot(isEmpty));
       was(mock.last, 'event');
       has(mock.last, 'ec');
@@ -49,9 +50,9 @@ void defineTests() {
       has(mock.last, 'cd1');
     });
 
-    test('optional args', () {
+    test('optional args', () async {
       var mock = createMock();
-      mock.sendEvent('files', 'save', label: 'File Save', value: 23);
+      await mock.sendEvent('files', 'save', label: 'File Save', value: 23);
       expect(mock.mockPostHandler.sentValues, isNot(isEmpty));
       was(mock.last, 'event');
       has(mock.last, 'ec');
@@ -62,9 +63,9 @@ void defineTests() {
   });
 
   group('social', () {
-    test('simple', () {
+    test('simple', () async {
       var mock = createMock();
-      mock.sendSocial('g+', 'plus', 'userid');
+      await mock.sendSocial('g+', 'plus', 'userid');
       expect(mock.mockPostHandler.sentValues, isNot(isEmpty));
       was(mock.last, 'social');
       has(mock.last, 'sn');
@@ -74,18 +75,23 @@ void defineTests() {
   });
 
   group('timing', () {
-    test('simple', () {
+    test('simple', () async {
       var mock = createMock();
-      mock.sendTiming('compile', 123);
+      await mock.sendTiming('compile', 123);
       expect(mock.mockPostHandler.sentValues, isNot(isEmpty));
       was(mock.last, 'timing');
       has(mock.last, 'utv');
       has(mock.last, 'utt');
     });
 
-    test('optional args', () {
+    test('optional args', () async {
       var mock = createMock();
-      mock.sendTiming('compile', 123, category: 'Build', label: 'Compile');
+      await mock.sendTiming(
+        'compile',
+        123,
+        category: 'Build',
+        label: 'Compile',
+      );
       expect(mock.mockPostHandler.sentValues, isNot(isEmpty));
       was(mock.last, 'timing');
       has(mock.last, 'utv');
@@ -117,27 +123,28 @@ void defineTests() {
   });
 
   group('exception', () {
-    test('simple', () {
+    test('simple', () async {
       var mock = createMock();
-      mock.sendException('FooException');
+      await mock.sendException('FooException');
       expect(mock.mockPostHandler.sentValues, isNot(isEmpty));
       was(mock.last, 'exception');
       has(mock.last, 'exd');
     });
 
-    test('optional args', () {
+    test('optional args', () async {
       var mock = createMock();
-      mock.sendException('FooException', fatal: true);
+      await mock.sendException('FooException', fatal: true);
       expect(mock.mockPostHandler.sentValues, isNot(isEmpty));
       was(mock.last, 'exception');
       has(mock.last, 'exd');
       has(mock.last, 'exf');
     });
 
-    test('exception file paths', () {
+    test('exception file paths', () async {
       var mock = createMock();
-      mock.sendException('foo bar (file:///Users/foobar/tmp/error.dart:3:13)');
-      expect(mock.last['exd'], 'foo bar (');
+      await mock
+          .sendException('foo bar (file:///Users/foobar/tmp/error.dart:3:13)');
+      expect(jsonDecode(mock.last)['exd'], 'foo bar (');
     });
   });
 }

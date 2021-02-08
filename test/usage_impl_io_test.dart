@@ -8,6 +8,7 @@ library usage.usage_impl_io_test;
 import 'dart:async';
 import 'dart:io';
 
+import 'package:pedantic/pedantic.dart';
 import 'package:test/test.dart';
 import 'package:usage/src/usage_impl_io.dart';
 
@@ -22,7 +23,8 @@ void defineTests() {
       var args = [
         <String, String>{'utv': 'varName', 'utt': '123'},
       ];
-      await postHandler.sendPost('http://www.google.com', args);
+      await postHandler.sendPost(
+          'http://www.google.com', args.map(postHandler.encodeHit).toList());
       expect(mockClient.requests.single.buffer.toString(), '''
 Request to http://www.google.com with ${createUserAgent()}
 utv=varName&utt=123''');
@@ -57,43 +59,88 @@ utv=varName&utt=123''');
   });
 
   group('batching', () {
-    test('Without batching sends to regular url', () async {
+    test('With batch-delay returning null sends all events individually',
+        () async {
       final mockClient = MockHttpClient();
 
-      final analytics = AnalyticsIO(
-        '<TRACKING-ID',
-        'usage-test',
-        '0.0.1',
-        client: mockClient,
-      );
-      await analytics.sendEvent('my-event', 'something');
-      expect(mockClient.requests.single.buffer.toString(), '''
+      final analytics = AnalyticsIO('<TRACKING-ID', 'usage-test', '0.0.1',
+          client: mockClient, batchingDelay: () => null);
+      unawaited(analytics.sendEvent('my-event1', 'something'));
+      unawaited(analytics.sendEvent('my-event2', 'something'));
+      unawaited(analytics.sendEvent('my-event3', 'something'));
+      await analytics.waitForLastPing();
+      expect(mockClient.requests.length, 3);
+      expect(mockClient.requests[0].buffer.toString(), '''
 Request to https://www.google-analytics.com/collect with ${createUserAgent()}
-ec=my-event&ea=something&an=usage-test&av=0.0.1&ul=en-us&v=1&tid=%3CTRACKING-ID&cid=8e3fa343-70bc-4afe-ad81-5fed4256b4e8&t=event''');
+ec=my-event1&ea=something&an=usage-test&av=0.0.1&ul=en-us&v=1&tid=%3CTRACKING-ID&cid=8e3fa343-70bc-4afe-ad81-5fed4256b4e8&t=event''');
+      expect(mockClient.requests[1].buffer.toString(), '''
+Request to https://www.google-analytics.com/collect with ${createUserAgent()}
+ec=my-event2&ea=something&an=usage-test&av=0.0.1&ul=en-us&v=1&tid=%3CTRACKING-ID&cid=8e3fa343-70bc-4afe-ad81-5fed4256b4e8&t=event''');
+      expect(mockClient.requests[2].buffer.toString(), '''
+Request to https://www.google-analytics.com/collect with ${createUserAgent()}
+ec=my-event3&ea=something&an=usage-test&av=0.0.1&ul=en-us&v=1&tid=%3CTRACKING-ID&cid=8e3fa343-70bc-4afe-ad81-5fed4256b4e8&t=event''');
     });
 
-    test('with batching sends to batching url', () async {
+    test(
+        'with default batch-delay hits from the same sync span are batched together',
+        () async {
       var mockClient = MockHttpClient();
 
       final analytics = AnalyticsIO('<TRACKING-ID', 'usage-test', '0.0.1',
           client: mockClient);
-      await analytics.withBatching(() async {
-        await analytics.sendEvent('my-event1', 'something1');
-        await analytics.sendEvent('my-event2', 'something2');
-        await analytics.sendEvent('my-event3', 'something3');
-        await analytics.sendEvent('my-event4', 'something4');
-      }, maxEventsPerBatch: 3);
-      await analytics.sendEvent('my-event-not-batched', 'something');
+      unawaited(analytics.sendEvent('my-event1', 'something'));
+      unawaited(analytics.sendEvent('my-event2', 'something'));
+      unawaited(analytics.sendEvent('my-event3', 'something'));
+      unawaited(analytics.sendEvent('my-event4', 'something'));
+      unawaited(analytics.sendEvent('my-event5', 'something'));
+      unawaited(analytics.sendEvent('my-event6', 'something'));
+      unawaited(analytics.sendEvent('my-event7', 'something'));
+      unawaited(analytics.sendEvent('my-event8', 'something'));
+      unawaited(analytics.sendEvent('my-event9', 'something'));
+      unawaited(analytics.sendEvent('my-event10', 'something'));
+      unawaited(analytics.sendEvent('my-event11', 'something'));
+      unawaited(analytics.sendEvent('my-event12', 'something'));
+      unawaited(analytics.sendEvent('my-event13', 'something'));
+      unawaited(analytics.sendEvent('my-event14', 'something'));
+      unawaited(analytics.sendEvent('my-event15', 'something'));
+      unawaited(analytics.sendEvent('my-event16', 'something'));
+      unawaited(analytics.sendEvent('my-event17', 'something'));
+      unawaited(analytics.sendEvent('my-event18', 'something'));
+      unawaited(analytics.sendEvent('my-event19', 'something'));
+      unawaited(analytics.sendEvent('my-event20', 'something'));
+      unawaited(analytics.sendEvent('my-event21', 'something'));
+      await Future(() {});
+      expect(mockClient.requests.length, 2);
+      unawaited(analytics.sendEvent('my-event-not-batched', 'something'));
+      await Future(() {});
 
+      await analytics.waitForLastPing();
       expect(mockClient.requests.length, 3);
       expect(mockClient.requests[0].buffer.toString(), '''
 Request to https://www.google-analytics.com/batch with ${createUserAgent()}
-ec=my-event1&ea=something1&an=usage-test&av=0.0.1&ul=en-us&v=1&tid=%3CTRACKING-ID&cid=8e3fa343-70bc-4afe-ad81-5fed4256b4e8&t=event
-ec=my-event2&ea=something2&an=usage-test&av=0.0.1&ul=en-us&v=1&tid=%3CTRACKING-ID&cid=8e3fa343-70bc-4afe-ad81-5fed4256b4e8&t=event
-ec=my-event3&ea=something3&an=usage-test&av=0.0.1&ul=en-us&v=1&tid=%3CTRACKING-ID&cid=8e3fa343-70bc-4afe-ad81-5fed4256b4e8&t=event''');
+ec=my-event1&ea=something&an=usage-test&av=0.0.1&ul=en-us&v=1&tid=%3CTRACKING-ID&cid=8e3fa343-70bc-4afe-ad81-5fed4256b4e8&t=event
+ec=my-event2&ea=something&an=usage-test&av=0.0.1&ul=en-us&v=1&tid=%3CTRACKING-ID&cid=8e3fa343-70bc-4afe-ad81-5fed4256b4e8&t=event
+ec=my-event3&ea=something&an=usage-test&av=0.0.1&ul=en-us&v=1&tid=%3CTRACKING-ID&cid=8e3fa343-70bc-4afe-ad81-5fed4256b4e8&t=event
+ec=my-event4&ea=something&an=usage-test&av=0.0.1&ul=en-us&v=1&tid=%3CTRACKING-ID&cid=8e3fa343-70bc-4afe-ad81-5fed4256b4e8&t=event
+ec=my-event5&ea=something&an=usage-test&av=0.0.1&ul=en-us&v=1&tid=%3CTRACKING-ID&cid=8e3fa343-70bc-4afe-ad81-5fed4256b4e8&t=event
+ec=my-event6&ea=something&an=usage-test&av=0.0.1&ul=en-us&v=1&tid=%3CTRACKING-ID&cid=8e3fa343-70bc-4afe-ad81-5fed4256b4e8&t=event
+ec=my-event7&ea=something&an=usage-test&av=0.0.1&ul=en-us&v=1&tid=%3CTRACKING-ID&cid=8e3fa343-70bc-4afe-ad81-5fed4256b4e8&t=event
+ec=my-event8&ea=something&an=usage-test&av=0.0.1&ul=en-us&v=1&tid=%3CTRACKING-ID&cid=8e3fa343-70bc-4afe-ad81-5fed4256b4e8&t=event
+ec=my-event9&ea=something&an=usage-test&av=0.0.1&ul=en-us&v=1&tid=%3CTRACKING-ID&cid=8e3fa343-70bc-4afe-ad81-5fed4256b4e8&t=event
+ec=my-event10&ea=something&an=usage-test&av=0.0.1&ul=en-us&v=1&tid=%3CTRACKING-ID&cid=8e3fa343-70bc-4afe-ad81-5fed4256b4e8&t=event
+ec=my-event11&ea=something&an=usage-test&av=0.0.1&ul=en-us&v=1&tid=%3CTRACKING-ID&cid=8e3fa343-70bc-4afe-ad81-5fed4256b4e8&t=event
+ec=my-event12&ea=something&an=usage-test&av=0.0.1&ul=en-us&v=1&tid=%3CTRACKING-ID&cid=8e3fa343-70bc-4afe-ad81-5fed4256b4e8&t=event
+ec=my-event13&ea=something&an=usage-test&av=0.0.1&ul=en-us&v=1&tid=%3CTRACKING-ID&cid=8e3fa343-70bc-4afe-ad81-5fed4256b4e8&t=event
+ec=my-event14&ea=something&an=usage-test&av=0.0.1&ul=en-us&v=1&tid=%3CTRACKING-ID&cid=8e3fa343-70bc-4afe-ad81-5fed4256b4e8&t=event
+ec=my-event15&ea=something&an=usage-test&av=0.0.1&ul=en-us&v=1&tid=%3CTRACKING-ID&cid=8e3fa343-70bc-4afe-ad81-5fed4256b4e8&t=event
+ec=my-event16&ea=something&an=usage-test&av=0.0.1&ul=en-us&v=1&tid=%3CTRACKING-ID&cid=8e3fa343-70bc-4afe-ad81-5fed4256b4e8&t=event
+ec=my-event17&ea=something&an=usage-test&av=0.0.1&ul=en-us&v=1&tid=%3CTRACKING-ID&cid=8e3fa343-70bc-4afe-ad81-5fed4256b4e8&t=event
+ec=my-event18&ea=something&an=usage-test&av=0.0.1&ul=en-us&v=1&tid=%3CTRACKING-ID&cid=8e3fa343-70bc-4afe-ad81-5fed4256b4e8&t=event
+ec=my-event19&ea=something&an=usage-test&av=0.0.1&ul=en-us&v=1&tid=%3CTRACKING-ID&cid=8e3fa343-70bc-4afe-ad81-5fed4256b4e8&t=event
+ec=my-event20&ea=something&an=usage-test&av=0.0.1&ul=en-us&v=1&tid=%3CTRACKING-ID&cid=8e3fa343-70bc-4afe-ad81-5fed4256b4e8&t=event''');
       expect(mockClient.requests[1].buffer.toString(), '''
-Request to https://www.google-analytics.com/batch with ${createUserAgent()}
-ec=my-event4&ea=something4&an=usage-test&av=0.0.1&ul=en-us&v=1&tid=%3CTRACKING-ID&cid=8e3fa343-70bc-4afe-ad81-5fed4256b4e8&t=event''');
+Request to https://www.google-analytics.com/collect with ${createUserAgent()}
+ec=my-event21&ea=something&an=usage-test&av=0.0.1&ul=en-us&v=1&tid=%3CTRACKING-ID&cid=8e3fa343-70bc-4afe-ad81-5fed4256b4e8&t=event''');
       expect(mockClient.requests[2].buffer.toString(), '''
 Request to https://www.google-analytics.com/collect with ${createUserAgent()}
 ec=my-event-not-batched&ea=something&an=usage-test&av=0.0.1&ul=en-us&v=1&tid=%3CTRACKING-ID&cid=8e3fa343-70bc-4afe-ad81-5fed4256b4e8&t=event''');

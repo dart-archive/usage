@@ -5,6 +5,7 @@
 library usage.common_test;
 
 import 'dart:async';
+import 'dart:convert';
 
 import 'package:test/test.dart';
 import 'package:usage/src/usage_impl.dart';
@@ -12,9 +13,9 @@ import 'package:usage/src/usage_impl.dart';
 AnalyticsImplMock createMock({Map<String, dynamic>? props}) =>
     AnalyticsImplMock('UA-0', props: props);
 
-void was(Map m, String type) => expect(m['t'], type);
-void has(Map m, String key) => expect(m[key], isNotNull);
-void hasnt(Map m, String key) => expect(m[key], isNull);
+void was(String m, String type) => expect(jsonDecode(m)['t'], type);
+void has(String m, String key) => expect(jsonDecode(m)[key], isNotNull);
+void hasnt(String m, String key) => expect(jsonDecode(m)[key], isNull);
 
 class AnalyticsImplMock extends AnalyticsImpl {
   MockProperties get mockProperties => properties as MockProperties;
@@ -24,7 +25,7 @@ class AnalyticsImplMock extends AnalyticsImpl {
       : super(trackingId, MockProperties(props), MockPostHandler(),
             applicationName: 'Test App', applicationVersion: '0.1');
 
-  Map<String, dynamic> get last => mockPostHandler.last;
+  String get last => mockPostHandler.last;
 }
 
 class MockProperties extends PersistentProperties {
@@ -47,17 +48,20 @@ class MockProperties extends PersistentProperties {
 }
 
 class MockPostHandler extends PostHandler {
-  List<Map<String, dynamic>> sentValues = [];
+  List<String> sentValues = [];
 
   @override
-  Future sendPost(String url, List<Map<String, dynamic>> batch) {
+  Future sendPost(String url, List<String> batch) {
     sentValues.addAll(batch);
 
     return Future.value();
   }
 
-  Map<String, dynamic> get last => sentValues.last;
+  String get last => sentValues.last;
 
   @override
   void close() {}
+
+  @override
+  String encodeHit(Map<String, String> hit) => jsonEncode(hit);
 }
