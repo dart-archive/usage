@@ -279,7 +279,7 @@ class AnalyticsImpl implements Analytics {
         unawaited(delay.then((value) {
           _trySendBatches(completer);
         }));
-        _nextSending = completer.future;
+        _nextSending = completer.future.then((_) => _nextSending = null);
       }
     }
     return completer.future;
