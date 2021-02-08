@@ -69,6 +69,7 @@ utv=varName&utt=123''');
       unawaited(analytics.sendEvent('my-event2', 'something'));
       unawaited(analytics.sendEvent('my-event3', 'something'));
       await analytics.waitForLastPing();
+      analytics.close();
       expect(mockClient.requests.length, 3);
       final clientId = analytics.clientId;
       expect(mockClient.requests[0].buffer.toString(), '''
@@ -116,6 +117,8 @@ ec=my-event3&ea=something&an=usage-test&av=0.0.1&ul=en-us&v=1&tid=%3CTRACKING-ID
       await Future(() {});
 
       await analytics.waitForLastPing();
+      analytics.close();
+      expect(mockClient.closed, isTrue);
       expect(mockClient.requests.length, 3);
       final clientId = analytics.clientId;
       expect(mockClient.requests[0].buffer.toString(), '''
@@ -154,14 +157,23 @@ class MockHttpClient implements HttpClient {
   final List<MockHttpClientRequest> requests = <MockHttpClientRequest>[];
   @override
   String? userAgent;
+  bool closed = false;
+
   MockHttpClient();
 
   @override
   Future<HttpClientRequest> postUrl(Uri uri) async {
+    if (closed) throw StateError('Posting after close');
     final request = MockHttpClientRequest();
     request.buffer.writeln('Request to $uri with $userAgent');
     requests.add(request);
     return request;
+  }
+
+  @override
+  void close({bool force = false}) {
+    if (closed) throw StateError('Double close');
+    closed = true;
   }
 
   @override
@@ -173,6 +185,7 @@ class MockHttpClient implements HttpClient {
 class MockHttpClientRequest implements HttpClientRequest {
   final buffer = StringBuffer();
   final MockHttpClientResponse response = MockHttpClientResponse();
+  bool closed = false;
 
   MockHttpClientRequest();
 
@@ -182,7 +195,11 @@ class MockHttpClientRequest implements HttpClientRequest {
   }
 
   @override
-  Future<HttpClientResponse> close() async => response;
+  Future<HttpClientResponse> close() async {
+    if (closed) throw StateError('Double close');
+    closed = true;
+    return response;
+  }
 
   @override
   dynamic noSuchMethod(Invocation invocation) {

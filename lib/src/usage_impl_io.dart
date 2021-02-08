@@ -117,7 +117,7 @@ class IOPostHandler extends PostHandler {
       req.write(data);
       var response = await req.close();
       await response.drain();
-    } catch (exception) {
+    } on Exception {
       // Catch errors that can happen during a request, but that we can't do
       // anything about, e.g. a missing internet connection.
     }

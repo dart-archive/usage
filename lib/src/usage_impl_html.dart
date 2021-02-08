@@ -59,14 +59,16 @@ class HtmlPostHandler extends PostHandler {
   }
 
   @override
-  Future sendPost(String url, List<String> batch) {
+  Future<void> sendPost(String url, List<String> batch) async {
     var data = batch.join('\n');
     Future<HttpRequest> Function(String, {String method, dynamic sendData})
         requestor = mockRequestor ?? HttpRequest.request;
-    return requestor(url, method: 'POST', sendData: data).catchError((e) {
+    try {
+      await requestor(url, method: 'POST', sendData: data);
+    } on Exception {
       // Catch errors that can happen during a request, but that we can't do
       // anything about, e.g. a missing internet connection.
-    });
+    }
   }
 
   @override

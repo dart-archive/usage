@@ -83,7 +83,7 @@ class AnalyticsImpl implements Analytics {
 
   late Future<void>? Function() _batchingDelay;
   final Queue<String> _batchedEvents = Queue<String>();
-  bool _isAwaitingSending = false;
+  Future<void>? _nextSending;
 
   late final String _url;
   late final String _batchingUrl;
@@ -224,13 +224,13 @@ class AnalyticsImpl implements Analytics {
   Stream<Map<String, dynamic>> get onSend => _sendController.stream;
 
   @override
-  Future<List<dynamic>> waitForLastPing({Duration? timeout}) {
-    var f = Future.wait(_futures).catchError((e) => []);
-
-    if (timeout != null) {
-      f = f.timeout(timeout, onTimeout: () => []);
+  Future<List<dynamic>> waitForLastPing({Duration? timeout}) async {
+    // If there are pending messages, send them now.
+    if (_batchedEvents.isNotEmpty) {
+      _trySendBatches(Completer<void>());
     }
-
+    var f = Future.wait(_futures);
+    if (timeout != null) f = f.timeout(timeout);
     return f;
   }
 
@@ -269,19 +269,17 @@ class AnalyticsImpl implements Analytics {
     };
 
     _sendController.add(eventArgs);
-
     _batchedEvents.add(postHandler.encodeHit(eventArgs));
 
-    if (!_isAwaitingSending) {
+    if (_nextSending == null) {
       final delay = _batchingDelay();
       if (delay == null) {
         _trySendBatches(completer);
       } else {
-        _isAwaitingSending = true;
         unawaited(delay.then((value) {
           _trySendBatches(completer);
-          _isAwaitingSending = false;
         }));
+        _nextSending = completer.future;
       }
     }
     return completer.future;
