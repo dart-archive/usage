@@ -70,15 +70,16 @@ utv=varName&utt=123''');
       unawaited(analytics.sendEvent('my-event3', 'something'));
       await analytics.waitForLastPing();
       expect(mockClient.requests.length, 3);
+      final clientId = analytics.clientId;
       expect(mockClient.requests[0].buffer.toString(), '''
 Request to https://www.google-analytics.com/collect with ${createUserAgent()}
-ec=my-event1&ea=something&an=usage-test&av=0.0.1&ul=en-us&v=1&tid=%3CTRACKING-ID&cid=8e3fa343-70bc-4afe-ad81-5fed4256b4e8&t=event''');
+ec=my-event1&ea=something&an=usage-test&av=0.0.1&ul=en-us&v=1&tid=%3CTRACKING-ID&cid=$clientId&t=event''');
       expect(mockClient.requests[1].buffer.toString(), '''
 Request to https://www.google-analytics.com/collect with ${createUserAgent()}
-ec=my-event2&ea=something&an=usage-test&av=0.0.1&ul=en-us&v=1&tid=%3CTRACKING-ID&cid=8e3fa343-70bc-4afe-ad81-5fed4256b4e8&t=event''');
+ec=my-event2&ea=something&an=usage-test&av=0.0.1&ul=en-us&v=1&tid=%3CTRACKING-ID&cid=$clientId&t=event''');
       expect(mockClient.requests[2].buffer.toString(), '''
 Request to https://www.google-analytics.com/collect with ${createUserAgent()}
-ec=my-event3&ea=something&an=usage-test&av=0.0.1&ul=en-us&v=1&tid=%3CTRACKING-ID&cid=8e3fa343-70bc-4afe-ad81-5fed4256b4e8&t=event''');
+ec=my-event3&ea=something&an=usage-test&av=0.0.1&ul=en-us&v=1&tid=%3CTRACKING-ID&cid=$clientId&t=event''');
     });
 
     test(
@@ -116,34 +117,35 @@ ec=my-event3&ea=something&an=usage-test&av=0.0.1&ul=en-us&v=1&tid=%3CTRACKING-ID
 
       await analytics.waitForLastPing();
       expect(mockClient.requests.length, 3);
+      final clientId = analytics.clientId;
       expect(mockClient.requests[0].buffer.toString(), '''
 Request to https://www.google-analytics.com/batch with ${createUserAgent()}
-ec=my-event1&ea=something&an=usage-test&av=0.0.1&ul=en-us&v=1&tid=%3CTRACKING-ID&cid=8e3fa343-70bc-4afe-ad81-5fed4256b4e8&t=event
-ec=my-event2&ea=something&an=usage-test&av=0.0.1&ul=en-us&v=1&tid=%3CTRACKING-ID&cid=8e3fa343-70bc-4afe-ad81-5fed4256b4e8&t=event
-ec=my-event3&ea=something&an=usage-test&av=0.0.1&ul=en-us&v=1&tid=%3CTRACKING-ID&cid=8e3fa343-70bc-4afe-ad81-5fed4256b4e8&t=event
-ec=my-event4&ea=something&an=usage-test&av=0.0.1&ul=en-us&v=1&tid=%3CTRACKING-ID&cid=8e3fa343-70bc-4afe-ad81-5fed4256b4e8&t=event
-ec=my-event5&ea=something&an=usage-test&av=0.0.1&ul=en-us&v=1&tid=%3CTRACKING-ID&cid=8e3fa343-70bc-4afe-ad81-5fed4256b4e8&t=event
-ec=my-event6&ea=something&an=usage-test&av=0.0.1&ul=en-us&v=1&tid=%3CTRACKING-ID&cid=8e3fa343-70bc-4afe-ad81-5fed4256b4e8&t=event
-ec=my-event7&ea=something&an=usage-test&av=0.0.1&ul=en-us&v=1&tid=%3CTRACKING-ID&cid=8e3fa343-70bc-4afe-ad81-5fed4256b4e8&t=event
-ec=my-event8&ea=something&an=usage-test&av=0.0.1&ul=en-us&v=1&tid=%3CTRACKING-ID&cid=8e3fa343-70bc-4afe-ad81-5fed4256b4e8&t=event
-ec=my-event9&ea=something&an=usage-test&av=0.0.1&ul=en-us&v=1&tid=%3CTRACKING-ID&cid=8e3fa343-70bc-4afe-ad81-5fed4256b4e8&t=event
-ec=my-event10&ea=something&an=usage-test&av=0.0.1&ul=en-us&v=1&tid=%3CTRACKING-ID&cid=8e3fa343-70bc-4afe-ad81-5fed4256b4e8&t=event
-ec=my-event11&ea=something&an=usage-test&av=0.0.1&ul=en-us&v=1&tid=%3CTRACKING-ID&cid=8e3fa343-70bc-4afe-ad81-5fed4256b4e8&t=event
-ec=my-event12&ea=something&an=usage-test&av=0.0.1&ul=en-us&v=1&tid=%3CTRACKING-ID&cid=8e3fa343-70bc-4afe-ad81-5fed4256b4e8&t=event
-ec=my-event13&ea=something&an=usage-test&av=0.0.1&ul=en-us&v=1&tid=%3CTRACKING-ID&cid=8e3fa343-70bc-4afe-ad81-5fed4256b4e8&t=event
-ec=my-event14&ea=something&an=usage-test&av=0.0.1&ul=en-us&v=1&tid=%3CTRACKING-ID&cid=8e3fa343-70bc-4afe-ad81-5fed4256b4e8&t=event
-ec=my-event15&ea=something&an=usage-test&av=0.0.1&ul=en-us&v=1&tid=%3CTRACKING-ID&cid=8e3fa343-70bc-4afe-ad81-5fed4256b4e8&t=event
-ec=my-event16&ea=something&an=usage-test&av=0.0.1&ul=en-us&v=1&tid=%3CTRACKING-ID&cid=8e3fa343-70bc-4afe-ad81-5fed4256b4e8&t=event
-ec=my-event17&ea=something&an=usage-test&av=0.0.1&ul=en-us&v=1&tid=%3CTRACKING-ID&cid=8e3fa343-70bc-4afe-ad81-5fed4256b4e8&t=event
-ec=my-event18&ea=something&an=usage-test&av=0.0.1&ul=en-us&v=1&tid=%3CTRACKING-ID&cid=8e3fa343-70bc-4afe-ad81-5fed4256b4e8&t=event
-ec=my-event19&ea=something&an=usage-test&av=0.0.1&ul=en-us&v=1&tid=%3CTRACKING-ID&cid=8e3fa343-70bc-4afe-ad81-5fed4256b4e8&t=event
-ec=my-event20&ea=something&an=usage-test&av=0.0.1&ul=en-us&v=1&tid=%3CTRACKING-ID&cid=8e3fa343-70bc-4afe-ad81-5fed4256b4e8&t=event''');
+ec=my-event1&ea=something&an=usage-test&av=0.0.1&ul=en-us&v=1&tid=%3CTRACKING-ID&cid=$clientId&t=event
+ec=my-event2&ea=something&an=usage-test&av=0.0.1&ul=en-us&v=1&tid=%3CTRACKING-ID&cid=$clientId&t=event
+ec=my-event3&ea=something&an=usage-test&av=0.0.1&ul=en-us&v=1&tid=%3CTRACKING-ID&cid=$clientId&t=event
+ec=my-event4&ea=something&an=usage-test&av=0.0.1&ul=en-us&v=1&tid=%3CTRACKING-ID&cid=$clientId&t=event
+ec=my-event5&ea=something&an=usage-test&av=0.0.1&ul=en-us&v=1&tid=%3CTRACKING-ID&cid=$clientId&t=event
+ec=my-event6&ea=something&an=usage-test&av=0.0.1&ul=en-us&v=1&tid=%3CTRACKING-ID&cid=$clientId&t=event
+ec=my-event7&ea=something&an=usage-test&av=0.0.1&ul=en-us&v=1&tid=%3CTRACKING-ID&cid=$clientId&t=event
+ec=my-event8&ea=something&an=usage-test&av=0.0.1&ul=en-us&v=1&tid=%3CTRACKING-ID&cid=$clientId&t=event
+ec=my-event9&ea=something&an=usage-test&av=0.0.1&ul=en-us&v=1&tid=%3CTRACKING-ID&cid=$clientId&t=event
+ec=my-event10&ea=something&an=usage-test&av=0.0.1&ul=en-us&v=1&tid=%3CTRACKING-ID&cid=$clientId&t=event
+ec=my-event11&ea=something&an=usage-test&av=0.0.1&ul=en-us&v=1&tid=%3CTRACKING-ID&cid=$clientId&t=event
+ec=my-event12&ea=something&an=usage-test&av=0.0.1&ul=en-us&v=1&tid=%3CTRACKING-ID&cid=$clientId&t=event
+ec=my-event13&ea=something&an=usage-test&av=0.0.1&ul=en-us&v=1&tid=%3CTRACKING-ID&cid=$clientId&t=event
+ec=my-event14&ea=something&an=usage-test&av=0.0.1&ul=en-us&v=1&tid=%3CTRACKING-ID&cid=$clientId&t=event
+ec=my-event15&ea=something&an=usage-test&av=0.0.1&ul=en-us&v=1&tid=%3CTRACKING-ID&cid=$clientId&t=event
+ec=my-event16&ea=something&an=usage-test&av=0.0.1&ul=en-us&v=1&tid=%3CTRACKING-ID&cid=$clientId&t=event
+ec=my-event17&ea=something&an=usage-test&av=0.0.1&ul=en-us&v=1&tid=%3CTRACKING-ID&cid=$clientId&t=event
+ec=my-event18&ea=something&an=usage-test&av=0.0.1&ul=en-us&v=1&tid=%3CTRACKING-ID&cid=$clientId&t=event
+ec=my-event19&ea=something&an=usage-test&av=0.0.1&ul=en-us&v=1&tid=%3CTRACKING-ID&cid=$clientId&t=event
+ec=my-event20&ea=something&an=usage-test&av=0.0.1&ul=en-us&v=1&tid=%3CTRACKING-ID&cid=$clientId&t=event''');
       expect(mockClient.requests[1].buffer.toString(), '''
 Request to https://www.google-analytics.com/collect with ${createUserAgent()}
-ec=my-event21&ea=something&an=usage-test&av=0.0.1&ul=en-us&v=1&tid=%3CTRACKING-ID&cid=8e3fa343-70bc-4afe-ad81-5fed4256b4e8&t=event''');
+ec=my-event21&ea=something&an=usage-test&av=0.0.1&ul=en-us&v=1&tid=%3CTRACKING-ID&cid=$clientId&t=event''');
       expect(mockClient.requests[2].buffer.toString(), '''
 Request to https://www.google-analytics.com/collect with ${createUserAgent()}
-ec=my-event-not-batched&ea=something&an=usage-test&av=0.0.1&ul=en-us&v=1&tid=%3CTRACKING-ID&cid=8e3fa343-70bc-4afe-ad81-5fed4256b4e8&t=event''');
+ec=my-event-not-batched&ea=something&an=usage-test&av=0.0.1&ul=en-us&v=1&tid=%3CTRACKING-ID&cid=$clientId&t=event''');
     });
   });
 }
