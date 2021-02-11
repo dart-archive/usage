@@ -83,7 +83,7 @@ class AnalyticsImpl implements Analytics {
 
   late Future<void>? Function() _batchingDelay;
   final Queue<String> _batchedEvents = Queue<String>();
-  Future<void>? _nextSending;
+  bool _isSendingScheduled = false;
 
   late final String _url;
   late final String _batchingUrl;
@@ -271,15 +271,16 @@ class AnalyticsImpl implements Analytics {
     _sendController.add(eventArgs);
     _batchedEvents.add(postHandler.encodeHit(eventArgs));
 
-    if (_nextSending == null) {
+    if (!_isSendingScheduled) {
       final delay = _batchingDelay();
       if (delay == null) {
         _trySendBatches(completer);
       } else {
+        _isSendingScheduled = true;
         unawaited(delay.then((value) {
+          _isSendingScheduled = false;
           _trySendBatches(completer);
         }));
-        _nextSending = completer.future.then((_) => _nextSending = null);
       }
     }
     return completer.future;
@@ -290,7 +291,7 @@ class AnalyticsImpl implements Analytics {
   // Send no more than 16K per batch.
   static const _maxBytesPerBatch = 16000;
 
-  void _trySendBatches(Completer completer) {
+  void _trySendBatches(Completer<void> completer) {
     final futures = <Future>[];
     while (_batchedEvents.isNotEmpty) {
       final batch = <String>[];
@@ -308,9 +309,10 @@ class AnalyticsImpl implements Analytics {
         final future = postHandler.sendPost(
             batch.length == 1 ? _url : _batchingUrl, batch);
         _recordFuture(future);
+        futures.add(future);
       }
     }
-    Future.wait(futures).then((_) => completer.complete());
+    completer.complete(Future.wait(futures).then((_) {}));
   }
 
   void _recordFuture(Future f) {
