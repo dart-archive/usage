@@ -59,30 +59,6 @@ utv=varName&utt=123''');
   });
 
   group('batching', () {
-    test('With batch-delay returning null sends all events individually',
-        () async {
-      final mockClient = MockHttpClient();
-
-      final analytics = AnalyticsIO('<TRACKING-ID', 'usage-test', '0.0.1',
-          client: mockClient, batchingDelay: () => null);
-      unawaited(analytics.sendEvent('my-event1', 'something'));
-      unawaited(analytics.sendEvent('my-event2', 'something'));
-      unawaited(analytics.sendEvent('my-event3', 'something'));
-      await analytics.waitForLastPing();
-      analytics.close();
-      expect(mockClient.requests.length, 3);
-      final clientId = analytics.clientId;
-      expect(mockClient.requests[0].buffer.toString(), '''
-Request to https://www.google-analytics.com/collect with ${createUserAgent()}
-ec=my-event1&ea=something&an=usage-test&av=0.0.1&ul=en-us&v=1&tid=%3CTRACKING-ID&cid=$clientId&t=event''');
-      expect(mockClient.requests[1].buffer.toString(), '''
-Request to https://www.google-analytics.com/collect with ${createUserAgent()}
-ec=my-event2&ea=something&an=usage-test&av=0.0.1&ul=en-us&v=1&tid=%3CTRACKING-ID&cid=$clientId&t=event''');
-      expect(mockClient.requests[2].buffer.toString(), '''
-Request to https://www.google-analytics.com/collect with ${createUserAgent()}
-ec=my-event3&ea=something&an=usage-test&av=0.0.1&ul=en-us&v=1&tid=%3CTRACKING-ID&cid=$clientId&t=event''');
-    });
-
     test(
         'with default batch-delay hits from the same sync span are batched together',
         () async {

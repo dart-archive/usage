@@ -24,7 +24,7 @@ class AnalyticsHtml extends AnalyticsImpl {
     String applicationName,
     String applicationVersion, {
     String? analyticsUrl,
-    Future<void>? Function()? batchingDelay,
+    Duration? batchingDelay,
   }) : super(
           trackingId,
           HtmlPersistentProperties(applicationName),

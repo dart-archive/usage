@@ -6,8 +6,6 @@ import 'dart:async';
 import 'dart:collection';
 import 'dart:math' as math;
 
-import 'package:pedantic/pedantic.dart';
-
 import '../usage.dart';
 import '../uuid/uuid.dart';
 
@@ -81,7 +79,7 @@ class AnalyticsImpl implements Analytics {
   @override
   AnalyticsOpt analyticsOpt = AnalyticsOpt.optOut;
 
-  late Future<void>? Function() _batchingDelay;
+  late Duration _batchingDelay;
   final Queue<String> _batchedEvents = Queue<String>();
   bool _isSendingScheduled = false;
 
@@ -99,14 +97,14 @@ class AnalyticsImpl implements Analytics {
     this.applicationVersion,
     String? analyticsUrl,
     String? analyticsBatchingUrl,
-    Future<void>? Function()? batchingDelay,
+    Duration? batchingDelay,
   }) {
     if (applicationName != null) setSessionValue('an', applicationName);
     if (applicationVersion != null) setSessionValue('av', applicationVersion);
 
     _url = analyticsUrl ?? _defaultAnalyticsUrl;
     _batchingUrl = analyticsBatchingUrl ?? _defaultAnalyticsBatchingUrl;
-    _batchingDelay = batchingDelay ?? () => Future(() {});
+    _batchingDelay = batchingDelay ?? const Duration();
   }
 
   bool? _firstRun;
@@ -272,16 +270,12 @@ class AnalyticsImpl implements Analytics {
     _batchedEvents.add(postHandler.encodeHit(eventArgs));
 
     if (!_isSendingScheduled) {
-      final delay = _batchingDelay();
-      if (delay == null) {
+      _isSendingScheduled = true;
+      // ignore: unawaited_futures
+      Future.delayed(_batchingDelay).then((value) {
+        _isSendingScheduled = false;
         _trySendBatches(completer);
-      } else {
-        _isSendingScheduled = true;
-        unawaited(delay.then((value) {
-          _isSendingScheduled = false;
-          _trySendBatches(completer);
-        }));
-      }
+      });
     }
     return completer.future;
   }

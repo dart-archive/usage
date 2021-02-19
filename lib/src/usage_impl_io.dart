@@ -26,12 +26,10 @@ import 'usage_impl.dart';
 /// be supplied. For Flutter applications, you should pass in a value like
 /// `PathProvider.getApplicationDocumentsDirectory()`.
 ///
-/// [batchingDelay] is used to control batching behaviour. It should return a
-/// [Future] that will be awaited before attempting sending the enqueued
-/// messages. The default [batchingDelay] is `() => Future(() {})`. That implies
-/// messages will be sent whem control returns to the event loop.
-///
-/// If [batchingDelay] returns `null`, events will not be batched.
+/// [batchingDelay] is used to control batching behaviour. Events will be sent
+/// batches of 20 after the duration is over from when the first message was
+/// sent. The default is 0 milliseconds, meaning that messages will be sent when
+/// control returns to the event loop.
 ///
 /// Batched messages are sent in batches of up to 20 messages. They will be sent
 /// to [analyticsBatchingUrl] defaulting to
@@ -45,7 +43,7 @@ class AnalyticsIO extends AnalyticsImpl {
     String? analyticsBatchingUrl,
     Directory? documentDirectory,
     HttpClient? client,
-    Future<void>? Function()? batchingDelay,
+    Duration? batchingDelay,
   }) : super(
           trackingId,
           IOPersistentProperties(applicationName,
