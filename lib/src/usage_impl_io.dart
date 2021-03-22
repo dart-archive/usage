@@ -102,7 +102,11 @@ class IOPostHandler extends PostHandler {
   }
 
   @override
-  void close() => _client?.close();
+  void close() {
+    // Do a force close to ensure that lingering requests will not stall the
+    // program.
+    _client?.close(force: true);
+  }
 }
 
 JsonEncoder _jsonEncoder = JsonEncoder.withIndent('  ');
