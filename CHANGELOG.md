@@ -1,3 +1,7 @@
+## 4.0.1
+- Force close the http client from `IOAnalytics.close()`.
+  This prevents lingering requests from making the application hang.
+
 ## 4.0.0
 - Publishing a null safe stable release.
 
