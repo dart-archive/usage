@@ -43,10 +43,10 @@ class ThrottlingBucket {
   }
 
   void _checkReplenish() {
-    var now = DateTime.now().millisecondsSinceEpoch;
+    final now = DateTime.now().millisecondsSinceEpoch;
 
-    if (_lastReplenish + 1000 >= now) {
-      var inc = (now - _lastReplenish) ~/ 1000;
+    if (_lastReplenish + 1000 < now) {
+      final inc = (now - _lastReplenish) ~/ 1000;
       drops = math.min(drops + inc, startingCount);
       _lastReplenish += (1000 * inc);
     }

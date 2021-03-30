@@ -25,6 +25,18 @@ void defineTests() {
       }
       expect(bucket.removeDrop(), false);
     });
+
+    test('does re-send after throttling', () async {
+      var bucket = ThrottlingBucket(20);
+      for (var i = 0; i < 20; i++) {
+        expect(bucket.removeDrop(), true);
+      }
+      expect(bucket.removeDrop(), false);
+
+      // TODO: Re-write to use package:fake_async.
+      await Future.delayed(Duration(milliseconds: 1500));
+      expect(bucket.removeDrop(), true);
+    });
   });
 
   group('AnalyticsImpl', () {
