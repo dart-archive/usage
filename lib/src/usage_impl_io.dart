@@ -6,8 +6,8 @@ import 'dart:async';
 import 'dart:convert' show JsonEncoder, jsonDecode;
 import 'dart:io';
 
-import 'package:path/path.dart' as path;
 import 'package:meta/meta.dart';
+import 'package:path/path.dart' as path;
 
 import 'usage_impl.dart';
 
@@ -122,7 +122,11 @@ class IOPostHandler extends PostHandler {
   }
 
   @override
-  void close() => _client.close();
+  void close() {
+    // Do a force close to ensure that lingering requests will not stall the
+    // program.
+    _client.close(force: true);
+  }
 }
 
 JsonEncoder _jsonEncoder = JsonEncoder.withIndent('  ');
