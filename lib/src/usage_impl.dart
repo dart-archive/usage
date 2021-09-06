@@ -268,8 +268,12 @@ class AnalyticsImpl implements Analytics {
 
     _sendController.add(eventArgs);
     _batchedEvents.add(postHandler.encodeHit(eventArgs));
-
-    if (!_isSendingScheduled) {
+    // First check if we have a full batch - if so, send them immediately.
+    if (_batchedEvents.length >= _maxHitsPerBatch ||
+        _batchedEvents.fold<int>(0, (s, e) => s + e.length) >=
+            _maxHitsPerBatch) {
+      _trySendBatches(completer);
+    } else if (!_isSendingScheduled) {
       _isSendingScheduled = true;
       // ignore: unawaited_futures
       Future.delayed(_batchingDelay).then((value) {
