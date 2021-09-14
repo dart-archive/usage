@@ -272,7 +272,6 @@ class AnalyticsImpl implements Analytics {
     if (_batchedEvents.length >= _maxHitsPerBatch ||
         _batchedEvents.fold<int>(0, (s, e) => s + e.length) >=
             _maxBytesPerBatch) {
-      print("full $_batchedEvents");
       _trySendBatches(completer);
     } else if (!_isSendingScheduled) {
       _isSendingScheduled = true;
