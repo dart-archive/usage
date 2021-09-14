@@ -8,7 +8,7 @@ library usage_ga;
 import 'package:usage/usage_io.dart';
 
 void main(List args) async {
-  final defaultUA = 'UA-55029513-1';
+  final defaultUA = 'UA-188575324-1';
 
   if (args.isEmpty) {
     print('usage: dart ga <GA tracking ID>');
@@ -27,6 +27,8 @@ void main(List args) async {
       .sendException('foo error:\n${sanitizeStacktrace(StackTrace.current)}');
   await ga.sendTiming('writeDuration', 123);
   await ga.sendEvent('create', 'consoleapp', label: 'Console App');
+  await ga.sendEvent('destroy', 'consoleapp', label: 'Console App');
+
   print('pinged ${ua}');
 
   await ga.waitForLastPing();

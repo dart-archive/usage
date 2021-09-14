@@ -32,9 +32,12 @@ void defineWebTests() {
     test('sendPost', () async {
       var client = MockRequestor();
       var postHandler = HtmlPostHandler(mockRequestor: client.request);
-      var args = <String, dynamic>{'utv': 'varName', 'utt': 123};
+      var args = [
+        <String, String>{'utv': 'varName', 'utt': '123'},
+      ];
 
-      await postHandler.sendPost('http://www.google.com', args);
+      await postHandler.sendPost(
+          'http://www.google.com', args.map(postHandler.encodeHit).toList());
       expect(client.sendCount, 1);
     });
   });

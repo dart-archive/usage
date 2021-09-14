@@ -3,6 +3,7 @@
 // BSD-style license that can be found in the LICENSE file.
 
 import 'dart:async';
+import 'dart:collection';
 import 'dart:math' as math;
 
 import '../usage.dart';
@@ -57,6 +58,9 @@ class AnalyticsImpl implements Analytics {
   static const String _defaultAnalyticsUrl =
       'https://www.google-analytics.com/collect';
 
+  static const String _defaultAnalyticsBatchingUrl =
+      'https://www.google-analytics.com/batch';
+
   @override
   final String trackingId;
   @override
@@ -75,17 +79,32 @@ class AnalyticsImpl implements Analytics {
   @override
   AnalyticsOpt analyticsOpt = AnalyticsOpt.optOut;
 
+  late Duration _batchingDelay;
+  final Queue<String> _batchedEvents = Queue<String>();
+  bool _isSendingScheduled = false;
+
   late final String _url;
+  late final String _batchingUrl;
 
   final StreamController<Map<String, dynamic>> _sendController =
       StreamController.broadcast(sync: true);
 
-  AnalyticsImpl(this.trackingId, this.properties, this.postHandler,
-      {this.applicationName, this.applicationVersion, String? analyticsUrl}) {
+  AnalyticsImpl(
+    this.trackingId,
+    this.properties,
+    this.postHandler, {
+    this.applicationName,
+    this.applicationVersion,
+    String? analyticsUrl,
+    String? analyticsBatchingUrl,
+    Duration? batchingDelay,
+  }) {
     if (applicationName != null) setSessionValue('an', applicationName);
     if (applicationVersion != null) setSessionValue('av', applicationVersion);
 
     _url = analyticsUrl ?? _defaultAnalyticsUrl;
+    _batchingUrl = analyticsBatchingUrl ?? _defaultAnalyticsBatchingUrl;
+    _batchingDelay = batchingDelay ?? const Duration();
   }
 
   bool? _firstRun;
@@ -118,38 +137,41 @@ class AnalyticsImpl implements Analytics {
 
   @override
   Future sendScreenView(String viewName, {Map<String, String>? parameters}) {
-    var args = <String, dynamic>{'cd': viewName};
-    if (parameters != null) {
-      args.addAll(parameters);
-    }
-    return _sendPayload('screenview', args);
+    var args = <String, String>{'cd': viewName, ...?parameters};
+    return _enqueuePayload('screenview', args);
   }
 
   @override
   Future sendEvent(String category, String action,
       {String? label, int? value, Map<String, String>? parameters}) {
-    var args = <String, dynamic>{'ec': category, 'ea': action};
-    if (label != null) args['el'] = label;
-    if (value != null) args['ev'] = value;
-    if (parameters != null) {
-      args.addAll(parameters);
-    }
-    return _sendPayload('event', args);
+    final args = <String, String>{
+      'ec': category,
+      'ea': action,
+      if (label != null) 'el': label,
+      if (value != null) 'ev': value.toString(),
+      ...?parameters
+    };
+
+    return _enqueuePayload('event', args);
   }
 
   @override
   Future sendSocial(String network, String action, String target) {
-    var args = <String, dynamic>{'sn': network, 'sa': action, 'st': target};
-    return _sendPayload('social', args);
+    var args = <String, String>{'sn': network, 'sa': action, 'st': target};
+    return _enqueuePayload('social', args);
   }
 
   @override
   Future sendTiming(String variableName, int time,
       {String? category, String? label}) {
-    var args = <String, dynamic>{'utv': variableName, 'utt': time};
-    if (label != null) args['utl'] = label;
-    if (category != null) args['utc'] = category;
-    return _sendPayload('timing', args);
+    var args = <String, String>{
+      'utv': variableName,
+      'utt': time.toString(),
+      if (label != null) 'utl': label,
+      if (category != null) 'utc': category,
+    };
+
+    return _enqueuePayload('timing', args);
   }
 
   @override
@@ -177,9 +199,11 @@ class AnalyticsImpl implements Analytics {
       description = description.substring(0, maxExceptionLength);
     }
 
-    var args = <String, dynamic>{'exd': description};
-    if (fatal != null && fatal) args['exf'] = '1';
-    return _sendPayload('exception', args);
+    var args = <String, String>{
+      'exd': description,
+      if (fatal != null && fatal) 'exf': '1',
+    };
+    return _enqueuePayload('exception', args);
   }
 
   @override
@@ -198,13 +222,13 @@ class AnalyticsImpl implements Analytics {
   Stream<Map<String, dynamic>> get onSend => _sendController.stream;
 
   @override
-  Future<List<dynamic>> waitForLastPing({Duration? timeout}) {
-    var f = Future.wait(_futures).catchError((e) => []);
-
-    if (timeout != null) {
-      f = f.timeout(timeout, onTimeout: () => []);
+  Future<List<dynamic>> waitForLastPing({Duration? timeout}) async {
+    // If there are pending messages, send them now.
+    if (_batchedEvents.isNotEmpty) {
+      _trySendBatches(Completer<void>());
     }
-
+    var f = Future.wait(_futures);
+    if (timeout != null) f = f.timeout(timeout);
     return f;
   }
 
@@ -219,36 +243,79 @@ class AnalyticsImpl implements Analytics {
   ///
   /// Valid values for [hitType] are: 'pageview', 'screenview', 'event',
   /// 'transaction', 'item', 'social', 'exception', and 'timing'.
-  Future sendRaw(String hitType, Map<String, dynamic> args) {
-    return _sendPayload(hitType, args);
+  Future sendRaw(String hitType, Map<String, String> args) {
+    return _enqueuePayload(hitType, args);
   }
 
+  /// Puts a single hit in the queue. If the queue was empty - start waiting
+  /// for the result of [_batchingDelay] before sending all enqueued events.
+  ///
   /// Valid values for [hitType] are: 'pageview', 'screenview', 'event',
   /// 'transaction', 'item', 'social', 'exception', and 'timing'.
-  Future _sendPayload(String hitType, Map<String, dynamic> args) {
-    if (!enabled) return Future.value();
+  Future<void> _enqueuePayload(String hitType, Map<String, String> args) async {
+    if (!enabled) return;
+    // TODO(sigurdm): Really all the 'send' methods should not return Futures
+    // there is not much point in waiting for it. Only [waitForLastPing].
+    final completer = Completer<void>();
+    final eventArgs = <String, String>{
+      ...args,
+      ..._variableMap,
+      'v': '1', // protocol version
+      'tid': trackingId,
+      'cid': clientId,
+      't': hitType,
+    };
 
-    if (_bucket.removeDrop()) {
-      _variableMap.forEach((key, value) {
-        args[key] = value;
+    _sendController.add(eventArgs);
+    _batchedEvents.add(postHandler.encodeHit(eventArgs));
+    // First check if we have a full batch - if so, send them immediately.
+    if (_batchedEvents.length >= _maxHitsPerBatch ||
+        _batchedEvents.fold<int>(0, (s, e) => s + e.length) >=
+            _maxBytesPerBatch) {
+      _trySendBatches(completer);
+    } else if (!_isSendingScheduled) {
+      _isSendingScheduled = true;
+      // ignore: unawaited_futures
+      Future.delayed(_batchingDelay).then((value) {
+        _isSendingScheduled = false;
+        _trySendBatches(completer);
       });
-
-      args['v'] = '1'; // protocol version
-      args['tid'] = trackingId;
-      args['cid'] = clientId;
-      args['t'] = hitType;
-
-      _sendController.add(args);
-
-      return _recordFuture(postHandler.sendPost(_url, args));
-    } else {
-      return Future.value();
     }
+    return completer.future;
   }
 
-  Future _recordFuture(Future f) {
+  // Send no more than 20 messages per batch.
+  static const _maxHitsPerBatch = 20;
+  // Send no more than 16K per batch.
+  static const _maxBytesPerBatch = 16000;
+
+  void _trySendBatches(Completer<void> completer) {
+    final futures = <Future>[];
+    while (_batchedEvents.isNotEmpty) {
+      final batch = <String>[];
+      final totalLength = 0;
+
+      while (true) {
+        if (_batchedEvents.isEmpty) break;
+        if (totalLength + _batchedEvents.first.length > _maxBytesPerBatch) {
+          break;
+        }
+        batch.add(_batchedEvents.removeFirst());
+        if (batch.length == _maxHitsPerBatch) break;
+      }
+      if (_bucket.removeDrop()) {
+        final future = postHandler.sendPost(
+            batch.length == 1 ? _url : _batchingUrl, batch);
+        _recordFuture(future);
+        futures.add(future);
+      }
+    }
+    completer.complete(Future.wait(futures).then((_) {}));
+  }
+
+  void _recordFuture(Future f) {
     _futures.add(f);
-    return f.whenComplete(() => _futures.remove(f));
+    f.whenComplete(() => _futures.remove(f));
   }
 }
 
@@ -283,7 +350,8 @@ abstract class PersistentProperties {
 /// The `Future` from [sendPost] should complete when the operation is finished,
 /// but failures to send the information should be silent.
 abstract class PostHandler {
-  Future sendPost(String url, Map<String, dynamic> parameters);
+  Future sendPost(String url, List<String> batch);
+  String encodeHit(Map<String, String> hit);
 
   /// Free any used resources.
   void close();

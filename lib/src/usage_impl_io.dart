@@ -3,15 +3,19 @@
 // BSD-style license that can be found in the LICENSE file.
 
 import 'dart:async';
-import 'dart:convert' show jsonDecode, JsonEncoder;
+import 'dart:convert' show JsonEncoder, jsonDecode;
 import 'dart:io';
 
+import 'package:meta/meta.dart';
 import 'package:path/path.dart' as path;
 
 import 'usage_impl.dart';
 
 /// An interface to a Google Analytics session, suitable for use in command-line
 /// applications.
+///
+/// [analyticsUrl] is an optional replacement for the default Google Analytics
+/// URL (`https://www.google-analytics.com/collect`).
 ///
 /// `trackingId`, `applicationName`, and `applicationVersion` values should be supplied.
 /// `analyticsUrl` is optional, and lets user's substitute their own analytics URL for
@@ -21,18 +25,36 @@ import 'usage_impl.dart';
 /// defaults to the user home directory. For regular `dart:io` apps this doesn't need to
 /// be supplied. For Flutter applications, you should pass in a value like
 /// `PathProvider.getApplicationDocumentsDirectory()`.
+///
+/// [batchingDelay] is used to control batching behaviour. Events will be sent
+/// batches of 20 after the duration is over from when the first message was
+/// sent. The default is 0 milliseconds, meaning that messages will be sent when
+/// control returns to the event loop.
+///
+/// Batched messages are sent in batches of up to 20 messages. They will be sent
+/// to [analyticsBatchingUrl] defaulting to
+/// `https://www.google-analytics.com/batch`.
 class AnalyticsIO extends AnalyticsImpl {
   AnalyticsIO(
-      String trackingId, String applicationName, String applicationVersion,
-      {String? analyticsUrl, Directory? documentDirectory})
-      : super(
-            trackingId,
-            IOPersistentProperties(applicationName,
-                documentDirPath: documentDirectory?.path),
-            IOPostHandler(),
-            applicationName: applicationName,
-            applicationVersion: applicationVersion,
-            analyticsUrl: analyticsUrl) {
+    String trackingId,
+    String applicationName,
+    String applicationVersion, {
+    String? analyticsUrl,
+    String? analyticsBatchingUrl,
+    Directory? documentDirectory,
+    HttpClient? client,
+    Duration? batchingDelay,
+  }) : super(
+          trackingId,
+          IOPersistentProperties(applicationName,
+              documentDirPath: documentDirectory?.path),
+          IOPostHandler(client: client),
+          applicationName: applicationName,
+          applicationVersion: applicationVersion,
+          analyticsUrl: analyticsUrl,
+          analyticsBatchingUrl: analyticsBatchingUrl,
+          batchingDelay: batchingDelay,
+        ) {
     final locale = getPlatformLocale();
     if (locale != null) {
       setSessionValue('ul', locale);
@@ -40,7 +62,8 @@ class AnalyticsIO extends AnalyticsImpl {
   }
 }
 
-String _createUserAgent() {
+@visibleForTesting
+String createUserAgent() {
   final locale = getPlatformLocale() ?? '';
 
   if (Platform.isAndroid) {
@@ -74,28 +97,25 @@ String getDartVersion() {
 }
 
 class IOPostHandler extends PostHandler {
-  final String _userAgent;
-  final HttpClient? mockClient;
+  final HttpClient _client;
 
-  HttpClient? _client;
-
-  IOPostHandler({this.mockClient}) : _userAgent = _createUserAgent();
+  IOPostHandler({HttpClient? client})
+      : _client = (client ?? HttpClient())..userAgent = createUserAgent();
 
   @override
-  Future sendPost(String url, Map<String, dynamic> parameters) async {
-    var data = postEncode(parameters);
+  String encodeHit(Map<String, String> hit) {
+    return postEncode(hit);
+  }
 
-    if (_client == null) {
-      _client = mockClient ?? HttpClient();
-      _client!.userAgent = _userAgent;
-    }
-
+  @override
+  Future sendPost(String url, List<String> batch) async {
+    var data = batch.join('\n');
     try {
-      var req = await _client!.postUrl(Uri.parse(url));
+      var req = await _client.postUrl(Uri.parse(url));
       req.write(data);
       var response = await req.close();
       await response.drain();
-    } catch (exception) {
+    } on Exception {
       // Catch errors that can happen during a request, but that we can't do
       // anything about, e.g. a missing internet connection.
     }
@@ -105,7 +125,7 @@ class IOPostHandler extends PostHandler {
   void close() {
     // Do a force close to ensure that lingering requests will not stall the
     // program.
-    _client?.close(force: true);
+    _client.close(force: true);
   }
 }
 
