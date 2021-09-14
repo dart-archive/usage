@@ -3,14 +3,15 @@
 # BSD-style license that can be found in the LICENSE file.
 
 name: usage
-version: 4.0.2
+version: 4.1.0
 description: A Google Analytics wrapper for command-line, web, and Flutter apps.
 homepage: https://github.com/dart-lang/usage
 
 environment:
-  sdk: '>=2.12.0-0 <3.0.0'
+  sdk: '>=2.12.0 <3.0.0'
 
 dependencies:
+  meta: ^1.7.0
   path: ^1.8.0
 
 dev_dependencies:
