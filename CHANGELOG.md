@@ -1,3 +1,7 @@
+## 4.1.0
+- Analytics hits can now be batched. See details in the documentation of the
+  `AnalyticsIO` constructor.
+
 ## 4.0.2
 - Fix a bug with the analytics ping throttling algorithm.
 
