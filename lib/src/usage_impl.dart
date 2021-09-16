@@ -243,7 +243,7 @@ class AnalyticsImpl implements Analytics {
   ///
   /// Valid values for [hitType] are: 'pageview', 'screenview', 'event',
   /// 'transaction', 'item', 'social', 'exception', and 'timing'.
-  Future sendRaw(String hitType, Map<String, String> args) {
+  Future sendRaw(String hitType, Map<String, dynamic> args) {
     return _enqueuePayload(hitType, args);
   }
 
@@ -252,7 +252,10 @@ class AnalyticsImpl implements Analytics {
   ///
   /// Valid values for [hitType] are: 'pageview', 'screenview', 'event',
   /// 'transaction', 'item', 'social', 'exception', and 'timing'.
-  Future<void> _enqueuePayload(String hitType, Map<String, String> args) async {
+  Future<void> _enqueuePayload(
+    String hitType,
+    Map<String, dynamic> args,
+  ) async {
     if (!enabled) return;
     // TODO(sigurdm): Really all the 'send' methods should not return Futures
     // there is not much point in waiting for it. Only [waitForLastPing].
