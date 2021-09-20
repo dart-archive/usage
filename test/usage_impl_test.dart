@@ -90,6 +90,13 @@ void defineTests() {
       return mock.waitForLastPing(timeout: Duration(milliseconds: 100));
     });
 
+    test('waitForLastPing times out', () async {
+      var mock = StallingAnalyticsImplMock('blahID');
+      // ignore: unawaited_futures
+      mock.sendScreenView('foo');
+      await mock.waitForLastPing(timeout: Duration(milliseconds: 100));
+    });
+
     group('clientId', () {
       test('is available immediately', () {
         var mock = createMock();

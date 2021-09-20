@@ -28,6 +28,23 @@ class AnalyticsImplMock extends AnalyticsImpl {
   String get last => mockPostHandler.last;
 }
 
+class StallingAnalyticsImplMock extends AnalyticsImpl {
+  StallingAnalyticsImplMock(String trackingId, {Map<String, dynamic>? props})
+      : super(trackingId, MockProperties(props), StallingPostHandler(),
+            applicationName: 'Test App', applicationVersion: '0.1');
+}
+
+class StallingPostHandler extends PostHandler {
+  @override
+  void close() {}
+
+  @override
+  String encodeHit(Map<String, String> hit) => jsonEncode(hit);
+
+  @override
+  Future sendPost(String url, List<String> batch) => Completer().future;
+}
+
 class MockProperties extends PersistentProperties {
   Map<String, dynamic> props = {};
 

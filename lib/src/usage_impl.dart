@@ -228,7 +228,7 @@ class AnalyticsImpl implements Analytics {
       _trySendBatches(Completer<void>());
     }
     var f = Future.wait(_futures);
-    if (timeout != null) f = f.timeout(timeout);
+    if (timeout != null) f = f.timeout(timeout, onTimeout: () => []);
     return f;
   }
 
