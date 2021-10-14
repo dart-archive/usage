@@ -28,8 +28,10 @@ import 'usage_impl.dart';
 ///
 /// [batchingDelay] is used to control batching behaviour. Events will be sent
 /// batches of 20 after the duration is over from when the first message was
-/// sent. The default is 0 milliseconds, meaning that messages will be sent when
-/// control returns to the event loop.
+/// sent.
+///
+/// If [batchingDelay] is `Duration()` messages will be sent when control
+/// returns to the event loop.
 ///
 /// Batched messages are sent in batches of up to 20 messages. They will be sent
 /// to [analyticsBatchingUrl] defaulting to

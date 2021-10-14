@@ -79,12 +79,12 @@ class AnalyticsImpl implements Analytics {
   @override
   AnalyticsOpt analyticsOpt = AnalyticsOpt.optOut;
 
-  late Duration _batchingDelay;
+  final Duration? _batchingDelay;
   final Queue<String> _batchedEvents = Queue<String>();
   bool _isSendingScheduled = false;
 
-  late final String _url;
-  late final String _batchingUrl;
+  final String _url;
+  final String _batchingUrl;
 
   final StreamController<Map<String, dynamic>> _sendController =
       StreamController.broadcast(sync: true);
@@ -98,13 +98,11 @@ class AnalyticsImpl implements Analytics {
     String? analyticsUrl,
     String? analyticsBatchingUrl,
     Duration? batchingDelay,
-  }) {
+  })  : _url = analyticsUrl ?? _defaultAnalyticsUrl,
+        _batchingDelay = batchingDelay,
+        _batchingUrl = analyticsBatchingUrl ?? _defaultAnalyticsBatchingUrl {
     if (applicationName != null) setSessionValue('an', applicationName);
     if (applicationVersion != null) setSessionValue('av', applicationVersion);
-
-    _url = analyticsUrl ?? _defaultAnalyticsUrl;
-    _batchingUrl = analyticsBatchingUrl ?? _defaultAnalyticsBatchingUrl;
-    _batchingDelay = batchingDelay ?? const Duration();
   }
 
   bool? _firstRun;
@@ -271,18 +269,26 @@ class AnalyticsImpl implements Analytics {
 
     _sendController.add(eventArgs);
     _batchedEvents.add(postHandler.encodeHit(eventArgs));
-    // First check if we have a full batch - if so, send them immediately.
-    if (_batchedEvents.length >= _maxHitsPerBatch ||
-        _batchedEvents.fold<int>(0, (s, e) => s + e.length) >=
-            _maxBytesPerBatch) {
+
+    // If [_batchingDelay] is null we don't do batching.
+    // TODO(sigurdm): reconsider this.
+    final batchingDelay = _batchingDelay;
+    if (batchingDelay == null) {
       _trySendBatches(completer);
-    } else if (!_isSendingScheduled) {
-      _isSendingScheduled = true;
-      // ignore: unawaited_futures
-      Future.delayed(_batchingDelay).then((value) {
-        _isSendingScheduled = false;
+    } else {
+      // First check if we have a full batch - if so, send them immediately.
+      if (_batchedEvents.length >= _maxHitsPerBatch ||
+          _batchedEvents.fold<int>(0, (s, e) => s + e.length) >=
+              _maxBytesPerBatch) {
         _trySendBatches(completer);
-      });
+      } else if (!_isSendingScheduled) {
+        _isSendingScheduled = true;
+        // ignore: unawaited_futures
+        Future.delayed(batchingDelay).then((value) {
+          _isSendingScheduled = false;
+          _trySendBatches(completer);
+        });
+      }
     }
     return completer.future;
   }
