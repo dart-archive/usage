@@ -13,9 +13,12 @@ import 'usage_impl.dart';
 /// [analyticsUrl] is an optional replacement for the default Google Analytics
 /// URL (`https://www.google-analytics.com/collect`).
 ///
-/// [batchingDelay] is used to control batching behaviour. It should return a
-/// [Future] that will be awaited before attempting sending the enqueued
-/// messages. If it returns `null` events will not be batched.
+/// [batchingDelay] is used to control batching behaviour. Events will be sent
+/// batches of 20 after the duration is over from when the first message was
+/// sent.
+///
+/// If [batchingDelay] is `Duration()` messages will be sent when control
+/// returns to the event loop.
 ///
 /// Batched messages are sent in batches of up to 20 messages.
 class AnalyticsHtml extends AnalyticsImpl {
