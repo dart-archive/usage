@@ -59,13 +59,12 @@ utv=varName&utt=123''');
   });
 
   group('batching', () {
-    test(
-        'with default batch-delay hits from the same sync span are batched together',
+    test('with 0 batch-delay hits from the same sync span are batched together',
         () async {
       var mockClient = MockHttpClient();
 
       final analytics = AnalyticsIO('<TRACKING-ID', 'usage-test', '0.0.1',
-          client: mockClient);
+          client: mockClient, batchingDelay: Duration());
       unawaited(analytics.sendEvent('my-event1', 'something'));
       unawaited(analytics.sendEvent('my-event2', 'something'));
       unawaited(analytics.sendEvent('my-event3', 'something'));
