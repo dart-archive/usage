@@ -26,12 +26,22 @@ class AnalyticsImplMock extends AnalyticsImpl {
             applicationName: 'Test App', applicationVersion: '0.1');
 
   String get last => mockPostHandler.last;
+
+  @override
+  set clientId(String value) {
+    properties['clientId'] = value;
+  }
 }
 
 class StallingAnalyticsImplMock extends AnalyticsImpl {
   StallingAnalyticsImplMock(String trackingId, {Map<String, dynamic>? props})
       : super(trackingId, MockProperties(props), StallingPostHandler(),
             applicationName: 'Test App', applicationVersion: '0.1');
+
+  @override
+  set clientId(String value) {
+    properties['clientId'] = value;
+  }
 }
 
 class StallingPostHandler extends PostHandler {

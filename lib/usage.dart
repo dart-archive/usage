@@ -68,6 +68,9 @@ abstract class Analytics {
   /// computer sending analytics data.
   String get clientId;
 
+  // Set a custom client id. 
+  set clientId(String value);
+
   /// Sends a screen view hit to Google Analytics.
   ///
   /// [parameters] can be any analytics key/value pair. Useful
@@ -218,6 +221,9 @@ class AnalyticsMock implements Analytics {
 
   @override
   String get clientId => '00000000-0000-4000-0000-000000000000';
+
+  @override
+  set clientId(String value) {}
 
   @override
   Future sendScreenView(String viewName, {Map<String, String>? parameters}) {

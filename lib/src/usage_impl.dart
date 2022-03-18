@@ -236,6 +236,11 @@ class AnalyticsImpl implements Analytics {
   @override
   String get clientId => properties['clientId'] ??= Uuid().generateV4();
 
+  @override
+  set clientId(String value) {
+    properties['clientId'] = value;
+  }
+
   /// Send raw data to analytics. Callers should generally use one of the typed
   /// methods (`sendScreenView`, `sendEvent`, ...).
   ///
