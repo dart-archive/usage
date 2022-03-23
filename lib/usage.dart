@@ -278,7 +278,7 @@ class AnalyticsMock implements Analytics {
 
   Future _log(String hitType, Map m) {
     if (logCalls) {
-      print('analytics: ${hitType} ${m}');
+      print('analytics: $hitType $m');
     }
 
     return Future.value();
@@ -294,7 +294,7 @@ class AnalyticsMock implements Analytics {
 /// an exception. This will try and make those first 100 chars contain
 /// information useful to debugging the issue.
 String sanitizeStacktrace(dynamic st, {bool shorten = true}) {
-  var str = '${st}';
+  var str = '$st';
 
   Iterable<Match> iter = _pathRegex.allMatches(str);
   iter = iter.toList().reversed;
