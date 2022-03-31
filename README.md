@@ -1,7 +1,8 @@
 A wrapper around Google Analytics for command-line, web, and Flutter apps.
 
-[![pub package](https://img.shields.io/pub/v/usage.svg)](https://pub.dev/packages/usage)
 [![Build Status](https://github.com/dart-lang/usage/workflows/Dart/badge.svg)](https://github.com/dart-lang/usage/actions)
+[![pub package](https://img.shields.io/pub/v/usage.svg)](https://pub.dev/packages/usage)
+[![package publisher](https://img.shields.io/pub/publisher/usage.svg)](https://pub.dev/publishers/tools.dart.dev)
 
 ## For web apps
 
@@ -88,10 +89,10 @@ opt-out - data will be sent to Google Analytics unless the user explicitly
 opts-out. The mode can be adjusted by changing the value of the
 `Analytics.analyticsOpt` field.
 
-*Opt-out* In opt-out mode, if the user does not explicitly opt-out of collecting
+_Opt-out_ In opt-out mode, if the user does not explicitly opt-out of collecting
 analytics, the usage library will send usage data.
 
-*Opt-in* In opt-in mode, no data will be sent until the user explicitly opt-in
+_Opt-in_ In opt-in mode, no data will be sent until the user explicitly opt-in
 to collection. This includes screen views, events, timing information, and exceptions.
 
 ## Other info
@@ -99,7 +100,7 @@ to collection. This includes screen views, events, timing information, and excep
 For both classes, you need to provide a Google Analytics tracking ID, the
 application name, and the application version.
 
-*Note:* This library is intended for use with the Google Analytics application /
+_Note:_ This library is intended for use with the Google Analytics application /
 mobile app style tracking IDs (as opposed to the web site style tracking IDs).
 
 For more information, please see the Google Analytics Measurement Protocol
