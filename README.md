@@ -34,7 +34,7 @@ To use this library as a command-line app, import the `usage_io.dart` library
 and instantiate the `AnalyticsIO` class.
 
 Note, for CLI apps, the usage library will send analytics pings asynchronously.
-This is useful it that it doesn't block the app generally. It does have one
+This is useful in that it doesn't block the app generally. It does have one
 side-effect, in that outstanding asynchronous requests will block termination
 of the VM until that request finishes. So, for short-lived CLI tools, pinging
 Google Analytics can cause the tool to pause for several seconds before it
