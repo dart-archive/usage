@@ -1,0 +1,12 @@
+# Dependabot configuration file.
+version: 2
+enable-beta-ecosystems: true
+
+updates:
+  # Enable weekly dependencies checks.
+  - package-ecosystem: "pub"
+    directory: "/"
+    schedule:
+      interval: "weekly"
+      day: "sunday"
+    versioning-strategy: widen
