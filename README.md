@@ -2,7 +2,7 @@ A wrapper around Google Analytics for command-line, web, and Flutter apps.
 
 [![Build Status](https://github.com/dart-lang/usage/workflows/Dart/badge.svg)](https://github.com/dart-lang/usage/actions)
 [![pub package](https://img.shields.io/pub/v/usage.svg)](https://pub.dev/packages/usage)
-[![package publisher](https://img.shields.io/pub/publisher/usage.svg)](https://pub.dev/publishers/tools.dart.dev)
+[![package publisher](https://img.shields.io/pub/publisher/usage.svg)](https://pub.dev/packages/usage/publisher)
 
 ## For web apps
 
