@@ -3,10 +3,14 @@ version: 2
 enable-beta-ecosystems: true
 
 updates:
-  # Enable weekly dependencies checks.
   - package-ecosystem: "pub"
     directory: "/"
     schedule:
-      interval: "weekly"
-      day: "sunday"
+      interval: "monthly"
+    # TODO: Remove this if / when the default changes (dependabot/dependabot-core/issues/4979)
     versioning-strategy: increase-if-necessary
+
+  - package-ecosystem: "github-actions"
+    directory: "/"
+    schedule:
+      interval: "monthly"
