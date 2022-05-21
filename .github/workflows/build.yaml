@@ -1,24 +1,30 @@
-name: Dart
+name: Build
 
 on:
   schedule:
     # “At 00:00 (UTC) on Sunday.”
     - cron: '0 0 * * 0'
-  pull_request:
   push:
-    branches:
-      - master
+    branches: [ master ]
+  pull_request:
+    branches: [ master ]
 
 jobs:
   build:
     runs-on: ubuntu-latest
 
-    container:
-      image:  google/dart:dev
-
     steps:
-      - uses: actions/checkout@v3
-      - run: dart pub get
-      - run: dart format --output=none --set-exit-if-changed .
-      - run: dart analyze --fatal-infos
-      - run: dart test
+      - uses: actions/checkout@2541b1294d2704b0964813337f33b291d3f8596b
+      - uses: dart-lang/setup-dart@v6a218f2413a3e78e9087f638a238f6b40893203d
+
+      - name: Install dependencies
+        run: dart pub get
+  
+      - name: Verify formatting
+        run: dart format --output=none --set-exit-if-changed .
+
+      - name: Analyze project source
+        run: dart analyze --fatal-infos
+
+      - name: Run tests
+        run: dart test
