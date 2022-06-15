@@ -1,4 +1,4 @@
-## 4.1.0-dev
+## 4.1.0
 - Analytics hits can now be batched. See details in the documentation of the
   `AnalyticsIO` constructor.
 - Allow sendRaw to send Map<String, dynamic> (#161).
