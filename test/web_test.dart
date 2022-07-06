@@ -68,6 +68,6 @@ class MockRequestor {
     expect(sendData, isNotEmpty);
 
     sendCount++;
-    return Future.value();
+    return Future.value(HttpRequest());
   }
 }

@@ -12,7 +12,7 @@ void main(List args) async {
 
   if (args.isEmpty) {
     print('usage: dart ga <GA tracking ID>');
-    print('pinging default UA value (${defaultUA})');
+    print('pinging default UA value ($defaultUA)');
   } else {
     print('pinging ${args.first}');
   }
@@ -29,7 +29,7 @@ void main(List args) async {
   await ga.sendEvent('create', 'consoleapp', label: 'Console App');
   await ga.sendEvent('destroy', 'consoleapp', label: 'Console App');
 
-  print('pinged ${ua}');
+  print('pinged $ua');
 
   await ga.waitForLastPing();
 

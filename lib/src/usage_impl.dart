@@ -13,7 +13,7 @@ String postEncode(Map<String, dynamic> map) {
   // &foo=bar
   return map.keys.map((key) {
     var value = '${map[key]}';
-    return '${key}=${Uri.encodeComponent(value)}';
+    return '$key=${Uri.encodeComponent(value)}';
   }).join('&');
 }
 

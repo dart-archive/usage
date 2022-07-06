@@ -1,6 +1,9 @@
 ## 4.1.0
 - Analytics hits can now be batched. See details in the documentation of the
   `AnalyticsIO` constructor.
+- Allow sendRaw to send Map<String, dynamic> (#161).
+- Address a `null_argument_to_non_null_type` analysis issue.
+- Change to using 'package:lints' for analysis.
 
 ## 4.0.2
 - Fix a bug with the analytics ping throttling algorithm.
