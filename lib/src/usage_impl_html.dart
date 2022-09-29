@@ -55,7 +55,7 @@ class HtmlPostHandler extends PostHandler {
   HtmlPostHandler({this.mockRequestor});
 
   @override
-  String encodeHit(Map<String, String> hit) {
+  String encodeHit(Map<String, dynamic> hit) {
     var viewportWidth = document.documentElement!.clientWidth;
     var viewportHeight = document.documentElement!.clientHeight;
     return postEncode({...hit, 'vp': '${viewportWidth}x$viewportHeight'});
@@ -79,12 +79,12 @@ class HtmlPostHandler extends PostHandler {
 }
 
 class HtmlPersistentProperties extends PersistentProperties {
-  late final Map _map;
+  late final Map<String, dynamic> _map;
 
   HtmlPersistentProperties(String name) : super(name) {
     var str = window.localStorage[name];
     if (str == null || str.isEmpty) str = '{}';
-    _map = jsonDecode(str);
+    _map = jsonDecode(str) as Map<String, dynamic>;
   }
 
   @override

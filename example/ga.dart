@@ -7,7 +7,7 @@ library usage_ga;
 
 import 'package:usage/usage_io.dart';
 
-void main(List args) async {
+void main(List<String> args) async {
   final defaultUA = 'UA-188575324-1';
 
   if (args.isEmpty) {
@@ -17,7 +17,7 @@ void main(List args) async {
     print('pinging ${args.first}');
   }
 
-  String ua = args.isEmpty ? defaultUA : args.first;
+  var ua = args.isEmpty ? defaultUA : args.first;
 
   Analytics ga = AnalyticsIO(ua, 'ga_test', '3.0');
 

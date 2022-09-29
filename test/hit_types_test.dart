@@ -105,7 +105,7 @@ void defineTests() {
       var timer =
           mock.startTimer('compile', category: 'Build', label: 'Compile');
 
-      await Future.delayed(Duration(milliseconds: 20));
+      await Future<void>.delayed(Duration(milliseconds: 20));
 
       await timer.finish();
       expect(mock.mockPostHandler.sentValues, isNot(isEmpty));
@@ -117,7 +117,7 @@ void defineTests() {
       var time = timer.currentElapsedMillis;
       expect(time, greaterThan(10));
 
-      await Future.delayed(Duration(milliseconds: 10));
+      await Future<void>.delayed(Duration(milliseconds: 10));
       expect(timer.currentElapsedMillis, time);
     });
   });

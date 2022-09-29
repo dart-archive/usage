@@ -72,14 +72,15 @@ abstract class Analytics {
   ///
   /// [parameters] can be any analytics key/value pair. Useful
   /// for custom dimensions, etc.
-  Future sendScreenView(String viewName, {Map<String, String>? parameters});
+  Future<void> sendScreenView(String viewName,
+      {Map<String, String>? parameters});
 
   /// Sends an Event hit to Google Analytics. [label] specifies the event label.
   /// [value] specifies the event value. Values must be non-negative.
   ///
   /// [parameters] can be any analytics key/value pair. Useful
   /// for custom dimensions, etc.
-  Future sendEvent(String category, String action,
+  Future<void> sendEvent(String category, String action,
       {String? label, int? value, Map<String, String>? parameters});
 
   /// Sends a Social hit to Google Analytics.
@@ -89,13 +90,13 @@ abstract class Analytics {
   /// Google Plus when a user clicks the +1 button, the social action is 'plus'.
   /// [target] specifies the target of a
   /// social interaction. This value is typically a URL but can be any text.
-  Future sendSocial(String network, String action, String target);
+  Future<void> sendSocial(String network, String action, String target);
 
   /// Sends a Timing hit to Google Analytics. [variableName] specifies the
   /// variable name of the timing. [time] specifies the user timing value (in
   /// milliseconds). [category] specifies the category of the timing. [label]
   /// specifies the label of the timing.
-  Future sendTiming(String variableName, int time,
+  Future<void> sendTiming(String variableName, int time,
       {String? category, String? label});
 
   /// Start a timer. The time won't be calculated, and the analytics information
@@ -106,7 +107,7 @@ abstract class Analytics {
   /// In order to avoid sending any personally identifying information, the
   /// [description] field must not contain the exception message. In addition,
   /// only the first 100 chars of the description will be sent.
-  Future sendException(String description, {bool? fatal});
+  Future<void> sendException(String description, {bool? fatal});
 
   /// Gets a session variable value.
   dynamic getSessionValue(String param);
@@ -136,7 +137,7 @@ abstract class Analytics {
   /// allows CLI apps to delay for a short time waiting for GA requests to
   /// complete, and then do something like call `dart:io`'s `exit()` explicitly
   /// themselves (or the [close] method below).
-  Future waitForLastPing({Duration? timeout});
+  Future<void> waitForLastPing({Duration? timeout});
 
   /// Free any used resources.
   ///
@@ -178,7 +179,7 @@ class AnalyticsTimer {
 
   /// Finish the timer, calculate the elapsed time, and send the information to
   /// analytics. Once this is called, any future invocations are no-ops.
-  Future finish() {
+  Future<void> finish() {
     if (_endMillis != null) return Future.value();
 
     _endMillis = DateTime.now().millisecondsSinceEpoch;
@@ -220,14 +221,15 @@ class AnalyticsMock implements Analytics {
   String get clientId => '00000000-0000-4000-0000-000000000000';
 
   @override
-  Future sendScreenView(String viewName, {Map<String, String>? parameters}) {
+  Future<void> sendScreenView(String viewName,
+      {Map<String, String>? parameters}) {
     parameters ??= <String, String>{};
     parameters['viewName'] = viewName;
     return _log('screenView', parameters);
   }
 
   @override
-  Future sendEvent(String category, String action,
+  Future<void> sendEvent(String category, String action,
       {String? label, int? value, Map<String, String>? parameters}) {
     parameters ??= <String, String>{};
     return _log(
@@ -237,11 +239,11 @@ class AnalyticsMock implements Analytics {
   }
 
   @override
-  Future sendSocial(String network, String action, String target) =>
+  Future<void> sendSocial(String network, String action, String target) =>
       _log('social', {'network': network, 'action': action, 'target': target});
 
   @override
-  Future sendTiming(String variableName, int time,
+  Future<void> sendTiming(String variableName, int time,
       {String? category, String? label}) {
     return _log('timing', {
       'variableName': variableName,
@@ -258,7 +260,7 @@ class AnalyticsMock implements Analytics {
   }
 
   @override
-  Future sendException(String description, {bool? fatal}) =>
+  Future<void> sendException(String description, {bool? fatal}) =>
       _log('exception', {'description': description, 'fatal': fatal});
 
   @override
@@ -271,12 +273,12 @@ class AnalyticsMock implements Analytics {
   Stream<Map<String, dynamic>> get onSend => _sendController.stream;
 
   @override
-  Future waitForLastPing({Duration? timeout}) => Future.value();
+  Future<void> waitForLastPing({Duration? timeout}) => Future.value();
 
   @override
   void close() {}
 
-  Future _log(String hitType, Map m) {
+  Future<void> _log(String hitType, Map<String, dynamic> m) {
     if (logCalls) {
       print('analytics: $hitType $m');
     }
