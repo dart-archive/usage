@@ -74,7 +74,7 @@ class AnalyticsImpl implements Analytics {
   final ThrottlingBucket _bucket = ThrottlingBucket(20);
   final Map<String, dynamic> _variableMap = {};
 
-  final List<Future> _futures = [];
+  final List<Future<void>> _futures = [];
 
   @override
   AnalyticsOpt analyticsOpt = AnalyticsOpt.optOut;
@@ -134,13 +134,14 @@ class AnalyticsImpl implements Analytics {
   }
 
   @override
-  Future sendScreenView(String viewName, {Map<String, String>? parameters}) {
+  Future<void> sendScreenView(String viewName,
+      {Map<String, String>? parameters}) {
     var args = <String, String>{'cd': viewName, ...?parameters};
     return _enqueuePayload('screenview', args);
   }
 
   @override
-  Future sendEvent(String category, String action,
+  Future<void> sendEvent(String category, String action,
       {String? label, int? value, Map<String, String>? parameters}) {
     final args = <String, String>{
       'ec': category,
@@ -154,13 +155,13 @@ class AnalyticsImpl implements Analytics {
   }
 
   @override
-  Future sendSocial(String network, String action, String target) {
+  Future<void> sendSocial(String network, String action, String target) {
     var args = <String, String>{'sn': network, 'sa': action, 'st': target};
     return _enqueuePayload('social', args);
   }
 
   @override
-  Future sendTiming(String variableName, int time,
+  Future<void> sendTiming(String variableName, int time,
       {String? category, String? label}) {
     var args = <String, String>{
       'utv': variableName,
@@ -179,7 +180,7 @@ class AnalyticsImpl implements Analytics {
   }
 
   @override
-  Future sendException(String description, {bool? fatal}) {
+  Future<void> sendException(String description, {bool? fatal}) {
     // We trim exceptions to a max length; google analytics will apply it's own
     // truncation, likely around 150 chars or so.
     const maxExceptionLength = 1000;
@@ -234,14 +235,15 @@ class AnalyticsImpl implements Analytics {
   void close() => postHandler.close();
 
   @override
-  String get clientId => properties['clientId'] ??= Uuid().generateV4();
+  String get clientId =>
+      (properties['clientId'] ??= Uuid().generateV4()) as String;
 
   /// Send raw data to analytics. Callers should generally use one of the typed
   /// methods (`sendScreenView`, `sendEvent`, ...).
   ///
   /// Valid values for [hitType] are: 'pageview', 'screenview', 'event',
   /// 'transaction', 'item', 'social', 'exception', and 'timing'.
-  Future sendRaw(String hitType, Map<String, dynamic> args) {
+  Future<void> sendRaw(String hitType, Map<String, dynamic> args) {
     return _enqueuePayload(hitType, args);
   }
 
@@ -258,7 +260,7 @@ class AnalyticsImpl implements Analytics {
     // TODO(sigurdm): Really all the 'send' methods should not return Futures
     // there is not much point in waiting for it. Only [waitForLastPing].
     final completer = Completer<void>();
-    final eventArgs = <String, String>{
+    final eventArgs = <String, dynamic>{
       ...args,
       ..._variableMap,
       'v': '1', // protocol version
@@ -284,7 +286,7 @@ class AnalyticsImpl implements Analytics {
       } else if (!_isSendingScheduled) {
         _isSendingScheduled = true;
         // ignore: unawaited_futures
-        Future.delayed(batchingDelay).then((value) {
+        Future<void>.delayed(batchingDelay).then((value) {
           _isSendingScheduled = false;
           _trySendBatches(completer);
         });
@@ -299,7 +301,7 @@ class AnalyticsImpl implements Analytics {
   static const _maxBytesPerBatch = 16000;
 
   void _trySendBatches(Completer<void> completer) {
-    final futures = <Future>[];
+    final futures = <Future<void>>[];
     while (_batchedEvents.isNotEmpty) {
       final batch = <String>[];
       final totalLength = 0;
@@ -322,7 +324,7 @@ class AnalyticsImpl implements Analytics {
     completer.complete(Future.wait(futures).then((_) {}));
   }
 
-  void _recordFuture(Future f) {
+  void _recordFuture(Future<void> f) {
     _futures.add(f);
     f.whenComplete(() => _futures.remove(f));
   }
@@ -359,8 +361,8 @@ abstract class PersistentProperties {
 /// The `Future` from [sendPost] should complete when the operation is finished,
 /// but failures to send the information should be silent.
 abstract class PostHandler {
-  Future sendPost(String url, List<String> batch);
-  String encodeHit(Map<String, String> hit);
+  Future<void> sendPost(String url, List<String> batch);
+  String encodeHit(Map<String, dynamic> hit);
 
   /// Free any used resources.
   void close();

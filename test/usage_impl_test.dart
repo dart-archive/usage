@@ -34,7 +34,7 @@ void defineTests() {
       expect(bucket.removeDrop(), false);
 
       // TODO: Re-write to use package:fake_async.
-      await Future.delayed(Duration(milliseconds: 1500));
+      await Future<void>.delayed(Duration(milliseconds: 1500));
       expect(bucket.removeDrop(), true);
     });
   });

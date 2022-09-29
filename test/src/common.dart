@@ -39,10 +39,11 @@ class StallingPostHandler extends PostHandler {
   void close() {}
 
   @override
-  String encodeHit(Map<String, String> hit) => jsonEncode(hit);
+  String encodeHit(Map<String, dynamic> hit) => jsonEncode(hit);
 
   @override
-  Future sendPost(String url, List<String> batch) => Completer().future;
+  Future<void> sendPost(String url, List<String> batch) =>
+      Completer<void>().future;
 }
 
 class MockProperties extends PersistentProperties {
@@ -68,7 +69,7 @@ class MockPostHandler extends PostHandler {
   List<String> sentValues = [];
 
   @override
-  Future sendPost(String url, List<String> batch) {
+  Future<void> sendPost(String url, List<String> batch) {
     sentValues.addAll(batch);
 
     return Future.value();
@@ -80,5 +81,5 @@ class MockPostHandler extends PostHandler {
   void close() {}
 
   @override
-  String encodeHit(Map<String, String> hit) => jsonEncode(hit);
+  String encodeHit(Map<String, dynamic> hit) => jsonEncode(hit);
 }

@@ -17,14 +17,14 @@ import 'usage_impl.dart';
 /// [analyticsUrl] is an optional replacement for the default Google Analytics
 /// URL (`https://www.google-analytics.com/collect`).
 ///
-/// `trackingId`, `applicationName`, and `applicationVersion` values should be supplied.
-/// `analyticsUrl` is optional, and lets user's substitute their own analytics URL for
-/// the default.
+/// `trackingId`, `applicationName`, and `applicationVersion` values should be
+/// supplied. `analyticsUrl` is optional, and lets user's substitute their own
+/// analytics URL for the default.
 ///
 /// `documentDirectory` is where the analytics settings are stored. It
-/// defaults to the user home directory. For regular `dart:io` apps this doesn't need to
-/// be supplied. For Flutter applications, you should pass in a value like
-/// `PathProvider.getApplicationDocumentsDirectory()`.
+/// defaults to the user home directory. For regular `dart:io` apps this doesn't
+/// need to be supplied. For Flutter applications, you should pass in a value
+/// like `PathProvider.getApplicationDocumentsDirectory()`.
 ///
 /// [batchingDelay] is used to control batching behaviour. Events will be sent
 /// batches of 20 after the duration is over from when the first message was
@@ -105,18 +105,18 @@ class IOPostHandler extends PostHandler {
       : _client = (client ?? HttpClient())..userAgent = createUserAgent();
 
   @override
-  String encodeHit(Map<String, String> hit) {
+  String encodeHit(Map<String, dynamic> hit) {
     return postEncode(hit);
   }
 
   @override
-  Future sendPost(String url, List<String> batch) async {
+  Future<void> sendPost(String url, List<String> batch) async {
     var data = batch.join('\n');
     try {
       var req = await _client.postUrl(Uri.parse(url));
       req.write(data);
       var response = await req.close();
-      await response.drain();
+      await response.drain<void>();
     } on Exception {
       // Catch errors that can happen during a request, but that we can't do
       // anything about, e.g. a missing internet connection.
@@ -135,7 +135,7 @@ JsonEncoder _jsonEncoder = JsonEncoder.withIndent('  ');
 
 class IOPersistentProperties extends PersistentProperties {
   late final File _file;
-  late Map _map;
+  late Map<String, dynamic> _map;
 
   IOPersistentProperties(String name, {String? documentDirPath}) : super(name) {
     var fileName = '.${name.replaceAll(' ', '_')}';
@@ -179,7 +179,7 @@ class IOPersistentProperties extends PersistentProperties {
     try {
       var contents = _file.readAsStringSync();
       if (contents.isEmpty) contents = '{}';
-      _map = jsonDecode(contents);
+      _map = jsonDecode(contents) as Map<String, dynamic>;
     } catch (_) {
       _map = {};
     }

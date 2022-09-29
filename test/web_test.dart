@@ -62,7 +62,7 @@ void defineWebTests() {
 class MockRequestor {
   int sendCount = 0;
 
-  Future<HttpRequest> request(String url, {String? method, sendData}) {
+  Future<HttpRequest> request(String url, {String? method, Object? sendData}) {
     expect(url, isNotEmpty);
     expect(method, isNotEmpty);
     expect(sendData, isNotEmpty);
