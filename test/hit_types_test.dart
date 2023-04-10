@@ -2,8 +2,6 @@
 // for details. All rights reserved. Use of this source code is governed by a
 // BSD-style license that can be found in the LICENSE file.
 
-library usage.hit_types_test;
-
 import 'dart:async';
 import 'dart:convert';
 
@@ -144,7 +142,8 @@ void defineTests() {
       var mock = createMock();
       await mock
           .sendException('foo bar (file:///Users/foobar/tmp/error.dart:3:13)');
-      expect(jsonDecode(mock.last)['exd'], 'foo bar (');
+      expect(
+          (jsonDecode(mock.last) as Map<String, dynamic>)['exd'], 'foo bar (');
     });
   });
 }

@@ -4,6 +4,28 @@
 
 A wrapper around Google Analytics for command-line, web, and Flutter apps.
 
+## UPDATE: Intent to deprecate
+
+As an update for consumers of this package, we intent to deprecate
+`package:usage`. https://github.com/dart-lang/usage/issues/185 has details and
+discussion, but briefly:
+
+- this package uses the older Universal Analytics protocol to record hits to
+  Google Analytics
+- Universal Analytics properties will stop processing new hits on July 1, 2023
+- this library does not support the newer GA4 protocol
+- we (the Dart team) originally built this package for our own use, but we're no
+  longer consuming it
+
+Clients who want to record hits to Google Analytics could:
+
+- for web clients, wrapping the gtags.js library is a good solution
+- for native clients, sending hits to the new protocol is not much more
+  difficult than sending HTTP POSTs to the right endpoint
+
+See also https://github.com/dart-lang/usage/issues/185 other potential
+remediations.
+
 ## For web apps
 
 To use this library as a web app, import the `usage_html.dart` library and

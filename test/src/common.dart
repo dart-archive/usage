@@ -2,8 +2,6 @@
 // for details. All rights reserved. Use of this source code is governed by a
 // BSD-style license that can be found in the LICENSE file.
 
-library usage.common_test;
-
 import 'dart:async';
 import 'dart:convert';
 
@@ -13,9 +11,12 @@ import 'package:usage/src/usage_impl.dart';
 AnalyticsImplMock createMock({Map<String, dynamic>? props}) =>
     AnalyticsImplMock('UA-0', props: props);
 
-void was(String m, String type) => expect(jsonDecode(m)['t'], type);
-void has(String m, String key) => expect(jsonDecode(m)[key], isNotNull);
-void hasnt(String m, String key) => expect(jsonDecode(m)[key], isNull);
+void was(String m, String type) =>
+    expect((jsonDecode(m) as Map<String, dynamic>)['t'], type);
+void has(String m, String key) =>
+    expect((jsonDecode(m) as Map<String, dynamic>)[key], isNotNull);
+void hasnt(String m, String key) =>
+    expect((jsonDecode(m) as Map<String, dynamic>)[key], isNull);
 
 class AnalyticsImplMock extends AnalyticsImpl {
   MockProperties get mockProperties => properties as MockProperties;

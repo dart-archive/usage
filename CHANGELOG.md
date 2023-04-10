@@ -1,3 +1,8 @@
+## 4.1.1
+
+- Updated the readme to indicate that this package is deprecated (see #185).
+- Require Dart 2.19.
+
 ## 4.1.0
 - Analytics hits can now be batched. See details in the documentation of the
   `AnalyticsIO` constructor.
