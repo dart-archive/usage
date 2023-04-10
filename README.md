@@ -6,7 +6,7 @@ A wrapper around Google Analytics for command-line, web, and Flutter apps.
 
 ## UPDATE: Intent to deprecate
 
-As an update for consumers of this package, we intent to deprecate
+As an update for consumers of this package, we intend to deprecate
 `package:usage`. https://github.com/dart-lang/usage/issues/185 has details and
 discussion, but briefly:
 
