@@ -2,8 +2,6 @@
 // for details. All rights reserved. Use of this source code is governed by a
 // BSD-style license that can be found in the LICENSE file.
 
-library usage.all_test;
-
 import 'hit_types_test.dart' as hit_types_test;
 import 'usage_impl_io_test.dart' as usage_impl_io_test;
 import 'usage_impl_test.dart' as usage_impl_test;

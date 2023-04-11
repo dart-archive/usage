@@ -49,7 +49,7 @@ class ThrottlingBucket {
     if (_lastReplenish + 1000 < now) {
       final inc = (now - _lastReplenish) ~/ 1000;
       drops = math.min(drops + inc, startingCount);
-      _lastReplenish += (1000 * inc);
+      _lastReplenish += 1000 * inc;
     }
   }
 }
