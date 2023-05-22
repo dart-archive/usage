@@ -10,7 +10,9 @@ updates:
     # TODO: Remove this if / when the default changes (dependabot/dependabot-core/issues/4979)
     versioning-strategy: increase-if-necessary
 
-  - package-ecosystem: "github-actions"
-    directory: "/"
+  - package-ecosystem: github-actions
+    directory: /
     schedule:
-      interval: "monthly"
+      interval: monthly
+    labels:
+      - autosubmit
