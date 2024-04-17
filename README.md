@@ -1,4 +1,4 @@
-[![Build Status](https://github.com/dart-lang/usage/workflows/Dart/badge.svg)](https://github.com/dart-lang/usage/actions)
+[![Build](https://github.com/dart-lang/usage/actions/workflows/build.yaml/badge.svg)](https://github.com/dart-lang/usage/actions/workflows/build.yaml)
 [![pub package](https://img.shields.io/pub/v/usage.svg)](https://pub.dev/packages/usage)
 [![package publisher](https://img.shields.io/pub/publisher/usage.svg)](https://pub.dev/packages/usage/publisher)
 
