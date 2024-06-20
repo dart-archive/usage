@@ -1,13 +1,10 @@
-[![Build](https://github.com/dart-lang/usage/actions/workflows/build.yaml/badge.svg)](https://github.com/dart-lang/usage/actions/workflows/build.yaml)
 [![pub package](https://img.shields.io/pub/v/usage.svg)](https://pub.dev/packages/usage)
 [![package publisher](https://img.shields.io/pub/publisher/usage.svg)](https://pub.dev/packages/usage/publisher)
 
-A wrapper around Google Analytics for command-line, web, and Flutter apps.
+# DEPRECATED
 
-## UPDATE: Intent to deprecate
-
-As an update for consumers of this package, we intend to deprecate
-`package:usage`. https://github.com/dart-lang/usage/issues/185 has details and
+This package is no longer maintained.
+https://github.com/dart-archive/usage/issues/185 has details and
 discussion, but briefly:
 
 - this package uses the older Universal Analytics protocol to record hits to
@@ -23,7 +20,7 @@ Clients who want to record hits to Google Analytics could:
 - for native clients, sending hits to the new protocol is not much more
   difficult than sending HTTP POSTs to the right endpoint
 
-See also https://github.com/dart-lang/usage/issues/185 other potential
+See also https://github.com/dart-archive/usage/issues/185 other potential
 remediations.
 
 ## For web apps
